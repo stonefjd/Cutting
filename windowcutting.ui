@@ -1,24 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>WindowCutting</class>
- <widget class="QMainWindow" name="WindowCutting" >
-  <property name="geometry" >
+ <widget class="QMainWindow" name="WindowCutting">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>689</width>
+    <height>392</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>WindowCutting</string>
   </property>
-  <widget class="QMenuBar" name="menuBar" />
-  <widget class="QToolBar" name="mainToolBar" />
-  <widget class="QWidget" name="centralWidget" />
-  <widget class="QStatusBar" name="statusBar" />
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>560</x>
+      <y>40</y>
+      <width>77</width>
+      <height>112</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QPushButton" name="pushButton">
+       <property name="text">
+        <string>TEST1</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_2">
+       <property name="text">
+        <string>TEST2</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_3">
+       <property name="text">
+        <string>TEST3</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_4">
+       <property name="text">
+        <string>TEST4</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>689</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFiles">
+    <property name="title">
+     <string>文档</string>
+    </property>
+    <addaction name="actionImport"/>
+   </widget>
+   <widget class="QMenu" name="menusettings">
+    <property name="title">
+     <string>设置</string>
+    </property>
+    <addaction name="actionPositionSettings"/>
+    <addaction name="actionSpeedSettings"/>
+    <addaction name="actionReset"/>
+   </widget>
+   <widget class="QMenu" name="menuother">
+    <property name="title">
+     <string>帮助</string>
+    </property>
+    <addaction name="actionHelpManual"/>
+    <addaction name="actionMachineInfomation"/>
+    <addaction name="actionService"/>
+   </widget>
+   <addaction name="menuFiles"/>
+   <addaction name="menusettings"/>
+   <addaction name="menuother"/>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionRunPuase"/>
+   <addaction name="actionStop"/>
+   <addaction name="actionEnableWind"/>
+   <addaction name="actionWindInOut"/>
+   <addaction name="actionBladeToZero"/>
+   <addaction name="actionEdgeDetection"/>
+   <addaction name="actionToolDeepCalibration"/>
+   <addaction name="actionToolPositionCalibration"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionImport">
+   <property name="text">
+    <string>导入</string>
+   </property>
+  </action>
+  <action name="actionRunPuase">
+   <property name="text">
+    <string>运行/暂停</string>
+   </property>
+  </action>
+  <action name="actionStop">
+   <property name="text">
+    <string>停止</string>
+   </property>
+  </action>
+  <action name="actionEnableWind">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>使能风机</string>
+   </property>
+  </action>
+  <action name="actionWindInOut">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>吸风/反吹风</string>
+   </property>
+  </action>
+  <action name="actionBladeToZero">
+   <property name="text">
+    <string>机械回零</string>
+   </property>
+  </action>
+  <action name="actionEdgeDetection">
+   <property name="text">
+    <string>边缘扫描</string>
+   </property>
+  </action>
+  <action name="actionToolDeepCalibration">
+   <property name="text">
+    <string>刀深校准</string>
+   </property>
+  </action>
+  <action name="actionToolPositionCalibration">
+   <property name="text">
+    <string>刀位校准</string>
+   </property>
+  </action>
+  <action name="actionPositionSettings">
+   <property name="text">
+    <string>位置设置</string>
+   </property>
+  </action>
+  <action name="actionSpeedSettings">
+   <property name="text">
+    <string>速度设置</string>
+   </property>
+  </action>
+  <action name="actionReset">
+   <property name="text">
+    <string>恢复出厂设置</string>
+   </property>
+  </action>
+  <action name="actionHelpManual">
+   <property name="text">
+    <string>使用手册</string>
+   </property>
+  </action>
+  <action name="actionMachineInfomation">
+   <property name="text">
+    <string>裁床信息</string>
+   </property>
+  </action>
+  <action name="actionService">
+   <property name="text">
+    <string>售后服务</string>
+   </property>
+  </action>
  </widget>
- <layoutDefault spacing="6" margin="11" />
- <pixmapfunction></pixmapfunction>
+ <layoutdefault spacing="6" margin="11"/>
  <resources/>
  <connections/>
 </ui>

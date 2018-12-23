@@ -25,11 +25,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-        main.cpp \
-        windowcutting.cpp
+    Fan/fan.cpp \
+    main.cpp \
+    statemachine.cpp \
+    windowcutting.cpp \
+    Machine/machine.cpp \
+    PhysicalLayer/hardwareadaptor.cpp
 
 HEADERS += \
-        windowcutting.h
+    Fan/fan.h \
+    statemachine.h \
+    windowcutting.h \
+    Machine/machine.h \
+    PhysicalLayer/hardwareadaptor.h
 
 FORMS += \
         windowcutting.ui
