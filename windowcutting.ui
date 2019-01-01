@@ -14,7 +14,7 @@
    <string>WindowCutting</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>560</x>
@@ -74,8 +74,7 @@
     <property name="title">
      <string>设置</string>
     </property>
-    <addaction name="actionPositionSettings"/>
-    <addaction name="actionSpeedSettings"/>
+    <addaction name="actionSettingsParameter"/>
     <addaction name="actionReset"/>
    </widget>
    <widget class="QMenu" name="menuother">
@@ -186,6 +185,11 @@
   <action name="actionService">
    <property name="text">
     <string>售后服务</string>
+   </property>
+  </action>
+  <action name="actionSettingsParameter">
+   <property name="text">
+    <string>参数设置</string>
    </property>
   </action>
  </widget>

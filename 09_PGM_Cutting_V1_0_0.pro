@@ -23,24 +23,35 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 CONFIG += c++11
-
+TRANSLATIONS += trans.ts
 SOURCES += \
     main.cpp \
     statemachine.cpp \
     windowcutting.cpp \
     Machine/machine.cpp \
     PhysicalLayer/hardwareadaptor.cpp \
-    Machine/Fan/fan.cpp
+    Machine/Fan/fan.cpp \
+    Machine/KnifeTool/knifetool.cpp \
+    Machine/Parameter/parametermachine.cpp \
+    Machine/Parameter/parameterrunning.cpp \
+    Machine/Parameter/parameterorigin.cpp \
+    settings.cpp
 
 HEADERS += \
     statemachine.h \
     windowcutting.h \
     Machine/machine.h \
     PhysicalLayer/hardwareadaptor.h \
-    Machine/Fan/fan.h
+    Machine/Fan/fan.h \
+    Machine/KnifeTool/knifetool.h \
+    Machine/Parameter/parametermachine.h \
+    Machine/Parameter/parameterrunning.h \
+    Machine/Parameter/parameterorigin.h \
+    settings.h
 
 FORMS += \
-        windowcutting.ui
+        windowcutting.ui \
+    settings.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -56,11 +56,37 @@ void WindowCutting::keyPressEvent(QKeyEvent *event)
         }
     }
 }
+//signals and slots
+void WindowCutting::on_actionSettingsParameter_triggered()
+{
+    this->settings.exec();
+}
+
+void WindowCutting::on_actionReset_triggered()
+{
+    QMessageBox msgBox;
+    msgBox.setText(tr("请确认是否恢复出厂设置"));
+    QPushButton *btnYes = msgBox.addButton(tr("确认"), QMessageBox::YesRole);
+    QPushButton *btnNo = msgBox.addButton(tr("取消"), QMessageBox::NoRole);
+
+    msgBox.exec();
+    if(msgBox.clickedButton()== btnYes)
+    {
+        emit Signal_SettingsRecover();
+        qDebug()<<"recover";
+    }
+    else if(msgBox.clickedButton()== btnNo)
+    {
+
+    }
+}
+
 //----------------TEST-----------------
 void WindowCutting::on_pushButton_clicked()
 {
 
 }
+
 
 void WindowCutting::on_pushButton_2_clicked()
 {
@@ -76,3 +102,5 @@ void WindowCutting::on_pushButton_4_clicked()
 {
     this->mMachine.mFan_1.SetState_FanWindOut();
 }
+
+

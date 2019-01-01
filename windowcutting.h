@@ -4,10 +4,13 @@
 #include <QMainWindow>
 #include <QKeyEvent>
 #include <QDebug>
+#include <QMessageBox>
 
+#include "settings.h"
 #include "statemachine.h"
 #include "Machine/machine.h"
-#include "Machine/machine.h"
+
+#pragma execution_character_set("utf-8")
 
 namespace Ui {
 class WindowCutting;
@@ -31,10 +34,16 @@ private slots:
 
     void on_pushButton_4_clicked();
 
+    void on_actionReset_triggered();
+    void on_actionSettingsParameter_triggered();
+
+signals:
+    void Signal_SettingsRecover();
 private:
     Ui::WindowCutting *ui;
 //    StateMachine runStateMachine;
     Machine mMachine;
+    Settings settings;
 };
 
 #endif // WINDOWCUTTING_H
