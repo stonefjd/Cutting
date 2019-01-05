@@ -84,13 +84,14 @@ void WindowCutting::on_actionReset_triggered()
 //----------------TEST-----------------
 void WindowCutting::on_pushButton_clicked()
 {
-
+    GT_SetDoBit(MC_GPO,0,0);
 }
 
 
 void WindowCutting::on_pushButton_2_clicked()
 {
-    this->mMachine.mFan_1.SetState_FanStop();
+//    this->mMachine.mFan_1.SetState_FanStop();
+    GT_SetDoBit(MC_GPO,0,1);
 }
 
 void WindowCutting::on_pushButton_3_clicked()

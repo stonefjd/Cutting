@@ -47,7 +47,8 @@ HEADERS += \
     Machine/Parameter/parametermachine.h \
     Machine/Parameter/parameterrunning.h \
     Machine/Parameter/parameterorigin.h \
-    settings.h
+    settings.h \
+    PhysicalLayer/gts.h
 
 FORMS += \
         windowcutting.ui \
@@ -57,3 +58,10 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/PhysicalLayer/ -lgts
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/PhysicalLayer/ -lgtsd
+else:unix: LIBS += -L$$PWD/PhysicalLayer/ -lgts
+
+INCLUDEPATH += $$PWD/PhysicalLayer
+DEPENDPATH += $$PWD/PhysicalLayer

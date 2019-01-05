@@ -10,6 +10,8 @@
 #include "statemachine.h"
 #include "Machine/machine.h"
 
+#include "PhysicalLayer/gts.h"
+
 #pragma execution_character_set("utf-8")
 
 namespace Ui {
