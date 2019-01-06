@@ -126,7 +126,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>使能风机</string>
+    <string>开启吸风</string>
    </property>
   </action>
   <action name="actionWindInOut">
@@ -134,7 +134,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>吸风/反吹风</string>
+    <string>开启反吹风</string>
    </property>
   </action>
   <action name="actionBladeToZero">

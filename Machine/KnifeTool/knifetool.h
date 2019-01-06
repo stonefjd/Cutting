@@ -4,6 +4,29 @@
 #include <QObject>
 #include <QPointF>
 
+#define TOOLNUM 5
+
+struct ToolSeatOffset_T
+{
+    double x;
+    double y;
+    double h;
+};
+struct LaserAbsOffset_T
+{
+    double x;
+    double y;
+};
+struct ToolSpeed_T
+{
+    double cuttingSpd;
+    double cuttingAcc;
+    double movingSpd;
+    double movingAcc;
+    double desktopSpd;
+    double toolDown;
+};
+
 class KnifeTool : public QObject
 {
     Q_OBJECT

@@ -5,6 +5,7 @@
 #include <QKeyEvent>
 #include <QDebug>
 #include <QMessageBox>
+#include <QString>
 
 #include "settings.h"
 #include "statemachine.h"

@@ -9,6 +9,12 @@ enum StateFan_T {
     FanWindOut  = 0x0002,   //wait for all device OK,if not ok display it.
     FanError = 0x0003,
 };
+struct FanSpeed_T
+{
+    double windPos;
+    double windNeg;
+};
+
 class Fan : public QObject
 {
     Q_OBJECT

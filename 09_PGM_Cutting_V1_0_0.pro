@@ -35,7 +35,8 @@ SOURCES += \
     Machine/Parameter/parametermachine.cpp \
     Machine/Parameter/parameterrunning.cpp \
     Machine/Parameter/parameterorigin.cpp \
-    settings.cpp
+    settings.cpp \
+    Machine/Desktop/desktop.cpp
 
 HEADERS += \
     statemachine.h \
@@ -48,7 +49,8 @@ HEADERS += \
     Machine/Parameter/parameterrunning.h \
     Machine/Parameter/parameterorigin.h \
     settings.h \
-    PhysicalLayer/gts.h
+    PhysicalLayer/gts.h \
+    Machine/Desktop/desktop.h
 
 FORMS += \
         windowcutting.ui \

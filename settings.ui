@@ -328,94 +328,6 @@
             </item>
            </layout>
           </widget>
-          <widget class="QGroupBox" name="groupBox_2">
-           <property name="geometry">
-            <rect>
-             <x>240</x>
-             <y>40</y>
-             <width>201</width>
-             <height>54</height>
-            </rect>
-           </property>
-           <property name="title">
-            <string>毛毡与校刀座的偏差 (毫米)</string>
-           </property>
-           <layout class="QVBoxLayout" name="verticalLayout_4">
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_4">
-              <item>
-               <widget class="QLabel" name="labelDesktopH">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>6</width>
-                  <height>20</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>6</width>
-                  <height>20</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>H</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="lineEditDesktopH">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>60</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>60</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_3">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                 <enum>QSizePolicy::Preferred</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>194</width>
-                  <height>17</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </widget>
           <widget class="QGroupBox" name="groupBox_3">
            <property name="enabled">
             <bool>true</bool>
@@ -1833,7 +1745,7 @@
             <rect>
              <x>10</x>
              <y>20</y>
-             <width>431</width>
+             <width>201</width>
              <height>51</height>
             </rect>
            </property>
@@ -1980,7 +1892,7 @@
             <rect>
              <x>10</x>
              <y>100</y>
-             <width>431</width>
+             <width>421</width>
              <height>51</height>
             </rect>
            </property>
@@ -2089,6 +2001,94 @@
             <enum>Qt::Horizontal</enum>
            </property>
           </widget>
+          <widget class="QGroupBox" name="groupBox_2">
+           <property name="geometry">
+            <rect>
+             <x>230</x>
+             <y>20</y>
+             <width>201</width>
+             <height>54</height>
+            </rect>
+           </property>
+           <property name="title">
+            <string>毛毡与校刀座的偏差 (毫米)</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_4">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <item>
+               <widget class="QLabel" name="labelDesktopH">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>6</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>6</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>H</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="lineEditDesktopH">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>60</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>60</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_3">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Preferred</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>194</width>
+                  <height>17</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
          </widget>
         </widget>
        </item>
@@ -2118,7 +2118,7 @@
        <item>
         <widget class="QTabWidget" name="tabWidgetSpeed">
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="tabSpeedCutting">
           <attribute name="title">
@@ -2136,7 +2136,7 @@
            <property name="title">
             <string>裁剪速度 m/s</string>
            </property>
-           <widget class="QLineEdit" name="lineEditCuttingY_2">
+           <widget class="QLineEdit" name="lineEditCuttingSpd">
             <property name="geometry">
              <rect>
               <x>20</x>
@@ -2183,7 +2183,7 @@
            <property name="title">
             <string>裁剪加速度 m/s²</string>
            </property>
-           <widget class="QLineEdit" name="lineEditCuttingY_5">
+           <widget class="QLineEdit" name="lineEditCuttingAcc">
             <property name="geometry">
              <rect>
               <x>20</x>
@@ -2230,7 +2230,7 @@
            <property name="title">
             <string>空走速度 m/s</string>
            </property>
-           <widget class="QLineEdit" name="lineEditCuttingY_3">
+           <widget class="QLineEdit" name="lineEditMovingSpd">
             <property name="geometry">
              <rect>
               <x>20</x>
@@ -2277,7 +2277,7 @@
            <property name="title">
             <string>空走加速度 m/s²</string>
            </property>
-           <widget class="QLineEdit" name="lineEditCuttingY_6">
+           <widget class="QLineEdit" name="lineEditMovingAcc">
             <property name="geometry">
              <rect>
               <x>20</x>
@@ -2324,7 +2324,7 @@
            <property name="title">
             <string>台面移动速度 m/s</string>
            </property>
-           <widget class="QLineEdit" name="lineEditCuttingY_4">
+           <widget class="QLineEdit" name="lineEditDesktopSpd">
             <property name="geometry">
              <rect>
               <x>20</x>
@@ -2371,7 +2371,7 @@
            <property name="title">
             <string>下刀速度 m/s</string>
            </property>
-           <widget class="QLineEdit" name="lineEditCuttingY_7">
+           <widget class="QLineEdit" name="lineEditToolDown">
             <property name="geometry">
              <rect>
               <x>20</x>
@@ -2423,7 +2423,7 @@
            <property name="title">
             <string>吸风</string>
            </property>
-           <widget class="QSlider" name="horizontalSlider">
+           <widget class="QSlider" name="hSliderWindPos">
             <property name="geometry">
              <rect>
               <x>20</x>
@@ -2475,7 +2475,7 @@
            <property name="title">
             <string>反吹风</string>
            </property>
-           <widget class="QSlider" name="horizontalSlider_2">
+           <widget class="QSlider" name="hSliderWindNeg">
             <property name="geometry">
              <rect>
               <x>20</x>
