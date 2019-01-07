@@ -13,7 +13,6 @@
 
 #include "PhysicalLayer/gts.h"
 
-#pragma execution_character_set("utf-8")
 
 namespace Ui {
 class WindowCutting;
@@ -41,7 +40,7 @@ private slots:
     void on_actionSettingsParameter_triggered();
 
 signals:
-    void Signal_SettingsRecover();
+
 private:
     Ui::WindowCutting *ui;
 //    StateMachine runStateMachine;

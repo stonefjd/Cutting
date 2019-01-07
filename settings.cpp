@@ -1,6 +1,8 @@
 ﻿#include "settings.h"
 #include "ui_settings.h"
 
+//#pragma execution_character_set("utf-8")
+
 #define SettingPath "Settings\\settings.ini"
 
 Settings::Settings(QWidget *parent) :
@@ -12,8 +14,8 @@ Settings::Settings(QWidget *parent) :
     emit ui->listWidget->itemClicked(ui->listWidget->item(0));
     ui->tabWidgetSize->setCurrentIndex(0);
     ui->tabWidgetSpeed->setCurrentIndex(0);
-//--Set Default CfgData
-
+//--Set lineEdit limit
+    ui->lineEditLazerAbsX->setValidator(new QDoubleValidator(0, 1000.0, 2,this));
 //--Init Settings File
     this->pathSettingFile = SettingPath;
     QSettings settingsObj(this->pathSettingFile,QSettings::IniFormat);
@@ -256,4 +258,12 @@ void Settings::on_pushButtonCancel_clicked()
 {
     SettingsCfg_DisplayNum(&settingsCfg);
     this->close();
+}
+void Settings::resetSettingsData()
+{
+    QSettings settingsObj(this->pathSettingFile,QSettings::IniFormat);
+    SettingsCfg_SetDefault(&settingsCfg_Default);
+    SettingsCfg_Set(&settingsObj,&settingsCfg_Default);
+    SettingsCfg_GetInit(&settingsObj,&settingsCfg);
+    SettingsCfg_DisplayNum(&settingsCfg);
 }

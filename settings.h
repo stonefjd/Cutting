@@ -13,8 +13,6 @@
 #include <Machine/Desktop/desktop.h>
 #include <Machine/Fan/fan.h>
 
-#pragma execution_character_set("utf-8")
-//struct SettingMech
 struct SettingsCfg_T
 {
     LaserAbsOffset_T laserAbs;
@@ -35,14 +33,12 @@ class Settings : public QDialog
 public:
     explicit Settings(QWidget *parent = nullptr);
     ~Settings();
+    void resetSettingsData();
 
 private slots:
     void on_listWidget_itemClicked(QListWidgetItem *item);
-
     void on_pushButtonOk_clicked();
-
     void on_pushButtonApply_clicked();
-
     void on_pushButtonCancel_clicked();
 
 private:
@@ -55,10 +51,6 @@ private:
     bool SettingsCfg_GetInit(QSettings *settings,SettingsCfg_T *cfg);
     bool SettingsCfg_GetEditLine(SettingsCfg_T *cfg);
     void SettingsCfg_DisplayNum(SettingsCfg_T *cfg);
-
-    void SettingsCfg_Get();
-    void SettingsCfg_Apply();
-    void SettingsCfg_Confirm();
 };
 
 #endif // SETTINGS_H

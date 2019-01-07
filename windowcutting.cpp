@@ -1,5 +1,6 @@
 ﻿#include "windowcutting.h"
 #include "ui_windowcutting.h"
+#pragma execution_character_set("utf-8")
 
 WindowCutting::WindowCutting(QWidget *parent) :
     QMainWindow(parent),
@@ -72,7 +73,7 @@ void WindowCutting::on_actionReset_triggered()
     msgBox.exec();
     if(msgBox.clickedButton()== btnYes)
     {
-        emit Signal_SettingsRecover();
+        settings.resetSettingsData();
         qDebug()<<"recover";
     }
     else if(msgBox.clickedButton()== btnNo)
