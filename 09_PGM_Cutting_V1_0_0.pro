@@ -28,33 +28,29 @@ SOURCES += \
     main.cpp \
     statemachine.cpp \
     windowcutting.cpp \
-    Machine/machine.cpp \
     PhysicalLayer/hardwareadaptor.cpp \
+    Machine/machine.cpp \
     Machine/Fan/fan.cpp \
     Machine/KnifeTool/knifetool.cpp \
-    Machine/Parameter/parametermachine.cpp \
-    Machine/Parameter/parameterrunning.cpp \
-    Machine/Parameter/parameterorigin.cpp \
-    settings.cpp \
-    Machine/Desktop/desktop.cpp
+    Machine/Desktop/desktop.cpp \
+    Ui/Settings/settings.cpp \
+    Ui/Input/input.cpp
 
 HEADERS += \
     statemachine.h \
     windowcutting.h \
-    Machine/machine.h \
     PhysicalLayer/hardwareadaptor.h \
+    PhysicalLayer/gts.h \
+    Machine/machine.h \
     Machine/Fan/fan.h \
     Machine/KnifeTool/knifetool.h \
-    Machine/Parameter/parametermachine.h \
-    Machine/Parameter/parameterrunning.h \
-    Machine/Parameter/parameterorigin.h \
-    settings.h \
-    PhysicalLayer/gts.h \
-    Machine/Desktop/desktop.h
+    Machine/Desktop/desktop.h \
+    Ui/Settings/settings.h \
+    Ui/Input/input.h
 
 FORMS += \
         windowcutting.ui \
-    settings.ui
+    Ui/Settings/settings.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

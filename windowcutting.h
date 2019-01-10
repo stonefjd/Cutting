@@ -7,7 +7,7 @@
 #include <QMessageBox>
 #include <QString>
 
-#include "settings.h"
+#include "Ui/Settings/settings.h"
 #include "statemachine.h"
 #include "Machine/machine.h"
 
