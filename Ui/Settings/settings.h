@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <QSettings>
 #include <QFile>
+#include <QFileDialog>
 #include <QMessageBox>
 
 #include <Machine/KnifeTool/knifetool.h>

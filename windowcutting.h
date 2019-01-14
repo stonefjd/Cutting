@@ -8,6 +8,7 @@
 #include <QString>
 
 #include "Ui/Settings/settings.h"
+#include "Ui/Records/records.h"
 #include "statemachine.h"
 #include "Machine/machine.h"
 
@@ -39,13 +40,16 @@ private slots:
     void on_actionReset_triggered();
     void on_actionSettingsParameter_triggered();
 
+    void on_actionImport_triggered();
+
 signals:
 
 private:
     Ui::WindowCutting *ui;
 //    StateMachine runStateMachine;
     Machine mMachine;
-    Settings settings;
+    Settings    settings;
+    Records     records;
 };
 
 #endif // WINDOWCUTTING_H

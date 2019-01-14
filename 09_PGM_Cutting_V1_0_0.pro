@@ -34,7 +34,8 @@ SOURCES += \
     Machine/KnifeTool/knifetool.cpp \
     Machine/Desktop/desktop.cpp \
     Ui/Settings/settings.cpp \
-    Ui/Input/input.cpp
+    Ui/Input/input.cpp \
+    Ui/Records/records.cpp
 
 HEADERS += \
     statemachine.h \
@@ -46,7 +47,8 @@ HEADERS += \
     Machine/KnifeTool/knifetool.h \
     Machine/Desktop/desktop.h \
     Ui/Settings/settings.h \
-    Ui/Input/input.h
+    Ui/Input/input.h \
+    Ui/Records/records.h
 
 FORMS += \
         windowcutting.ui \
