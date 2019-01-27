@@ -7,11 +7,10 @@
 #include <QMessageBox>
 #include <QString>
 
-#include "Ui/Settings/settings.h"
-#include "Ui/Records/records.h"
+#include "File/Settings/settings.h"
+#include "File/Route/route.h"
 #include "statemachine.h"
 #include "Machine/machine.h"
-
 #include "PhysicalLayer/gts.h"
 
 
@@ -49,7 +48,7 @@ private:
 //    StateMachine runStateMachine;
     Machine mMachine;
     Settings    settings;
-    Records     records;
+    Route     route;
 };
 
 #endif // WINDOWCUTTING_H

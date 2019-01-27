@@ -109,5 +109,5 @@ void WindowCutting::on_pushButton_4_clicked()
 
 void WindowCutting::on_actionImport_triggered()
 {
-    records.fileDir_Chose();
+    route.PathDir_Chose();
 }

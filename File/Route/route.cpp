@@ -1,11 +1,10 @@
-#include "records.h"
+﻿#include "route.h"
 
-Records::Records(QObject *parent) : QObject(parent)
+Route::Route(QObject *parent) : QObject(parent)
 {
-    recordsFileDir.append("/home");
+    PathDir.append("/home");
 }
-
-void Records :: fileDir_Chose()
+void Route::PathDir_Chose()
 {
     QFileDialog *fileDialog = new QFileDialog;
     fileDialog->setWindowTitle(QTranslator::tr("打开刀路文件"));
@@ -16,11 +15,12 @@ void Records :: fileDir_Chose()
 
     fileDialog->exec();
     if(!fileDialog->selectedFiles().isEmpty())
-        recordsFileDir = fileDialog->selectedFiles();
+        PathDir = fileDialog->selectedFiles();
 
-    qDebug()<<recordsFileDir;
+    qDebug()<<PathDir;
 }
-QStringList Records :: fileDir_Get()
+QStringList Route::PathDir_Get()
 {
-    return recordsFileDir;
+    return PathDir;
 }
+

@@ -34,9 +34,8 @@ SOURCES += \
     Machine/Fan/fan.cpp \
     Machine/KnifeTool/knifetool.cpp \
     Machine/Desktop/desktop.cpp \
-    Ui/Settings/settings.cpp \
-    Ui/Input/input.cpp \
-    Ui/Records/records.cpp
+    File/Settings/settings.cpp \
+    File/Route/route.cpp
 
 HEADERS += \
     statemachine.h \
@@ -47,13 +46,12 @@ HEADERS += \
     Machine/Fan/fan.h \
     Machine/KnifeTool/knifetool.h \
     Machine/Desktop/desktop.h \
-    Ui/Settings/settings.h \
-    Ui/Input/input.h \
-    Ui/Records/records.h
+    File/Settings/settings.h \
+    File/Route/route.h
 
 FORMS += \
         windowcutting.ui \
-    Ui/Settings/settings.ui
+    File/Settings/settings.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
