@@ -181,7 +181,7 @@
        <item>
         <widget class="QTabWidget" name="tabWidgetSize">
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="tabSizeOffestOrigin">
           <attribute name="title">
@@ -1738,7 +1738,7 @@
          </widget>
          <widget class="QWidget" name="tabSizeDesktop">
           <attribute name="title">
-           <string>桌面参数</string>
+           <string>桌面</string>
           </attribute>
           <widget class="QGroupBox" name="groupBoxCutting">
            <property name="geometry">
@@ -2118,7 +2118,7 @@
        <item>
         <widget class="QTabWidget" name="tabWidgetSpeed">
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="tabSpeedCutting">
           <attribute name="title">

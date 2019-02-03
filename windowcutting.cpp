@@ -7,12 +7,61 @@ WindowCutting::WindowCutting(QWidget *parent) :
     ui(new Ui::WindowCutting)
 {
     ui->setupUi(this);
+
+//----CutFileOperator
+    cutFileList.CutFileList_WidgetInit(ui->tableWgtCutFile);
+//    ui->tableWgtCutFile->insertRow(1);
+//    ui->tableWgtCutFile->resize(350, 50);
+
+
+    CutFileAddList("mei.xml","12423",100);
+    CutFileAddList("hei.xml","12423",100);
+    CutFileAddList("nei.xml","12423",100);
+    //添加右键支持
+    ui->tableWgtCutFile->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->tableWgtCutFile,SIGNAL(customContextMenuRequested(const QPoint&)),this,SLOT(CutFileContextMenuRKey(const QPoint&)));
 }
 
 WindowCutting::~WindowCutting()
 {
     delete ui;
 }
+
+//CutFileOperator
+void WindowCutting::on_actionImportCutFileList_triggered()
+{
+    cutFileList.CutFileList_ChoseList();
+    cutFileList.CutFileList_Display(ui->tableWgtCutFile);
+}
+void WindowCutting::on_actionImportCutFile_triggered()
+{
+    cutFileList.CutFileList_ChoseSingleFile();
+    cutFileList.CutFileList_Display(ui->tableWgtCutFile);
+}
+
+void WindowCutting::CutFileAddList(QString _name,QString _path,unsigned int _counter)
+{
+    QTableWidgetItem* item = new QTableWidgetItem();
+    item->setData(Qt::DisplayRole,_name);
+    item->setData(Qt::UserRole+1,_path);
+    item->setData(Qt::UserRole+2,_counter);
+//    ui->tableWgtCutFile->add;
+}
+void WindowCutting::CutFileContextMenuRKey(const QPoint& pt)
+{
+    //当选中项
+    QTableWidgetItem* selected = ui->tableWgtCutFile->currentItem();
+
+    QMenu menu;
+    menu.addAction(ui->actionCutFileAdd);
+    menu.addAction(ui->actionCutFileRmv);
+    menu.addAction(ui->actionCutFileUp);
+    menu.addAction(ui->actionCutFileDown);
+    qDebug()<<pt;
+    //显示菜单
+    menu.exec(ui->tableWgtCutFile->mapToGlobal(pt));
+}
+
 
 //----override----//
 void WindowCutting::keyPressEvent(QKeyEvent *event)
@@ -107,7 +156,6 @@ void WindowCutting::on_pushButton_4_clicked()
 
 
 
-void WindowCutting::on_actionImport_triggered()
-{
-    route.PathDir_Chose();
-}
+
+
+
