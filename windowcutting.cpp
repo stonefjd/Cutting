@@ -13,10 +13,6 @@ WindowCutting::WindowCutting(QWidget *parent) :
 //    ui->tableWgtCutFile->insertRow(1);
 //    ui->tableWgtCutFile->resize(350, 50);
 
-
-    CutFileAddList("mei.xml","12423",100);
-    CutFileAddList("hei.xml","12423",100);
-    CutFileAddList("nei.xml","12423",100);
     //添加右键支持
     ui->tableWgtCutFile->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->tableWgtCutFile,SIGNAL(customContextMenuRequested(const QPoint&)),this,SLOT(CutFileContextMenuRKey(const QPoint&)));

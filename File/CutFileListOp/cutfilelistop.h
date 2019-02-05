@@ -25,12 +25,13 @@ public:
     void CutFileList_ChoseList();
     void CutFileList_ChoseSingleFile();
 
-    QStringList CutFileList_Get();
-    QString CutFile_Get();
+    QStringList CutFileList_GetList();
+    QString CutFileList_GetPath();
 
     void CutFileList_WidgetInit(QTableWidget *_tableWidget);
     void CutFileList_ListAll(QString _path);
     void CutFileList_Display(QTableWidget *_tableWidget);
+    QStringList CutFileList_ViewOpenFile(QString _name,QString _filter,enum QFileDialog::FileMode _fileMode);
 
 signals:
 

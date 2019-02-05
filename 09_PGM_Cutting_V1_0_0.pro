@@ -35,7 +35,6 @@ SOURCES += \
     Machine/KnifeTool/knifetool.cpp \
     Machine/Desktop/desktop.cpp \
     File/Settings/settings.cpp \
-    File/Route/route.cpp \
     File/CutFileListOp/cutfilelistop.cpp
 
 HEADERS += \
@@ -48,7 +47,6 @@ HEADERS += \
     Machine/KnifeTool/knifetool.h \
     Machine/Desktop/desktop.h \
     File/Settings/settings.h \
-    File/Route/route.h \
     File/CutFileListOp/cutfilelistop.h
 
 FORMS += \

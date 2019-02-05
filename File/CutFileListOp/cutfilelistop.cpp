@@ -23,40 +23,53 @@ void CutFileListOp::CutFileList_ListAll(QString _path)
 
 void CutFileListOp::CutFileList_ChoseSingleFile()
 {
-    QFileDialog *fileDialog = new QFileDialog;
-    fileDialog->setWindowTitle(QTranslator::tr("打开刀路文件"));
-//    fileDialog->setDirectory("/home/Debug");
-    fileDialog->setNameFilter(QTranslator::tr("file(*.xml *.png)"));
-    fileDialog->setFileMode(QFileDialog::ExistingFiles);
-    fileDialog->setViewMode(QFileDialog::Detail);
-
-    fileDialog->exec();
-    if(!fileDialog->selectedFiles().isEmpty())
+    QStringList tempStrList;
+    tempStrList = CutFileList_ViewOpenFile(QTranslator::tr("打开刀路文件"),QTranslator::tr("file(*.xml *.png)"),QFileDialog::ExistingFiles);
+    if(tempStrList.isEmpty())
+        return;
+    for(int i=0;i<tempStrList.count();i++)
     {
-        QStringList tempStrList;
-        tempStrList = fileDialog->selectedFiles();
-        for(int i=0;i<tempStrList.count();i++)
-            filePathList.append("1 "+tempStrList.at(i));
+        bool flagReplace = false;
+        if(filePathList.count()!=0)
+        {
+            QFileInfo fileinfoTemp(tempStrList.at(i));
+            for(int j=0;j<filePathList.count();j++)
+            {
+                QString pathNow = filePathList.at(j).split(' ').at(1);
+                int cnt = filePathList.at(j).split(' ').at(0).toInt();
+                QFileInfo fileinfoListIndex(pathNow);
 
+                if(fileinfoListIndex.fileName()==fileinfoTemp.fileName() &&
+                        fileinfoListIndex.filePath()==fileinfoTemp.filePath())
+                {
+                    cnt++;
+                    filePathList.insert(j, QString::number(cnt) +' '+ tempStrList.at(i));
+                    filePathList.removeAt(j+1);
+                    flagReplace = true;
+                }
+            }
+        }
+        if(flagReplace == false)
+        {
+            filePathList.append("1 "+tempStrList.at(i));
+        }
     }
+    qDebug()<<tempStrList;
     qDebug()<<filePathList;
 }
 void CutFileListOp::CutFileList_ChoseList()
 {
-    //设置打开的界面
-    QFileDialog *fileDialog = new QFileDialog;
-    fileDialog->setWindowTitle(QTranslator::tr("裁切列表"));
-//    fileDialog->setDirectory("/home/Debug");
-    fileDialog->setNameFilter(QTranslator::tr("file(*.txt)"));
-    fileDialog->setFileMode(QFileDialog::ExistingFile);
-    fileDialog->setViewMode(QFileDialog::Detail);
-
     //打开文件获取切割任务列表文件
-    fileDialog->exec();
-    if(fileDialog->selectedFiles().isEmpty())
+    QStringList tempStrList;
+    tempStrList = CutFileList_ViewOpenFile(QTranslator::tr("裁切列表"),QTranslator::tr("file(*.txt)"),QFileDialog::ExistingFile);//fileDialog->selectedFiles();
+    if(tempStrList.isEmpty())
+    {
         return;
+    }
+
     //将被选择文件路径存入私有变量
-    filePath = fileDialog->selectedFiles().at(0);
+    filePathList.clear();
+    filePath = tempStrList.at(0);
 
     //打开文件获取每个任务的文件路径
     QFile file(filePath);
@@ -83,11 +96,29 @@ void CutFileListOp::CutFileList_ChoseList()
     //添加文档路径到list
     qDebug()<<filePathList;
 }
-QString CutFileListOp::CutFile_Get()
+
+QStringList CutFileListOp::CutFileList_ViewOpenFile(QString _name,QString _filter,enum QFileDialog::FileMode _fileMode)
+{
+    QFileDialog *fileDialog = new QFileDialog;
+    QStringList tempStrList;
+    fileDialog->setWindowTitle(_name);
+//    fileDialog->setDirectory("/home/Debug");
+    fileDialog->setNameFilter(_filter);
+    fileDialog->setFileMode(_fileMode);
+    fileDialog->setViewMode(QFileDialog::Detail);
+
+    fileDialog->exec();
+    if(!fileDialog->selectedFiles().isEmpty())
+    {
+
+    }
+    return  fileDialog->selectedFiles();
+}
+QString CutFileListOp::CutFileList_GetPath()
 {
     return filePath;
 }
-QStringList CutFileListOp::CutFileList_Get()
+QStringList CutFileListOp::CutFileList_GetList()
 {
     return filePathList;
 }
