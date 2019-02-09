@@ -9,9 +9,8 @@ WindowCutting::WindowCutting(QWidget *parent) :
     ui->setupUi(this);
 
 //----CutFileOperator
+    ui->dockWgtCutFile->setWindowTitle(tr("任务列表"));
     cutFileList.CutFileList_WidgetInit(ui->tableWgtCutFile);
-//    ui->tableWgtCutFile->insertRow(1);
-//    ui->tableWgtCutFile->resize(350, 50);
 
     //添加右键支持
     ui->tableWgtCutFile->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -23,17 +22,6 @@ WindowCutting::~WindowCutting()
     delete ui;
 }
 
-//CutFileOperator
-void WindowCutting::on_actionImportCutFileList_triggered()
-{
-    cutFileList.CutFileList_ChoseList();
-    cutFileList.CutFileList_Display(ui->tableWgtCutFile);
-}
-void WindowCutting::on_actionImportCutFile_triggered()
-{
-    cutFileList.CutFileList_ChoseSingleFile();
-    cutFileList.CutFileList_Display(ui->tableWgtCutFile);
-}
 
 void WindowCutting::CutFileAddList(QString _name,QString _path,unsigned int _counter)
 {
@@ -154,4 +142,47 @@ void WindowCutting::on_pushButton_4_clicked()
 
 
 
+
+//CutFileOperator
+void WindowCutting::on_btnFileAdd_clicked()
+{
+    cutFileList.CutFileList_ChoseSingleFile();
+    cutFileList.CutFileList_Display(ui->tableWgtCutFile);
+}
+void WindowCutting::on_btnFileImport_clicked()
+{
+    cutFileList.CutFileList_ChoseList();
+    cutFileList.CutFileList_Display(ui->tableWgtCutFile);
+}
+void WindowCutting::on_actionImportCutFile_triggered()
+{
+    cutFileList.CutFileList_ChoseSingleFile();
+    cutFileList.CutFileList_Display(ui->tableWgtCutFile);
+}
+void WindowCutting::on_actionImportCutFileList_triggered()
+{
+    cutFileList.CutFileList_ChoseList();
+    cutFileList.CutFileList_Display(ui->tableWgtCutFile);
+}
+
+
+void WindowCutting::on_btnFileRmv_clicked()
+{
+    cutFileList.CutFileList_RemoveFileFromList(ui->tableWgtCutFile);
+    cutFileList.CutFileList_Display(ui->tableWgtCutFile);
+}
+void WindowCutting::on_btnFileUp_clicked()
+{
+    cutFileList.CutFileList_UpFileFromList(ui->tableWgtCutFile);
+    cutFileList.CutFileList_Display(ui->tableWgtCutFile);
+}
+void WindowCutting::on_btnFileDown_clicked()
+{
+    cutFileList.CutFileList_DownFileFromList(ui->tableWgtCutFile);
+    cutFileList.CutFileList_Display(ui->tableWgtCutFile);
+}
+void WindowCutting::on_btnFileExport_clicked()
+{
+    cutFileList.CutFileList_ExportFileFromList(ui->tableWgtCutFile);
+}
 

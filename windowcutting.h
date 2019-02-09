@@ -48,6 +48,18 @@ private slots:
 
     void on_actionImportCutFileList_triggered();
 
+    void on_btnFileAdd_clicked();
+
+    void on_btnFileImport_clicked();
+
+    void on_btnFileRmv_clicked();
+
+    void on_btnFileDown_clicked();
+
+    void on_btnFileUp_clicked();
+
+    void on_btnFileExport_clicked();
+
 signals:
 
 private:
