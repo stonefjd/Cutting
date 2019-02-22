@@ -85,14 +85,29 @@ void WindowCutting::on_actionReset_triggered()
 //----------------TEST-----------------
 void WindowCutting::on_pushButton_clicked()
 {
-    GT_SetDoBit(MC_GPO,0,0);
-}
+    GT_Open();
+    GT_SetDo(MC_GPO,0);
+    double value=0;
+    GT_GetEncPos(11,&value,1,nullptr);
 
+    GT_Close();
+    ui->label->setText(QString::number(value));
+}
 
 void WindowCutting::on_pushButton_2_clicked()
 {
 //    this->mMachine.mFan_1.SetState_FanStop();
-    GT_SetDoBit(MC_GPO,0,1);
+    short sRtn;
+    long int value;
+    char *pVersion;
+    sRtn = GT_Open();
+    sRtn = GT_GetVersion(&pVersion);
+//    GT_Reset();
+    GT_SetDo(MC_GPO,0);
+    GT_GetDi(MC_GPI,&value);
+    GT_Close();
+
+    qDebug()<<QString(pVersion);
 }
 
 void WindowCutting::on_pushButton_3_clicked()
