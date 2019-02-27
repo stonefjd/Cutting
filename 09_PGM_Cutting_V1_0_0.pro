@@ -5,7 +5,8 @@
 #-------------------------------------------------
 
 QT       += core gui\
-            xml
+            xml\
+            charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -35,7 +36,8 @@ SOURCES += \
     Machine/KnifeTool/knifetool.cpp \
     Machine/Desktop/desktop.cpp \
     File/Settings/settings.cpp \
-    File/CutFileListOp/cutfilelistop.cpp
+    File/CutFileListOp/cutfilelistop.cpp \
+    File/IniOp/iniop.cpp
 
 HEADERS += \
     statemachine.h \
@@ -47,11 +49,13 @@ HEADERS += \
     Machine/KnifeTool/knifetool.h \
     Machine/Desktop/desktop.h \
     File/Settings/settings.h \
-    File/CutFileListOp/cutfilelistop.h
+    File/CutFileListOp/cutfilelistop.h \
+    File/IniOp/iniop.h
 
 FORMS += \
         windowcutting.ui \
-    File/Settings/settings.ui
+    File/Settings/settings.ui \
+    File/IniOp/iniop.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

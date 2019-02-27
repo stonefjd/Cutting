@@ -2,9 +2,9 @@
 
 HardwareAdaptor::HardwareAdaptor(QObject *parent) : QObject(parent)
 {
-    QTimer *hardwareIOTimer = new QTimer;
-    connect(hardwareIOTimer,SIGNAL(timeout()),SLOT(Slot_Action_CheckHardWareError()));
-    hardwareIOTimer->start(1000);
+//    QTimer *hardwareIOTimer = new QTimer;
+//    connect(hardwareIOTimer,SIGNAL(timeout()),SLOT(Slot_Action_CheckHardWareError()));
+//    hardwareIOTimer->start(1000);
 }
 void HardwareAdaptor::Slot_Action_CheckHardWareError()
 {

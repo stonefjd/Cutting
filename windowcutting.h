@@ -13,6 +13,7 @@
 
 #include "File/Settings/settings.h"
 #include "File/CutFileListOp/cutfilelistop.h"
+#include "File/IniOp/iniop.h"
 #include "statemachine.h"
 #include "Machine/machine.h"
 #include "PhysicalLayer/gts.h"
@@ -66,7 +67,8 @@ private:
     Ui::WindowCutting *ui;
 //    StateMachine runStateMachine;
     Machine mMachine;
-    Settings    settings;
+//    Settings    settings;
+    IniOp   iniOp;
     CutFileListOp   cutFileList;
 };
 

@@ -11,12 +11,24 @@
 #include <QMessageBox>
 #include <QLineEdit>
 #include <QSpinBox>
+#include <QtCharts/QLineSeries>
+#include <QPointF>
+
+using namespace QtCharts;
 struct cutFileNode_t
 {
     QString fName;
     QString fPath;
     QString fCnt;
     cutFileNode_t *next;
+};
+struct fileData_t
+{
+    QString cutFileName;
+    QString cutFilePath;
+    int cutTimes;
+    QList<QLineSeries> lines;
+    QList<QPointF> drillDot;
 };
 
 class CutFileListOp : public QObject
@@ -37,10 +49,10 @@ public:
     void CutFileList_WidgetInit(QTableWidget *_tableWidget);
     void CutFileList_Display(QTableWidget *_tableWidget);
     QStringList CutFileList_ViewOpenFile(QString _name,QString _filter,enum QFileDialog::FileMode _fileMode);
-    QString CutFileList_GetColumnFileName(QStringList _pathList,int i);
-    QString CutFileList_GetColumnFilePath(QStringList _pathList,int i);
-    QString CutFileList_GetColumnFileCounter(QStringList _pathList,int i);
-    void CutFileList_SetColumnFileCounter(QStringList *_pathList,int column,int counter);
+    QString CutFileList_GetColumnFileName(QStringList _fileList,int i);
+    QString CutFileList_GetColumnFilePath(QStringList _fileList,int i);
+    QString CutFileList_GetColumnFileCounter(QStringList _fileList,int i);
+    void CutFileList_SetColumnFileCounter(QStringList *_fileList,int column,int counter);
 
 signals:
 
@@ -49,6 +61,7 @@ public slots:
 private:
     QString filePath;
     QStringList filePathList;
+    QList<fileData_t> fileVector;
 };
 
 #endif // CUTFILELISTOP_H

@@ -100,6 +100,7 @@ void CutFileListOp::CutFileList_ExportFileFromList(QTableWidget *_tableWidget)
     }
 
 }
+//打开单个文件
 void CutFileListOp::CutFileList_ChoseSingleFile()
 {
     QStringList tempStrList;
@@ -121,6 +122,7 @@ void CutFileListOp::CutFileList_ChoseSingleFile()
                 if(fileinfoListIndex.fileName()==fileinfoTemp.fileName() &&
                         fileinfoListIndex.filePath()==fileinfoTemp.filePath())
                 {
+                    //只改变对应的次数，不增加新文件路径
                     cnt++;
                     filePathList.insert(j, QString::number(cnt) +' '+ tempStrList.at(i));
                     filePathList.removeAt(j+1);
@@ -128,6 +130,7 @@ void CutFileListOp::CutFileList_ChoseSingleFile()
                 }
             }
         }
+        //增加新文件路径
         if(flagReplace == false)
         {
             filePathList.append("1 "+tempStrList.at(i));
@@ -201,27 +204,27 @@ QStringList CutFileListOp::CutFileList_GetListContent()
 {
     return filePathList;
 }
-QString CutFileListOp::CutFileList_GetColumnFileName(QStringList _pathList,int i)
+QString CutFileListOp::CutFileList_GetColumnFileName(QStringList _fileList,int i)
 {
-    QFileInfo fileinfo(_pathList.at(i).split(' ').at(1));
+    QFileInfo fileinfo(_fileList.at(i).split(' ').at(1));
     return fileinfo.fileName();
 }
-QString CutFileListOp::CutFileList_GetColumnFilePath(QStringList _pathList,int i)
+QString CutFileListOp::CutFileList_GetColumnFilePath(QStringList _fileList,int i)
 {
-    QFileInfo fileinfo(_pathList.at(i).split(' ').at(1));
+    QFileInfo fileinfo(_fileList.at(i).split(' ').at(1));
     return fileinfo.filePath();
 }
-QString CutFileListOp::CutFileList_GetColumnFileCounter(QStringList _pathList,int i)
+QString CutFileListOp::CutFileList_GetColumnFileCounter(QStringList _fileList,int i)
 {
-    return _pathList.at(i).split(' ').at(0);
+    return _fileList.at(i).split(' ').at(0);
 }
-void CutFileListOp::CutFileList_SetColumnFileCounter(QStringList *_pathList,int column,int counter)
+void CutFileListOp::CutFileList_SetColumnFileCounter(QStringList *_fileList,int column,int counter)
 {
-    if(!(_pathList->count()>=column))
+    if(!(_fileList->count()>=column))
         return;
-    QString tempStr = QString::number(counter) + ' ' + _pathList->at(column).split(' ').at(1);
-    _pathList->removeAt(column);
-    _pathList->insert(column,tempStr);
+    QString tempStr = QString::number(counter) + ' ' + _fileList->at(column).split(' ').at(1);
+    _fileList->removeAt(column);
+    _fileList->insert(column,tempStr);
 
 }
 

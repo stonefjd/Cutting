@@ -10,6 +10,7 @@ WindowCutting::WindowCutting(QWidget *parent) :
 
 //----CutFileOperator
     ui->dockWgtCutFile->setWindowTitle(tr("任务列表"));
+    ui->dockWgtCutFile->setMaximumWidth(200);
     cutFileList.CutFileList_WidgetInit(ui->tableWgtCutFile);
 
     //添加右键支持
@@ -93,7 +94,7 @@ void WindowCutting::keyPressEvent(QKeyEvent *event)
 //signals and slots
 void WindowCutting::on_actionSettingsParameter_triggered()
 {
-    this->settings.exec();
+//    this->settings.exec();
 }
 
 void WindowCutting::on_actionReset_triggered()
@@ -106,7 +107,7 @@ void WindowCutting::on_actionReset_triggered()
     msgBox.exec();
     if(msgBox.clickedButton()== btnYes)
     {
-        settings.resetSettingsData();
+//        settings.resetSettingsData();
         qDebug()<<"recover";
     }
     else if(msgBox.clickedButton()== btnNo)
@@ -143,7 +144,7 @@ void WindowCutting::on_pushButton_4_clicked()
 
 
 
-//CutFileOperator
+//--CutFileOperator
 void WindowCutting::on_btnFileAdd_clicked()
 {
     cutFileList.CutFileList_ChoseSingleFile();
@@ -164,8 +165,6 @@ void WindowCutting::on_actionImportCutFileList_triggered()
     cutFileList.CutFileList_ChoseList();
     cutFileList.CutFileList_Display(ui->tableWgtCutFile);
 }
-
-
 void WindowCutting::on_btnFileRmv_clicked()
 {
     cutFileList.CutFileList_RemoveFileFromList(ui->tableWgtCutFile);
