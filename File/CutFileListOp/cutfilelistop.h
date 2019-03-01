@@ -11,24 +11,32 @@
 #include <QMessageBox>
 #include <QLineEdit>
 #include <QSpinBox>
-#include <QtCharts/QLineSeries>
 #include <QPointF>
+#include <QXmlSimpleReader>
 
-using namespace QtCharts;
-struct cutFileNode_t
+struct lineData_t
 {
-    QString fName;
-    QString fPath;
-    QString fCnt;
-    cutFileNode_t *next;
+    int toolId;
+    int windowSN;
+    float cutDeep;
+    QList<QPointF> cutLine;
 };
+struct drillData_t
+{
+    int toolId;
+    int windowSN;
+    float drillDeep;
+    float drillAngle;
+    QPointF drillDot;
+};
+
 struct fileData_t
 {
     QString cutFileName;
     QString cutFilePath;
-    int cutTimes;
-    QList<QLineSeries> lines;
-    QList<QPointF> drillDot;
+    int cutCount;
+    QList<lineData_t> lineCluster;
+    QList<drillData_t> dotCluster;
 };
 
 class CutFileListOp : public QObject
@@ -43,25 +51,22 @@ public:
     void CutFileList_DownFileFromList(QTableWidget *_tableWidget);
     void CutFileList_ExportFileFromList(QTableWidget *_tableWidget);
 
-    QStringList CutFileList_GetListContent();
     QString CutFileList_GetListPath();
 
     void CutFileList_WidgetInit(QTableWidget *_tableWidget);
     void CutFileList_Display(QTableWidget *_tableWidget);
-    QStringList CutFileList_ViewOpenFile(QString _name,QString _filter,enum QFileDialog::FileMode _fileMode);
-    QString CutFileList_GetColumnFileName(QStringList _fileList,int i);
-    QString CutFileList_GetColumnFilePath(QStringList _fileList,int i);
-    QString CutFileList_GetColumnFileCounter(QStringList _fileList,int i);
-    void CutFileList_SetColumnFileCounter(QStringList *_fileList,int column,int counter);
 
 signals:
 
 public slots:
     void CutFileList_SpinBoxChg(int i);
 private:
-    QString filePath;
+    QString filePath;//特指列表文档的路径!
     QStringList filePathList;
     QList<fileData_t> fileVector;
+
+    QStringList CutFileList_ViewOpenFile(QString _name,QString _filter,enum QFileDialog::FileMode _fileMode);
+    void CutFileList_PrintVector(QList<fileData_t> _fileVector);
 };
 
 #endif // CUTFILELISTOP_H
