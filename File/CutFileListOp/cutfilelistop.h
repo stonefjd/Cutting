@@ -12,22 +12,36 @@
 #include <QLineEdit>
 #include <QSpinBox>
 #include <QPointF>
-#include <QXmlSimpleReader>
+#include <QDomElement>
+struct dotData_t
+{
+    int dotId;
+    float dotAngle;
+    QPointF dotOrg;
+};
 
 struct lineData_t
 {
-    int toolId;
-    int windowSN;
-    float cutDeep;
-    QList<QPointF> cutLine;
+    int toolId;//切割当前线条的刀ID
+    int lineId;//线条编号
+    int lineType;//当前线条类型：0 末尾抬刀 1 每点抬刀（当前样片用同一把冲时，所有冲的点也当作线条，只是这一类线条每一点下刀后都会抬刀）
+    int dotCount;//当前线条的点数量
+    float lineDeep;//当前线条刀深
+    QPointF toolOffset;//刀偏置
+    QList<dotData_t> dotCluster;//当前线条的点集合
 };
-struct drillData_t
+struct sampleData_t
 {
-    int toolId;
-    int windowSN;
-    float drillDeep;
-    float drillAngle;
-    QPointF drillDot;
+    int sampleId;//当前样片ID
+    int lineCount;//当前窗中线条数量
+    QList<lineData_t> lineCluster;//当前窗线条数据集
+};
+struct windowData_t
+{
+    int windowId;//当前窗ID
+    int sampleCount;//当前窗中的样片数量
+    float windowLength;//当前窗裁完后，调用该长度进行移动
+    QList<sampleData_t> sampleCluster;//当前窗的样片数据集
 };
 
 struct fileData_t
@@ -35,8 +49,8 @@ struct fileData_t
     QString cutFileName;
     QString cutFilePath;
     int cutCount;
-    QList<lineData_t> lineCluster;
-    QList<drillData_t> dotCluster;
+    int windowCount;//当前文档中窗数量
+    QList<windowData_t> windowCluster;//当前文档中的窗数据集
 };
 
 class CutFileListOp : public QObject
@@ -67,6 +81,7 @@ private:
 
     QStringList CutFileList_ViewOpenFile(QString _name,QString _filter,enum QFileDialog::FileMode _fileMode);
     void CutFileList_PrintVector(QList<fileData_t> _fileVector);
+    void CutFileList_LoadCutData(int _fIdx);
 };
 
 #endif // CUTFILELISTOP_H

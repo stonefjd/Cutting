@@ -145,9 +145,11 @@ void CutFileListOp::CutFileList_ChoseSingleFile()
             fileData.cutFilePath = fileinfo.filePath();
             fileData.cutCount = 1;
             fileVector.insert(fileVector.end(),fileData);
+            CutFileList_LoadCutData(fileVector.count()-1);
         }
     }
-    CutFileList_PrintVector(fileVector);
+//    CutFileList_PrintVector(fileVector);
+
 }
 //--2019.03.01导入文件列表
 void CutFileListOp::CutFileList_ChoseList()
@@ -176,7 +178,7 @@ void CutFileListOp::CutFileList_ChoseList()
         if(pathInFileList.split(' ').count()<2)
         {
             QMessageBox msgBox;
-            msgBox.setText(tr("列表内文件不存在，损坏或者路径被修改"));
+            msgBox.setText(tr("列表内有文件不存在，损坏或者路径被修改"));
             msgBox.exec();
             return;
         }
@@ -203,7 +205,11 @@ void CutFileListOp::CutFileList_ChoseList()
         //将文件特性加载入文件容器中
         fileVector.insert(fileVector.end(),fileData);
     }
-    CutFileList_PrintVector(fileVector);
+    file.close();
+    for(int i=0;i<fileVector.count();i++)
+    {
+        CutFileList_LoadCutData(i);
+    }
 }
 
 
@@ -223,7 +229,6 @@ void CutFileListOp::CutFileList_SpinBoxChg(int i)
     }
     int index = spinBox->property("index").toInt();
     fileVector[index].cutCount = i;
-    CutFileList_PrintVector(fileVector);
 }
 
 //--私有成员函数
@@ -254,4 +259,126 @@ void CutFileListOp::CutFileList_PrintVector(QList<fileData_t> _fileVector)
         qDebug()<<_fileVector.at(i).cutFilePath;
         qDebug()<<_fileVector.at(i).cutCount;
     }
+    qDebug()<<_fileVector[0].windowCluster[0].sampleCluster[0].lineCluster[0].dotCluster[0].dotId;
+    qDebug()<<_fileVector[0].windowCluster[0].sampleCluster[0].lineCluster[0].dotCluster[1].dotId;
+    qDebug()<<_fileVector[0].windowCluster[0].sampleCluster[0].lineCluster[0].dotCluster[2].dotId;
+    qDebug()<<_fileVector[0].windowCluster[0].sampleCluster[0].lineCluster[0].dotCluster[3].dotId;
+}
+//--2019.03.01 添加，载入XML裁切数据
+void CutFileListOp::CutFileList_LoadCutData(int _fIdx)
+{
+    int fIdx = _fIdx;
+    QFile file(fileVector[fIdx].cutFilePath);
+    if (!file.open(QFile::ReadOnly | QFile::Text))
+    {
+
+    }
+    QString errorStr;
+    int errorLine;
+    int errorColumn;
+    QDomDocument doc;
+    if (!doc.setContent(&file, false, &errorStr, &errorLine, &errorColumn))
+    {
+        qDebug()<<errorStr<<'\n'<<errorLine<<'\n'<<errorColumn;
+        return;
+    }
+    QDomElement root = doc.documentElement();//content
+    QDomNode node = root.firstChild().firstChild();
+
+
+    int wIdx = 0;
+    for(QDomNode w = node; !w.isNull(); w = w.nextSibling())
+    {
+        if(w.toElement().tagName()=="window")
+        {
+            windowData_t window;
+            int sIdx = 0;
+            fileVector[fIdx].windowCluster.append(window);
+            for(QDomNode s = w.firstChild();!s.isNull();s = s.nextSibling())
+            {
+                if(s.toElement().tagName() == "wId")
+                {
+                    fileVector[fIdx].windowCluster[wIdx].windowId = s.toElement().text().toInt();
+                }
+                else if(s.toElement().tagName() == "length")
+                {
+                    //过窗移动长度
+                    fileVector[fIdx].windowCluster[wIdx].windowLength = s.toElement().text().toFloat();
+                }
+                else if(s.toElement().tagName() == "sample")
+                {
+                    sampleData_t sample;
+                    int lIdx = 0;
+                    fileVector[fIdx].windowCluster[wIdx].sampleCluster.append(sample);
+                    for(QDomNode l = s.firstChild();!l.isNull();l = l.nextSibling())
+                    {
+                        if(l.toElement().tagName() == "sId")
+                        {
+                            fileVector[fIdx].windowCluster[wIdx].sampleCluster[sIdx].sampleId = l.toElement().text().toInt();
+                        }
+                        else if(l.toElement().tagName() == "line")
+                        {
+                            lineData_t line;
+                            int dIdx = 0;
+                            fileVector[fIdx].windowCluster[wIdx].sampleCluster[sIdx].lineCluster.append(line);
+                            for(QDomNode d = l.firstChild();!d.isNull();d=d.nextSibling())
+                            {
+
+                                if(d.toElement().tagName() == "lId")
+                                {
+                                    fileVector[fIdx].windowCluster[wIdx].sampleCluster[sIdx].lineCluster[lIdx].lineId = d.toElement().text().toInt();
+                                }
+                                else if(d.toElement().tagName() == "lType")
+                                {
+                                    fileVector[fIdx].windowCluster[wIdx].sampleCluster[sIdx].lineCluster[lIdx].lineType = d.toElement().text().toInt();
+                                }
+                                else if(d.toElement().tagName() == "toolId")
+                                {
+                                    fileVector[fIdx].windowCluster[wIdx].sampleCluster[sIdx].lineCluster[lIdx].toolId = d.toElement().text().toInt();
+                                }
+                                else if(d.toElement().tagName() == "height")
+                                {
+                                    fileVector[fIdx].windowCluster[wIdx].sampleCluster[sIdx].lineCluster[lIdx].lineDeep = d.toElement().text().toFloat();
+                                }
+                                else if(d.toElement().tagName() == "dot")
+                                {
+                                    dotData_t dot;
+                                    fileVector[fIdx].windowCluster[wIdx].sampleCluster[sIdx].lineCluster[lIdx].dotCluster.append(dot);
+                                    for(QDomNode min = d.firstChild();!min.isNull();min = min.nextSibling())
+                                    {
+                                        if(min.toElement().tagName() == "dId")
+                                        {
+                                            fileVector[fIdx].windowCluster[wIdx].sampleCluster[sIdx].lineCluster[lIdx].dotCluster[dIdx].dotId = min.toElement().text().toInt();
+                                        }
+                                        else if(min.toElement().tagName() == "x")
+                                        {
+                                            fileVector[fIdx].windowCluster[wIdx].sampleCluster[sIdx].lineCluster[lIdx].dotCluster[dIdx].dotOrg.setX(min.toElement().text().toDouble());
+                                        }
+                                        else if(min.toElement().tagName() == "y")
+                                        {
+                                            fileVector[fIdx].windowCluster[wIdx].sampleCluster[sIdx].lineCluster[lIdx].dotCluster[dIdx].dotOrg.setY(min.toElement().text().toDouble());
+                                        }
+                                        else if(min.toElement().tagName() == "angle")
+                                        {
+                                            fileVector[fIdx].windowCluster[wIdx].sampleCluster[sIdx].lineCluster[lIdx].dotCluster[dIdx].dotAngle = min.toElement().text().toFloat();
+                                        }
+                                    }
+                                    dIdx++;
+                                }
+                            }
+                            fileVector[fIdx].windowCluster[wIdx].sampleCluster[sIdx].lineCluster[lIdx].dotCount = dIdx;
+                            lIdx++;
+                        }
+                    }
+                    fileVector[fIdx].windowCluster[wIdx].sampleCluster[sIdx].lineCount =lIdx;
+                    sIdx++;
+                }
+            }
+            fileVector[fIdx].windowCluster[wIdx].sampleCount = sIdx;
+            wIdx++;
+        }
+    }
+    fileVector[fIdx].windowCount = wIdx;
+
+    file.close();
 }

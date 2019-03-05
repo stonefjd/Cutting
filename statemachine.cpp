@@ -17,7 +17,6 @@ void StateMachine::MainStateRunning()
             this->mStateMain = MWait;//dirction state
             LeaveStateCallBack_MPowerOn();
         }
-
     }
 }
 
