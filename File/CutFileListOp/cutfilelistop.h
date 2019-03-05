@@ -68,7 +68,7 @@ public:
     QString CutFileList_GetListPath();
 
     void CutFileList_WidgetInit(QTableWidget *_tableWidget);
-    void CutFileList_Display(QTableWidget *_tableWidget);
+    void CutFileList_DisplayList(QTableWidget *_tableWidget);
 
 signals:
 

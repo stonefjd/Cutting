@@ -10,6 +10,8 @@
 #include <QListWidgetItem>
 #include <QHeaderView>
 #include <QFile>
+#include <QFrame>
+#include <QPainter>
 
 #include "File/Settings/settings.h"
 #include "File/CutFileListOp/cutfilelistop.h"
@@ -63,11 +65,13 @@ private slots:
 
 signals:
 
+protected:
+    bool eventFilter(QObject *watched, QEvent *e);
 private:
     Ui::WindowCutting *ui;
 //    StateMachine runStateMachine;
     Machine mMachine;
-//    Settings    settings;
+    Settings    settings;
     IniOp   iniOp;
     CutFileListOp   cutFileList;
 };

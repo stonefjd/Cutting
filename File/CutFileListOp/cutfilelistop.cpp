@@ -10,10 +10,10 @@ void CutFileListOp::CutFileList_WidgetInit(QTableWidget *_tableWidget)
     _tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
     //设置选择内容为整行
     _tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
-    CutFileList_Display(_tableWidget);
+    CutFileList_DisplayList(_tableWidget);
 }
 //--2019.03.01 修改FileVector数据结构,修改最后一个文件移除后的逻辑
-void CutFileListOp::CutFileList_Display(QTableWidget *_tableWidget)
+void CutFileListOp::CutFileList_DisplayList(QTableWidget *_tableWidget)
 {
     if(!fileVector.isEmpty())
     {

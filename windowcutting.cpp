@@ -13,9 +13,22 @@ WindowCutting::WindowCutting(QWidget *parent) :
     ui->dockWgtCutFile->setMaximumWidth(200);
     cutFileList.CutFileList_WidgetInit(ui->tableWgtCutFile);
 
+    ui->paintFrame->installEventFilter(this);
+//----
     //添加右键支持
     ui->tableWgtCutFile->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->tableWgtCutFile,SIGNAL(customContextMenuRequested(const QPoint&)),this,SLOT(CutFileContextMenuRKey(const QPoint&)));
+}
+bool WindowCutting::eventFilter(QObject *watched, QEvent *e)
+{
+    if(watched == ui->paintFrame && e->type() == QEvent::Paint)
+    {
+        QPainter painter(ui->paintFrame);
+        QPen pen(QColor(50,212,50),0);
+        painter.setPen(pen);
+        painter.drawLine(QPointF(0,0),QPointF(100,200));
+    }
+    return true;
 }
 
 WindowCutting::~WindowCutting()
@@ -119,14 +132,14 @@ void WindowCutting::on_actionReset_triggered()
 //----------------TEST-----------------
 void WindowCutting::on_pushButton_clicked()
 {
-    GT_SetDoBit(MC_GPO,0,0);
+//    GT_SetDoBit(MC_GPO,0,0);
 }
 
 
 void WindowCutting::on_pushButton_2_clicked()
 {
 //    this->mMachine.mFan_1.SetState_FanStop();
-    GT_SetDoBit(MC_GPO,0,1);
+//    GT_SetDoBit(MC_GPO,0,1);
 }
 
 void WindowCutting::on_pushButton_3_clicked()
@@ -148,37 +161,37 @@ void WindowCutting::on_pushButton_4_clicked()
 void WindowCutting::on_btnFileAdd_clicked()
 {
     cutFileList.CutFileList_ChoseSingleFile();
-    cutFileList.CutFileList_Display(ui->tableWgtCutFile);
+    cutFileList.CutFileList_DisplayList(ui->tableWgtCutFile);
 }
 void WindowCutting::on_btnFileImport_clicked()
 {
     cutFileList.CutFileList_ChoseList();
-    cutFileList.CutFileList_Display(ui->tableWgtCutFile);
+    cutFileList.CutFileList_DisplayList(ui->tableWgtCutFile);
 }
 void WindowCutting::on_actionImportCutFile_triggered()
 {
     cutFileList.CutFileList_ChoseSingleFile();
-    cutFileList.CutFileList_Display(ui->tableWgtCutFile);
+    cutFileList.CutFileList_DisplayList(ui->tableWgtCutFile);
 }
 void WindowCutting::on_actionImportCutFileList_triggered()
 {
     cutFileList.CutFileList_ChoseList();
-    cutFileList.CutFileList_Display(ui->tableWgtCutFile);
+    cutFileList.CutFileList_DisplayList(ui->tableWgtCutFile);
 }
 void WindowCutting::on_btnFileRmv_clicked()
 {
     cutFileList.CutFileList_RemoveFileFromList(ui->tableWgtCutFile);
-    cutFileList.CutFileList_Display(ui->tableWgtCutFile);
+    cutFileList.CutFileList_DisplayList(ui->tableWgtCutFile);
 }
 void WindowCutting::on_btnFileUp_clicked()
 {
     cutFileList.CutFileList_UpFileFromList(ui->tableWgtCutFile);
-    cutFileList.CutFileList_Display(ui->tableWgtCutFile);
+    cutFileList.CutFileList_DisplayList(ui->tableWgtCutFile);
 }
 void WindowCutting::on_btnFileDown_clicked()
 {
     cutFileList.CutFileList_DownFileFromList(ui->tableWgtCutFile);
-    cutFileList.CutFileList_Display(ui->tableWgtCutFile);
+    cutFileList.CutFileList_DisplayList(ui->tableWgtCutFile);
 }
 void WindowCutting::on_btnFileExport_clicked()
 {
