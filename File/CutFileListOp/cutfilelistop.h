@@ -13,6 +13,8 @@
 #include <QSpinBox>
 #include <QPointF>
 #include <QDomElement>
+#include <QFrame>
+#include <QPainter>
 struct dotData_t
 {
     int dotId;
@@ -69,6 +71,7 @@ public:
 
     void CutFileList_WidgetInit(QTableWidget *_tableWidget);
     void CutFileList_DisplayList(QTableWidget *_tableWidget);
+    void CutFileList_DrawFileData(QFrame *_ptFrame);
 
 signals:
 

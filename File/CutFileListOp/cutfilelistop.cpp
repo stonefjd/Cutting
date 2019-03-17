@@ -218,6 +218,41 @@ QString CutFileListOp::CutFileList_GetListPath()
     return filePath;
 }
 
+void CutFileListOp::CutFileList_DrawFileData(QFrame *_ptFrame)
+{
+    QPainter painter(_ptFrame);
+    QPen pen(QColor(100,212,100),0);
+
+    painter.setViewport(0,0,150,150);
+    painter.setWindow(0,0,150,150);
+    painter.setPen(pen);
+    if(!fileVector.isEmpty())
+    {
+        for(int i= 0;i<fileVector.at(0).windowCluster.count();i++)
+        {
+            for(int j = 0;j<fileVector.at(0).windowCluster.at(i).sampleCluster.count();j++)
+            {
+                for(int k = 0;k<fileVector.at(0).windowCluster.at(i).sampleCluster.at(j).lineCluster.count();k++)
+                {
+                    for(int l = 0;l<fileVector.at(0).windowCluster.at(i).sampleCluster.at(j).lineCluster.at(k).dotCluster.count();l++)
+                    {
+                        if(fileVector.at(0).windowCluster.at(i).sampleCluster.at(j).lineCluster.at(k).lineType==0 && l >=1)
+                        {
+                            painter.drawLine(fileVector.at(0).windowCluster.at(i).sampleCluster.at(j).lineCluster.at(k).dotCluster.at(l-1).dotOrg,
+                                             fileVector.at(0).windowCluster.at(i).sampleCluster.at(j).lineCluster.at(k).dotCluster.at(l).dotOrg);
+                        }
+                        else if(fileVector.at(0).windowCluster.at(i).sampleCluster.at(j).lineCluster.at(k).lineType==1)
+                        {
+                            painter.drawEllipse(fileVector.at(0).windowCluster.at(i).sampleCluster.at(j).lineCluster.at(k).dotCluster.at(l).dotOrg,
+                                                2,2);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 //--槽函数
 //2019.03.01修改内容
 void CutFileListOp::CutFileList_SpinBoxChg(int i)

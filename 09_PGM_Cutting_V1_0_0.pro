@@ -4,8 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui\
-            xml\
+QT       += core gui xml sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -27,7 +26,6 @@ CONFIG += c++11
 TRANSLATIONS += trans.ts
 SOURCES += \
     main.cpp \
-    statemachine.cpp \
     windowcutting.cpp \
     PhysicalLayer/hardwareadaptor.cpp \
     Machine/machine.cpp \
@@ -36,10 +34,10 @@ SOURCES += \
     Machine/Desktop/desktop.cpp \
     File/Settings/settings.cpp \
     File/CutFileListOp/cutfilelistop.cpp \
-    File/IniOp/iniop.cpp
+    File/IniOp/iniop.cpp \
+    User/userlog.cpp
 
 HEADERS += \
-    statemachine.h \
     windowcutting.h \
     PhysicalLayer/hardwareadaptor.h \
     PhysicalLayer/gts.h \
@@ -49,12 +47,14 @@ HEADERS += \
     Machine/Desktop/desktop.h \
     File/Settings/settings.h \
     File/CutFileListOp/cutfilelistop.h \
-    File/IniOp/iniop.h
+    File/IniOp/iniop.h \
+    User/userlog.h
 
 FORMS += \
         windowcutting.ui \
     File/Settings/settings.ui \
-    File/IniOp/iniop.ui
+    File/IniOp/iniop.ui \
+    User/userlog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

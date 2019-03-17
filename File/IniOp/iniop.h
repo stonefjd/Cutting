@@ -41,7 +41,7 @@ struct FanSet_T
     bool ZoneEn;
     bool FreqChgEn;
     bool InhaleEn;
-    bool BlowEN;
+    bool BlowEn;
     int InhaleFreq;
     int BlowFreq;
 };
@@ -58,17 +58,17 @@ struct SpeedSet_T
 struct TimeSet_T
 {
     int SwagingTime;
-    int BlowTimg;
+    int BlowTime;
     int InhaleDelayTime;
 };
 struct AlignToolSet_T
 {
-    bool En;
-    double Z1;
-    double AbsX;
-    double AbsY;
-    double MaxZ;
-    double ZCal;
+    bool AlignEn;
+    double AlignZ;
+    double AlignAbsX;
+    double AlignAbsY;
+    double AlignMaxZ;
+    double AlignZCalib;
 };
 struct Head1Set_T
 {
@@ -125,17 +125,17 @@ public:
     QStringList iniFileKeyList;
 
 
-    void IniOp_FromIniToMap(QMap<QString, QString> *_qMap,QSettings _qSetting);
+    void IniOp_FromIniToMap(QMap<QString, QString> *_qMap,QSettings *_qSetting);
     void IniOp_FromMapToIni(QMap<QString, QString> _qMap,QSettings *_qSetting);
     void IniOp_FromMapToLbl(QMap<QString, QString> _qMap);
     void IniOp_FromLblToMap(QMap<QString, QString> *_qMap,QSettings *_qSetting);
 
     InitItem_T initItem;
 
-    void IniOp_ReadFromIniFile(InitItem_T *_obj,QSettings settings);
+    void IniOp_ReadFromIniFile(InitItem_T *_obj,QSettings *settings);
     void IniOp_WriteToIniFile(InitItem_T _obj,QSettings *settings);
-    void IniOp_ReadFromUi(InitItem_T *_obj);
-    void IniOp_DisplayToUi(InitItem_T _obj);
+    void IniOp_ReadFromLable(InitItem_T *_obj);
+    void IniOp_WriteToLable(InitItem_T _obj);
     ~IniOp();
 
 private:

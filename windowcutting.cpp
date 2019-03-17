@@ -7,6 +7,11 @@ WindowCutting::WindowCutting(QWidget *parent) :
     ui(new Ui::WindowCutting)
 {
     ui->setupUi(this);
+//----disable the ui
+//    ui->menuSettings->setDisabled(true);
+//    ui->menuViewItem->setDisabled(true);
+//    ui->menuHelpItem->setDisabled(true);
+
 
 //----CutFileOperator
     ui->dockWgtCutFile->setWindowTitle(tr("任务列表"));
@@ -14,19 +19,16 @@ WindowCutting::WindowCutting(QWidget *parent) :
     cutFileList.CutFileList_WidgetInit(ui->tableWgtCutFile);
 
     ui->paintFrame->installEventFilter(this);
-//----
-    //添加右键支持
-    ui->tableWgtCutFile->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(ui->tableWgtCutFile,SIGNAL(customContextMenuRequested(const QPoint&)),this,SLOT(CutFileContextMenuRKey(const QPoint&)));
+
+//----UserLog
+    this->userLog_PermissionConfirm();
+//    user.exec();
 }
 bool WindowCutting::eventFilter(QObject *watched, QEvent *e)
 {
     if(watched == ui->paintFrame && e->type() == QEvent::Paint)
     {
-        QPainter painter(ui->paintFrame);
-        QPen pen(QColor(50,212,50),0);
-        painter.setPen(pen);
-        painter.drawLine(QPointF(0,0),QPointF(100,200));
+        cutFileList.CutFileList_DrawFileData(ui->paintFrame);
     }
     return true;
 }
@@ -35,31 +37,28 @@ WindowCutting::~WindowCutting()
 {
     delete ui;
 }
-
-
-void WindowCutting::CutFileAddList(QString _name,QString _path,unsigned int _counter)
+//----protected function
+void WindowCutting::userLog_PermissionConfirm()
 {
-    QTableWidgetItem* item = new QTableWidgetItem();
-    item->setData(Qt::DisplayRole,_name);
-    item->setData(Qt::UserRole+1,_path);
-    item->setData(Qt::UserRole+2,_counter);
-//    ui->tableWgtCutFile->add;
+    QList<QWidget*> actionList;
+    actionList.append(ui->mainToolBar->findChildren<QWidget*>());
+    actionList.append(ui->menuBar->findChildren<QWidget*>());
+    if(user == nullptr)
+    {
+        for(int i = 0; i < actionList.size(); i++)
+        {
+            actionList.at(i)->setDisabled(true);
+        }
+        ui->menuUser->setEnabled(true);
+    }
+    else
+    {
+        for(int i = 0; i < actionList.size(); i++)
+        {
+            actionList.at(i)->setEnabled(true);
+        }
+    }
 }
-void WindowCutting::CutFileContextMenuRKey(const QPoint& pt)
-{
-    //当选中项
-    QTableWidgetItem* selected = ui->tableWgtCutFile->currentItem();
-
-    QMenu menu;
-    menu.addAction(ui->actionCutFileAdd);
-    menu.addAction(ui->actionCutFileRmv);
-    menu.addAction(ui->actionCutFileUp);
-    menu.addAction(ui->actionCutFileDown);
-    qDebug()<<pt;
-    //显示菜单
-    menu.exec(ui->tableWgtCutFile->mapToGlobal(pt));
-}
-
 
 //----override----//
 void WindowCutting::keyPressEvent(QKeyEvent *event)
@@ -104,7 +103,7 @@ void WindowCutting::keyPressEvent(QKeyEvent *event)
         }
     }
 }
-//signals and slots
+//-------------------signals and slots--------------------------
 void WindowCutting::on_actionSettingsParameter_triggered()
 {
 //    this->settings.exec();
@@ -129,33 +128,25 @@ void WindowCutting::on_actionReset_triggered()
     }
 }
 
-//----------------TEST-----------------
+//--only for TEST
 void WindowCutting::on_pushButton_clicked()
 {
 //    GT_SetDoBit(MC_GPO,0,0);
+    this->update();
 }
-
-
 void WindowCutting::on_pushButton_2_clicked()
 {
 //    this->mMachine.mFan_1.SetState_FanStop();
 //    GT_SetDoBit(MC_GPO,0,1);
 }
-
 void WindowCutting::on_pushButton_3_clicked()
 {
     this->mMachine.mFan_1.SetState_FanWindIn();
 }
-
 void WindowCutting::on_pushButton_4_clicked()
 {
     this->mMachine.mFan_1.SetState_FanWindOut();
 }
-
-
-
-
-
 
 //--CutFileOperator
 void WindowCutting::on_btnFileAdd_clicked()
@@ -198,3 +189,37 @@ void WindowCutting::on_btnFileExport_clicked()
     cutFileList.CutFileList_ExportFileFromList(ui->tableWgtCutFile);
 }
 
+//--userLog
+void WindowCutting::on_actionLogOn_triggered()
+{
+    if(user == nullptr)
+    {
+        user = new UserLog;
+        if(user->userIsChecked())
+        {
+            ui->actionLogOn->setText(tr("退出"));
+        }
+        else
+        {
+            delete user;
+            user = nullptr;
+        }
+    }
+    else if(user != nullptr)
+    {
+        QMessageBox msgBox;
+        msgBox.setText(tr("是否确认退出"));
+        QPushButton *btnYes = msgBox.addButton(tr("确认"), QMessageBox::YesRole);
+//        QPushButton *btnNo = msgBox.addButton(tr("取消"), QMessageBox::NoRole);
+        msgBox.addButton(tr("取消"), QMessageBox::NoRole);
+
+        msgBox.exec();
+        if(msgBox.clickedButton()== btnYes)
+        {
+            delete user;
+            user = nullptr;
+            ui->actionLogOn->setText(tr("登录"));
+        }
+    }
+    this->userLog_PermissionConfirm();
+}
