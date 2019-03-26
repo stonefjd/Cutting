@@ -13,13 +13,13 @@
 #include <QFrame>
 #include <QPainter>
 
-#include "File/Settings/settings.h"
+//#include "File/Settings/settings.h"
 #include "File/CutFileListOp/cutfilelistop.h"
 #include "File/IniOp/iniop.h"
 #include "Machine/machine.h"
 #include "PhysicalLayer/gts.h"
 #include "User/userlog.h"
-
+#include "Machine/Knife/sdknifeconfig.h"
 namespace Ui {
 class WindowCutting;
 }
@@ -60,13 +60,13 @@ protected:
     bool eventFilter(QObject *watched, QEvent *e);
     void userLog_PermissionConfirm();
 private:
-    Ui::WindowCutting *ui;
-    StateMachine runStateMachine;
-    Machine mMachine;
-    UserLog *user;
-    Settings    settings;
-    IniOp   iniOp;
-    CutFileListOp   cutFileList;
+    Ui::WindowCutting   *ui;
+    Machine             mMachine;
+    UserLog             *user;
+//    Settings    settings;
+//    IniOp               iniOp;
+    CutFileListOp       cutFileList;
+    SDKnifeConfig       sdKnifeConfigLib;
 };
 
 #endif // WINDOWCUTTING_H

@@ -30,12 +30,15 @@ SOURCES += \
     PhysicalLayer/hardwareadaptor.cpp \
     Machine/machine.cpp \
     Machine/Fan/fan.cpp \
-    Machine/KnifeTool/knifetool.cpp \
-    Machine/Desktop/desktop.cpp \
-    File/Settings/settings.cpp \
     File/CutFileListOp/cutfilelistop.cpp \
     File/IniOp/iniop.cpp \
-    User/userlog.cpp
+    User/userlog.cpp \
+    Machine/Knife/sdknife.cpp \
+    Machine/Knife/sdknifeconfig.cpp \
+    Machine/Knife/sdapron.cpp \
+    Machine/Knife/sdmachinehead.cpp \
+    Machine/Knife/sdmachine.cpp \
+    Machine/Knife/sdcuttoollib.cpp
 
 HEADERS += \
     windowcutting.h \
@@ -43,12 +46,16 @@ HEADERS += \
     PhysicalLayer/gts.h \
     Machine/machine.h \
     Machine/Fan/fan.h \
-    Machine/KnifeTool/knifetool.h \
-    Machine/Desktop/desktop.h \
-    File/Settings/settings.h \
     File/CutFileListOp/cutfilelistop.h \
     File/IniOp/iniop.h \
-    User/userlog.h
+    User/userlog.h \
+    Machine/Knife/Symbol.h \
+    Machine/Knife/sdknife.h \
+    Machine/Knife/sdknifeconfig.h \
+    Machine/Knife/sdapron.h \
+    Machine/Knife/sdmachinehead.h \
+    Machine/Knife/sdmachine.h \
+    Machine/Knife/sdcuttoollib.h
 
 FORMS += \
         windowcutting.ui \
@@ -61,8 +68,10 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/PhysicalLayer/ -lgts
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/PhysicalLayer/ -lgtsd
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/PhysicalLayer/ -lgts \
+                                                -L$$PWD/Math/Release/ -lTKGeomMath
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/PhysicalLayer/ -lgts \
+                                                -L$$PWD/Math/Debug/ -lTKGeomMath
 else:unix: LIBS += -L$$PWD/PhysicalLayer/ -lgts
 
 INCLUDEPATH += $$PWD/PhysicalLayer

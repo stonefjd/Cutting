@@ -10,17 +10,12 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
-#include <Machine/KnifeTool/knifetool.h>
-#include <Machine/Desktop/desktop.h>
+
 #include <Machine/Fan/fan.h>
 
 struct SettingsCfg_T
 {
-    LaserAbsOffset_T laserAbs;
-    DesktopHOffset_T desktopH;
-    DesktopSizeCut_T desktopSizeCut;
-    ToolSeatOffset_T toolSeat[TOOLNUM];
-    ToolSpeed_T toolSpeed;
+
     FanSpeed_T fanSpeed;
 };
 

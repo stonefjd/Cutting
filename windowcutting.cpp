@@ -8,9 +8,9 @@ WindowCutting::WindowCutting(QWidget *parent) :
 {
     ui->setupUi(this);
 //----disable the ui
-//    ui->menuSettings->setDisabled(true);
-//    ui->menuViewItem->setDisabled(true);
-//    ui->menuHelpItem->setDisabled(true);
+    ui->menuSettings->setDisabled(true);
+    ui->menuViewItem->setDisabled(true);
+    ui->menuHelpItem->setDisabled(true);
 
 
 //----CutFileOperator
@@ -19,8 +19,10 @@ WindowCutting::WindowCutting(QWidget *parent) :
     cutFileList.CutFileList_WidgetInit(ui->tableWgtCutFile);
 
     ui->paintFrame->installEventFilter(this);
-
+//----knifeConfig
+    sdKnifeConfigLib.ReadConfigFile();
 //----UserLog
+    user = nullptr;
     this->userLog_PermissionConfirm();
 //    user.exec();
 }
