@@ -20,7 +20,7 @@ WindowCutting::WindowCutting(QWidget *parent) :
 
     ui->paintFrame->installEventFilter(this);
 //----knifeConfig
-    sdKnifeConfigLib.ReadConfigFile();
+
 //----UserLog
     user = nullptr;
     this->userLog_PermissionConfirm();

@@ -38,7 +38,8 @@ SOURCES += \
     Machine/Knife/sdapron.cpp \
     Machine/Knife/sdmachinehead.cpp \
     Machine/Knife/sdmachine.cpp \
-    Machine/Knife/sdcuttoollib.cpp
+    Machine/Knife/sdcuttoollib.cpp \
+    Machine/Limit/limitswitch.cpp
 
 HEADERS += \
     windowcutting.h \
@@ -55,7 +56,8 @@ HEADERS += \
     Machine/Knife/sdapron.h \
     Machine/Knife/sdmachinehead.h \
     Machine/Knife/sdmachine.h \
-    Machine/Knife/sdcuttoollib.h
+    Machine/Knife/sdcuttoollib.h \
+    Machine/Limit/limitswitch.h
 
 FORMS += \
         windowcutting.ui \

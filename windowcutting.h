@@ -19,7 +19,6 @@
 #include "Machine/machine.h"
 #include "PhysicalLayer/gts.h"
 #include "User/userlog.h"
-#include "Machine/Knife/sdknifeconfig.h"
 namespace Ui {
 class WindowCutting;
 }
@@ -66,7 +65,6 @@ private:
 //    Settings    settings;
 //    IniOp               iniOp;
     CutFileListOp       cutFileList;
-    SDKnifeConfig       sdKnifeConfigLib;
 };
 
 #endif // WINDOWCUTTING_H
