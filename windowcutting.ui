@@ -20,7 +20,7 @@
       <x>560</x>
       <y>40</y>
       <width>77</width>
-      <height>112</height>
+      <height>141</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -49,6 +49,13 @@
       <widget class="QPushButton" name="pushButton_4">
        <property name="text">
         <string>NEG_MOV</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="push_Initial">
+       <property name="text">
+        <string>INIT</string>
        </property>
       </widget>
      </item>
