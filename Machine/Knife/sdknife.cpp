@@ -1,6 +1,6 @@
 ﻿#include "sdknife.h"
 
-SDKnife::SDKnife(QObject *parent) : QObject(parent)
+SDKnife::SDKnife(QWidget *parent) : QWidget(parent)
 {
     Free();
 }
@@ -255,6 +255,27 @@ bool SDKnife::SavePro(QDataStream *pFile)
 }
 int SDKnife::GetPrivateProfileString(QString sSect,QString sKey,QString sDefault,QString *szBuf,QString sConfigPath)
 {
+    QFile file(sConfigPath);
+    if(!file.exists())
+    {
+        QMessageBox::information(this,QObject::tr("提示"),QObject::tr("初始化配置文件不存在"),QObject::tr("确定"));//setText(QObject::tr("软件配置文件不存在，以默认文件进行创建"))
+        return false;
+    }
+    else
+    {
+        QSettings settingsObj(sConfigPath,QSettings::IniFormat);
+
+        settingsObj.beginGroup(sSect);
+        QString tpstr= (settingsObj.value(sKey)).toString();
+        if(tpstr == nullptr)
+        {
+            QStringList tpstrl = (settingsObj.value(sKey)).toStringList();
+            tpstr = tpstrl.join(',');
+        }
+        *szBuf = tpstr;
+        settingsObj.endGroup();
+    }
+
     return true;
 }
 bool SDKnife::ReadEx(QString sConfigPath,QString sSect)
@@ -266,7 +287,7 @@ bool SDKnife::ReadEx(QString sConfigPath,QString sSect)
     QString sInfo = "";
     QString sDefault = "";
 
-    QString *szBuf = nullptr;
+    QString *szBuf = new QString;
 
     int nRet = 0;
 

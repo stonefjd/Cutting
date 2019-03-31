@@ -102,7 +102,6 @@ void SDMachineHead::InitApron()
 {
     FreeAprons();
 
-    //AddApronIndex(0,TOOLAPRON_CMODE_PEN);
     AddApronIndex(0,TOOLAPRON_CMODE_ROLL);
     AddApronIndex(1,TOOLAPRON_CMODE_RPUNCH);
     AddApronIndex(2,TOOLAPRON_CMODE_VPUNCH);

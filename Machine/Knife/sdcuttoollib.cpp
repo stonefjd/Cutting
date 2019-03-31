@@ -399,7 +399,7 @@ bool SDCutTool::Save(QDataStream *pFile)
     return true;
 }
 
-SDCutToolLib::SDCutToolLib(QObject *parent) : QObject(parent)
+SDCutToolLib::SDCutToolLib(QWidget *parent) : QWidget(parent)
 {
 
 }
@@ -608,8 +608,8 @@ void SDCutToolLib::InitDefaultCutToolLib()
     //测试
     int nClr = 0xFFFFFF;
 
-    SDCutTool* pCutTool = nullptr;
-    SDKnife* pKnife = nullptr;
+    SDCutTool* pCutTool = new SDCutTool;
+    SDKnife* pKnife = new SDKnife;
 
     //PEN
     pCutTool = new SDCutTool(CUTTINGTOOL_PEN);
@@ -736,15 +736,30 @@ void SDCutToolLib::InitDefaultCutToolLib()
 }
 int SDCutToolLib::GetPrivateProfileString(QString strSect,QString strKey,QString strDefault,QString *szBuf,QString strConfigPath)
 {
-
-    QSettings settingsObj(strConfigPath,QSettings::IniFormat);
     QFile file(strConfigPath);
     if(!file.exists())
     {
-//        QMessageBox::information(this,QObject::tr("提示"),QObject::tr("参数配置缺失，\n重新初始化文件设置"),QObject::tr("确定"));//setText(QObject::tr("软件配置文件不存在，以默认文件进行创建"))
+        QMessageBox::information(this,QObject::tr("提示"),QObject::tr("初始化配置文件不存在"),QObject::tr("确定"));//setText(QObject::tr("软件配置文件不存在，以默认文件进行创建"))
+        return false;
     }
-    return 0;
+    else
+    {
+        QSettings settingsObj(strConfigPath,QSettings::IniFormat);
+
+        settingsObj.beginGroup(strSect);
+        QString tpstr= (settingsObj.value(strKey)).toString();
+        if(tpstr == nullptr)
+        {
+            QStringList tpstrl = (settingsObj.value(strKey)).toStringList();
+            tpstr = tpstrl.join(',');
+        }
+        *szBuf = tpstr;
+        settingsObj.endGroup();
+    }
+
+    return true;
 }
+//checked OK by Stone
 bool SDCutToolLib::ReadCutToolLib(QString sLocalDir)
 {
     //释放内存
@@ -752,7 +767,7 @@ bool SDCutToolLib::ReadCutToolLib(QString sLocalDir)
 
     //方案2 ini格式
     QString strConfigPath = sLocalDir;
-    strConfigPath += ("\\Settings\\KnifeToolLib.ini");//KnifeToolLib.ini
+    strConfigPath += ("Settings\\KnifeToolLib.ini");//KnifeToolLib.ini
 
     QString strSect = ("");
     QString strKey = ("");
@@ -760,7 +775,7 @@ bool SDCutToolLib::ReadCutToolLib(QString sLocalDir)
     QString strDefault = ("");
     QString sInfo = "";
 
-    QString *szBuf = nullptr;
+    QString *szBuf = new QString;
 
     //刀具大类信息
     QList<QString> vCutToolIdArray;
@@ -771,13 +786,13 @@ bool SDCutToolLib::ReadCutToolLib(QString sLocalDir)
     if (nRet > 0)
     {
         sInfo = *szBuf;
-        //SDString::Splitstring(sInfo,',',vCutToolIdArray);
         vCutToolIdArray = sInfo.split(',');
     }
     else
     {
         //return false;
     }
+
     QString strTemp = ("");
     //读取刀具大类
     for(int i = 0; i < vCutToolIdArray.size(); i++)
@@ -787,7 +802,6 @@ bool SDCutToolLib::ReadCutToolLib(QString sLocalDir)
         short nCutToolId = vCutToolIdArray[i].toShort();
 
         strSect = ("CuttingTool");
-        //strTemp.Format(("%hd"),nCutToolId);
         strTemp = QString::number(nCutToolId);
         strSect += strTemp;
 
@@ -851,7 +865,6 @@ bool SDCutToolLib::ReadCutToolLib(QString sLocalDir)
         if (nRet > 0)
         {
             sInfo = *szBuf;
-            //SDString::Splitstring(sInfo,',',vKnifeSpArray);
             vKnifeSpArray = sInfo.split(',');
         }
 
@@ -868,7 +881,7 @@ bool SDCutToolLib::ReadCutToolLib(QString sLocalDir)
             sKnifeSect += pKnife->GetGuidString();
 
 
-            pKnife->ReadEx(sConfigPath,sKnifeSect);
+            pKnife->ReadEx(sConfigPath,sKnifeSect);//待修改确认
 
             pCutTool->AddKnifePro(pKnife);
         }
@@ -886,7 +899,7 @@ bool SDCutToolLib::ReadCutToolLib(QString sLocalDir)
     {
         SDCutTool* pNullCutTool = new SDCutTool(CUTTINGTOOL_NULL);
 
-        QRgb nClr = qRgb(255,255,255);
+        int nClr = 255;
         SDKnife* pNullKnife = pNullCutTool->NewKnife(TOOLAPRON_CMODE_NULL,nClr,5,30,0);
         this->AddCutTool(pNullCutTool);
     }

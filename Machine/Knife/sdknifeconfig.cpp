@@ -1,6 +1,6 @@
 ﻿#include "sdknifeconfig.h"
 
-SDKnifeConfig::SDKnifeConfig(QObject *parent) : QObject(parent)
+SDKnifeConfig::SDKnifeConfig(QWidget *parent) : QWidget(parent)
 {
     m_sLocalDir = "";
     m_dbMaterialThick = 30;
@@ -34,26 +34,26 @@ bool SDKnifeConfig::InitDefaultKnifeLib()
 
 bool SDKnifeConfig::ReadConfigFile()
 {
+    //checked OK by Stone
     if (!m_stCutToolLib.ReadCutToolLib(m_sLocalDir))
     {
         return false;
     }
+    //checked OK by Stone
+    if (!ReadMachineInfo())
+        return false;
 
-//    if (!ReadMachineInfo())
-//        return false;
+    if (!ReadKnifeLib())
+        return false;
 
-//    if (!ReadKnifeLib())
-//        return false;
-
-//    //默认切割参数
-//    ReadCutInfo();
+    //默认切割参数
+    //ReadCutInfo();
 
 //    m_stKPDesignLib.Read(); //刀具切割参数方案库
 
 //    //刀具和刀座的匹配性检测
 //    CheckKnifeConfig();
 
-//    //test
     return true;
 }
 bool SDKnifeConfig::ReadKnifeLib()
@@ -61,22 +61,23 @@ bool SDKnifeConfig::ReadKnifeLib()
     FreeKnifes();
 
     QString strConfigPath = m_sLocalDir;
-    strConfigPath += ("\\TooSet\\CutterSet.ini");
+    strConfigPath += ("Settings\\CutterSet.ini");
 
     QString strSect = ("CutTool");
     QString strKey = ("KnifeGuids");
 
-    QString *pData = nullptr;
+    QString *pData = new QString;
 
     QString  strDefault = ("");
     int nRet = GetPrivateProfileString(strSect, strKey, strDefault, pData,strConfigPath);
 
     QString strKnifeSps = *pData;
-
     QStringList arrOut;
-    //SDConvert::MSG_SplitCString(strKnifeSps,',',arrOut);
-    arrOut = strKnifeSps.split(',');
 
+    if(strKnifeSps != nullptr)
+    {
+        arrOut = strKnifeSps.split(',');
+    }
 
     for(int i = 0; i < arrOut.size(); i++)
     {
@@ -93,7 +94,6 @@ bool SDKnifeConfig::ReadKnifeLib()
         SDKnife* pKnife = m_stvKnifes.at(j);
         //strKey.Format(("%d"),pKnife->GetGuid());
         strKey = QString::number(pKnife->GetGuid());
-
         GetPrivateProfileString(strSect, strKey, strDefault, pData,strConfigPath);
 
         strKey = *pData;
@@ -101,6 +101,7 @@ bool SDKnifeConfig::ReadKnifeLib()
     }
     //释放内存
     free(pData);
+
 
     //如果配置刀具队列为空，就自动产生一个
     if (m_stvKnifes.empty())
@@ -668,13 +669,36 @@ void SDKnifeConfig::SetMachineInfo(SDMachine* pMachineInfo)
 }
 int SDKnifeConfig::GetPrivateProfileString(QString strSect,QString strKey,QString strDefault,QString *szBuf,QString strConfigPath)
 {
+    QFile file(strConfigPath);
+    if(!file.exists())
+    {
+        QMessageBox::information(this,QObject::tr("提示"),QObject::tr("初始化配置文件不存在"),QObject::tr("确定"));//setText(QObject::tr("软件配置文件不存在，以默认文件进行创建"))
+        return false;
+    }
+    else
+    {
+        QSettings settingsObj(strConfigPath,QSettings::IniFormat);
+
+        settingsObj.beginGroup(strSect);
+        QString tpstr= (settingsObj.value(strKey)).toString();
+        if(tpstr == nullptr)
+        {
+            QStringList tpstrl = (settingsObj.value(strKey)).toStringList();
+            tpstr = tpstrl.join(',');
+        }
+        *szBuf = tpstr;
+        settingsObj.endGroup();
+    }
+
     return true;
 }
+
+//checked OK by Stone
 bool SDKnifeConfig::ReadMachineInfo()
 {
     //方案2 采用ini格式
     QString strConfigPath = m_sLocalDir;
-    strConfigPath += ("\\ToolSet\\CutterSet.ini");
+    strConfigPath += ("Settings\\CutterSet.ini");
 
     QString strSect = ("");
     QString strKey = ("");
@@ -684,7 +708,7 @@ bool SDKnifeConfig::ReadMachineInfo()
 
     QString strDefault = ("");
     QString sInfo = ("");
-    QString *szBuf = nullptr;
+    QString *szBuf = new QString;
     QString sDefault = "";
 
     m_stMachineInfo.Free();
@@ -743,7 +767,7 @@ bool SDKnifeConfig::ReadMachineInfo()
     }
 
     QString strTemp = ("");
-    QList<SDMachineHead*>* pHeads = m_stMachineInfo.GetMachineHeads();
+//    QList<SDMachineHead*>* pHeads = m_stMachineInfo.GetMachineHeads();
     for(int i = 0; i < nHeadCount; i++)
     {
         SDMachineHead* pHead = new SDMachineHead();
@@ -760,7 +784,6 @@ bool SDKnifeConfig::ReadMachineInfo()
             nValue = sInfo.toShort();
             pHead->SetMachineBeamIndex(static_cast<short>(nValue));
         }
-
         //机头序号
         strKey = ("MachHeadIndex");
         nRet = GetPrivateProfileString(strSect, strKey, strDefault, szBuf, strConfigPath);
@@ -770,7 +793,6 @@ bool SDKnifeConfig::ReadMachineInfo()
             nValue = sInfo.toShort();
             pHead->SetMachineHeadIndex(static_cast<short>(nValue));
         }
-
         //机头原点X
         strKey = ("MachHeadXOrigon");
         nRet = GetPrivateProfileString(strSect, strKey, strDefault, szBuf, strConfigPath);
@@ -780,7 +802,6 @@ bool SDKnifeConfig::ReadMachineInfo()
             dbValue = sInfo.toDouble();
             pHead->SetHeadXOrigin(dbValue);
         }
-
         //机头原点Y
         strKey = ("MachHeadYOrigon");
         nRet = GetPrivateProfileString(strSect, strKey, strDefault, szBuf, strConfigPath);
@@ -790,7 +811,6 @@ bool SDKnifeConfig::ReadMachineInfo()
             dbValue = sInfo.toDouble();
             pHead->SetHeadYOrigin(dbValue);
         }
-
         //机头位置X
         strKey = ("MachHeadXPos");
         nRet = GetPrivateProfileString(strSect, strKey, strDefault, szBuf, strConfigPath);
@@ -820,6 +840,7 @@ bool SDKnifeConfig::ReadMachineInfo()
             dbValue = sInfo.toDouble();
             pHead->SetActualLen(dbValue);
         }
+
         //预测长度
         strKey = ("ExpectLen");
         nRet = GetPrivateProfileString(strSect, strKey, strDefault, szBuf, strConfigPath);
@@ -1020,6 +1041,7 @@ bool SDKnifeConfig::ReadMachineInfo()
             nValue = sInfo.toInt();
             pHead->SetDecoupleMode(static_cast<short>(nValue));
         }
+
         //送料长度
         strKey = ("FeedLen");
         nRet = GetPrivateProfileString(strSect, strKey, strDefault, szBuf, strConfigPath);
@@ -1154,15 +1176,13 @@ bool SDKnifeConfig::ReadMachineInfo()
         QList<QString> vApronsIndex;
         strKey = ("Aprons");
 
-        QString *szApronsBuf = nullptr;
+        QString *szApronsBuf = new QString;
         nRet = GetPrivateProfileString(strSect, strKey, strDefault, szApronsBuf, strConfigPath);
         if (nRet > 0)
         {
             sInfo = *szApronsBuf;
-            //SDString::Splitstring(sInfo,',',vApronsIndex);
             vApronsIndex = sInfo.split(',');
             short nTempValue = 0;
-            int nApronsSize = vApronsIndex.size();
             for(int h = 0; h < vApronsIndex.size(); h+=1)
             {
                 SDApron* pApron = new SDApron();
@@ -1180,7 +1200,7 @@ bool SDKnifeConfig::ReadMachineInfo()
                 SDApron* pApron = pAprons->at(k);
                 //strKey.Format(("Apron%d"),pApron->GetApronIndex());
                 strKey = "Apron" + QString::number(pApron->GetApronIndex());
-                QString *szApronsBuf1 = nullptr;
+                QString *szApronsBuf1 = new QString;
                 int nRet1 = GetPrivateProfileString(strSect, strKey, strDefault, szApronsBuf1, strConfigPath);
                 if (nRet1 > 0)
                 {

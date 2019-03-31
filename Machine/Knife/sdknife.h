@@ -2,10 +2,14 @@
 #define SDKNIFE_H
 
 #include <QObject>
+#include <QWidget>
 #include <QFile>
 #include <QTextStream>
 #include <QString>
 #include <QRgb>
+#include <QMessageBox>
+#include <QSettings>
+#include <QDebug>
 #include "Symbol.h"
 //#include "Math/BaseMath_Dll.h"
 //#include "Math/BaseStruct.h"
@@ -58,11 +62,11 @@
 #define TOOLAPRON_CMODE_CAMERA			20  // 摄像头 【CAMT】
 #define TOOLAPRON_CMODE_NULL			21  // 空刀   【NULT】
 
-class SDKnife : public QObject
+class SDKnife : public QWidget
 {
     Q_OBJECT
 public:
-    explicit SDKnife(QObject *parent = nullptr);
+    explicit SDKnife(QWidget *parent = nullptr);
     SDKnife(short nCutToolId,short nKnifeId);
     virtual ~SDKnife(void);
 signals:

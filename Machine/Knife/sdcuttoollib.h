@@ -1,12 +1,16 @@
 ﻿#ifndef SDCUTTOOLLIB_H
 #define SDCUTTOOLLIB_H
 
+#pragma execution_character_set("utf-8")
+
+#include <QDebug>
 #include <QObject>
+#include <QWidget>
 #include <QRgb>
 #include <QSettings>
 #include <QMessageBox>
 #include "SDKnife.h"
-class SDCutTool : public QObject
+class SDCutTool : public QWidget
 {
 public:
     SDCutTool(void);
@@ -75,11 +79,11 @@ private:
     short			   m_nMaxKnifeId2;		//最大子刀具 41--60
 };
 
-class SDCutToolLib : public QObject
+class SDCutToolLib : public QWidget
 {
     Q_OBJECT
 public:
-    explicit SDCutToolLib(QObject *parent = nullptr);
+    explicit SDCutToolLib(QWidget *parent = nullptr);
     ~SDCutToolLib(void);
 signals:
 

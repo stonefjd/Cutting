@@ -2,15 +2,17 @@
 #define SDKNIFECONFIG_H
 
 #include <QObject>
+#include <QWidget>
 #include "SDKnife.h"
 #include "SDMachine.h"
 #include "SDCutToolLib.h"
 
-class SDKnifeConfig : public QObject
+
+class SDKnifeConfig : public QWidget
 {
     Q_OBJECT
 public:
-    explicit SDKnifeConfig(QObject *parent = nullptr);
+    explicit SDKnifeConfig(QWidget *parent = nullptr);
     ~SDKnifeConfig(void);
 signals:
 
