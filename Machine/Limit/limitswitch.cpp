@@ -5,9 +5,10 @@ LimitSwitch::LimitSwitch(short _index,QObject *parent) : QObject(parent),axisInd
 
 }
 
-short LimitSwitch:: GetLimit(long *_pPos,long *_pNeg)
+short LimitSwitch:: GetLimitState(short _axis,bool _polar,bool *_state)
 {
-    return GT_GetSoftLimit(axisIndex,_pPos,_pNeg);
+    ADP_GetLimitState( _axis, _polar, _state);
+    return 0;//ADP_GetLimit(axisIndex,_pPos,_pNeg);
 }
 int  LimitSwitch::GetIndex()
 {

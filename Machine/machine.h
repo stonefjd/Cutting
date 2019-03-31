@@ -5,15 +5,16 @@
 
 #include "Fan/fan.h"
 #include "Limit/limitswitch.h"
+#include "PhysicalLayer/hardwareadaptor.h"
 #include "Machine/Knife/sdknifeconfig.h"
 
-#define X_AXIS 0
-#define Y_AXIS 1
+#define AXIS_X 1
+#define AXIS_Y 2
 
-#define X_Limit 0
-#define Y_Limit 1
-#define Z_Limit 2
-#define A_Limit 3
+#define X_Limit 1
+#define Y_Limit 2
+#define Z_Limit 3
+#define A_Limit 4
 
 enum MStateMain_T {
     MPowerOn    = 0x0000,
@@ -30,17 +31,20 @@ enum MStateMain_T {
 class Machine : public QObject
 {
     Q_OBJECT
-public:
-    explicit Machine(QObject *parent = nullptr);
-    Fan mFan_1;
-    SDKnifeConfig       sdKnifeConfigLib;
-
-    QList<LimitSwitch*> limitList ;//= new LimitSwitch(X_Limit);
-signals:
-
-public slots:
 private:
     bool mPowerState;
+public:
+    explicit Machine(QObject *parent = nullptr);
+public: // sub class obj
+    Fan mFan_1;
+    SDKnifeConfig sdKnifeConfigLib;
+
+    QList<LimitSwitch*> limitList ;//= new LimitSwitch(X_Limit);
+public:
+    void MInit();
+signals:
+public slots:
+
 };
 
 #endif // MACHINE_H

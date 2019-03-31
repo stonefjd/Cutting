@@ -19,7 +19,7 @@ WindowCutting::WindowCutting(QWidget *parent) :
     cutFileList.CutFileList_WidgetInit(ui->tableWgtCutFile);
 
     ui->paintFrame->installEventFilter(this);
-//----knifeConfig
+//----Machine Init
 
 //----UserLog
     user = nullptr;

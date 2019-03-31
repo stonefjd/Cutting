@@ -4,9 +4,7 @@
 #include <QObject>
 #include <PhysicalLayer/hardwareadaptor.h>
 
-#ifdef GTSLIB
-    #include <PhysicalLayer/gts.h>
-#endif
+
 
 class LimitSwitch : public QObject
 {
@@ -17,7 +15,7 @@ private:
 public:
     explicit LimitSwitch(short _index,QObject *parent = nullptr);
 
-    short GetLimit(long *_pPos,long *_pNeg);
+    short GetLimitState(short _axis,bool _polar,bool *_state);
     int  GetIndex();
     void SetIndex(short _index);
 signals:

@@ -7,7 +7,9 @@
 
 #define GTSLIB 1
 
-
+#ifdef GTSLIB
+    #include <PhysicalLayer/gts.h>
+#endif
 
 class HardwareAdaptor : public QObject
 {
@@ -27,12 +29,15 @@ public slots:
     void Slot_Action_FanWindOut();
 
 private:
-    bool LimitPos;
-    bool XLimitNeg;
-    bool YLimitPos;
-    bool YLimitNeg;
-    bool ZLimitPos;
-    bool ZLimitNeg;
+
 };
 
+short ADP_GetLimit(short _index,long *_pPos,long *_pNeg);
+
+void ADP_Connect();
+void ADP_Reset();
+void ADP_ClrSts(short axis, short count);
+void ADP_LoadCfgFile(QString _path);
+void ADP_Disconnect();
+void ADP_GetLimitState(short _axis,bool _polar,bool *_state);
 #endif // HARDWAREADAPTOR_H
