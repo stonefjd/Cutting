@@ -47,6 +47,18 @@ void Machine::MInit()
     ADP_GetLimitState(AXIS_Y,false,&limitStateYNeg);
 
     qDebug()<<limitStateXPos<<' '<<limitStateXNeg<<' '<<limitStateYPos<<' '<<limitStateYNeg;
+
+    QPoint firstDot(0,0);
+    if(limitStateXNeg == true)
+    {
+        firstDot.setX(2000);
+    }
+
+    if(limitStateYNeg == true)
+    {
+        firstDot.setY(2000);
+    }
+
 //    GT_SetDoBit(MC_GPO,1,0);
 //    GT_SetDoBit(MC_GPO,2,0);
 //    GT_SetDoBit(MC_GPO,3,0);
