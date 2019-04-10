@@ -53,6 +53,10 @@ private slots:
     void on_actionImportCutFileList_triggered();
 
     void on_actionLogOn_triggered();
+    void on_actionWindIn_toggled(bool arg1);
+
+    void on_actionWindOut_toggled(bool arg1);
+
 signals:
 
 protected:

@@ -20,6 +20,7 @@ WindowCutting::WindowCutting(QWidget *parent) :
 
     ui->paintFrame->installEventFilter(this);
 //----Machine Init
+    //mMachine.mFan_1.StateMachineInit(ui->actionWindIn,ui->actionWindOut);
 
 //----UserLog
     user = nullptr;
@@ -143,11 +144,11 @@ void WindowCutting::on_pushButton_2_clicked()
 }
 void WindowCutting::on_pushButton_3_clicked()
 {
-    this->mMachine.mFan_1.SetState_FanWindIn();
+//    this->mMachine.mFan_1.SetState_FanWindIn();
 }
 void WindowCutting::on_pushButton_4_clicked()
 {
-    this->mMachine.mFan_1.SetState_FanWindOut();
+//    this->mMachine.mFan_1.SetState_FanWindOut();
 }
 
 //--CutFileOperator
@@ -224,4 +225,34 @@ void WindowCutting::on_actionLogOn_triggered()
         }
     }
     this->userLog_PermissionConfirm();
+}
+//--machine--fan
+void WindowCutting::on_actionWindIn_toggled(bool arg1)
+{
+    if(arg1 == true)
+    {
+        //下面两句顺序不能反
+        ui->actionWindOut->setChecked(false);
+        mMachine.mFan_1.Fan_SetNormalState(FanWindIn);
+    }
+    else
+    {
+        mMachine.mFan_1.Fan_SetNormalState(FanStop);
+    }
+    ui->testLable->setText(QString::number(mMachine.mFan_1.Fan_GetState()));
+}
+
+void WindowCutting::on_actionWindOut_toggled(bool arg1)
+{
+    if(arg1 == true)
+    {
+        //下面两句顺序不能反
+        ui->actionWindIn->setChecked(false);
+        mMachine.mFan_1.Fan_SetNormalState(FanWindOut);
+    }
+    else
+    {
+        mMachine.mFan_1.Fan_SetNormalState(FanStop);
+    }
+    ui->testLable->setText(QString::number(mMachine.mFan_1.Fan_GetState()));
 }

@@ -6,36 +6,14 @@ HardwareAdaptor::HardwareAdaptor(QObject *parent) : QObject(parent)
 //    connect(hardwareIOTimer,SIGNAL(timeout()),SLOT(Slot_Action_CheckHardWareError()));
 //    hardwareIOTimer->start(1000);
 }
-void HardwareAdaptor::Slot_Action_CheckHardWareError()
-{
-    qDebug()<<"1000ms timer";
-    if(1)
-    {
-        emit Signal_SetState_FanNoError();
-    }
-    else
-    {
-        emit Signal_SetState_FanError();
-    }
-}
-void HardwareAdaptor::Slot_Action_FanStop()
-{
-    qDebug()<<"action FanStop";
-}
-void HardwareAdaptor::Slot_Action_FanWindIn()
-{
-    qDebug()<<"action FanWindIn";
-}
-void HardwareAdaptor::Slot_Action_FanWindOut()
-{
-    qDebug()<<"action FanWindOut";
-}
+
 
 short ADP_GetLimit(short _index,long *_pPos,long *_pNeg)
 {
 #ifdef GTSLIB
     return GT_GetSoftLimit(_index,_pPos,_pNeg);
 #endif
+    return 0 ;
 }
 
 void ADP_Connect()
@@ -90,5 +68,29 @@ void ADP_GetLimitState(short _axis,bool _polar,bool *_state)
         else
             *_state = false;
     }
+#endif
+}
+
+void ADP_SetFanStop()
+{
+#ifdef GTSLIB
+#endif
+}
+void ADP_SetFanWindIn()
+{
+#ifdef GTSLIB
+#endif
+}
+void ADP_SetFanWindOut()
+{
+#ifdef GTSLIB
+#endif
+}
+bool ADP_GetFanErrorState()
+{
+#ifdef GTSLIB
+    return false;
+#else
+    return false;
 #endif
 }

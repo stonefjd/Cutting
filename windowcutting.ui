@@ -58,8 +58,8 @@
    </attribute>
    <addaction name="actionRunPuase"/>
    <addaction name="actionStop"/>
-   <addaction name="actionEnableWind"/>
-   <addaction name="actionWindInOut"/>
+   <addaction name="actionWindIn"/>
+   <addaction name="actionWindOut"/>
    <addaction name="actionResetOrigin"/>
    <addaction name="actionMachToZero"/>
    <addaction name="actionEdgeDetection"/>
@@ -179,7 +179,7 @@
        <x>10</x>
        <y>10</y>
        <width>77</width>
-       <height>112</height>
+       <height>130</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
@@ -208,6 +208,13 @@
        <widget class="QPushButton" name="pushButton_4">
         <property name="text">
          <string>TEST4</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="testLable">
+        <property name="text">
+         <string>TextLabel</string>
         </property>
        </widget>
       </item>
@@ -271,7 +278,7 @@
     <string>停止</string>
    </property>
   </action>
-  <action name="actionEnableWind">
+  <action name="actionWindIn">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -279,7 +286,7 @@
     <string>开启吸风</string>
    </property>
   </action>
-  <action name="actionWindInOut">
+  <action name="actionWindOut">
    <property name="checkable">
     <bool>true</bool>
    </property>
