@@ -16,23 +16,36 @@
 #define Z_Limit 3
 #define A_Limit 4
 
-enum MStateMain_T {
-    MPowerOn    = 0x0000,
-    MSelfTest   = 0x0001,   //power on test,check everything.
-    MWait       = 0x0002,   //wait for all device OK,if not ok display it.
-    MInitial    = 0x0003,   //run to the Mechanical limit zero point for the all axes correction.
-    MOperate    = 0x0004,   //moving the tool in 2 axis.
-    MStop       = 0x0005,   //
-    MRunning    = 0x0006,
-    MPause      = 0x0007,
-    MErrorOccur = 0x0008,
-};
+#define stMainStop      0
+#define stMainInitial   1
+#define stMainWait      2
+#define stMainOperate   3
+#define stMainCut       4
+#define stMainPause     5
+#define stMainErr       6
+
+#define stSubNotIn      0
+#define stSubData       1
+#define stSubMotorRun   2
+#define stSubTimeDelay  3
+#define stSubWait       4
 
 class Machine : public QObject
 {
     Q_OBJECT
 private:
     bool mPowerState;
+    QTimer *mTimer;
+
+    uint8_t machine_stMainState;
+    uint8_t machine_stSubState_Stop;
+    uint8_t machine_stSubState_Initial;
+    uint8_t machine_stSubState_Wait;
+    uint8_t machine_stSubState_Operate;
+    uint8_t machine_stSubState_Cut;
+    uint8_t machine_stSubState_Pause;
+    uint8_t machine_stSubState_Err;
+
 public:
     explicit Machine(QObject *parent = nullptr);
 public: // sub class obj
@@ -44,7 +57,7 @@ public:
     void MInit();
 signals:
 public slots:
-
+    void Task_10ms_stateMachine();
 };
 
 #endif // MACHINE_H

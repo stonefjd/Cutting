@@ -5,7 +5,7 @@
 #include <QDebug>
 #include <QTimer>
 
-//#define GTSLIB 0
+#define GTSLIB 0
 
 #ifdef GTSLIB
     #include <PhysicalLayer/gts.h>
