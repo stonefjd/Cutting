@@ -44,6 +44,8 @@ private slots:
 
     void on_push_Initial_clicked();
 
+    void on_Getstatus_clicked();
+
 signals:
 
 private:

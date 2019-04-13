@@ -351,23 +351,23 @@ void WindowCutting::on_push_Initial_clicked()
     Jog.smooth = 0.5;
     sRtn = GT_SetJogPrm (AXIS_X,&Jog);
     sRtn = GT_SetJogPrm (AXIS_Y,&Jog);
-    sRtn = GT_SetVel(AXIS_X, -5);
-    sRtn = GT_SetVel(AXIS_Y, -5);
+    sRtn = GT_SetVel(AXIS_X, 5);
+    sRtn = GT_SetVel(AXIS_Y, 5);
 
     sRtn = GT_Update(1<<(AXIS_X-1));
-    do
-    {
-        sRtn = GT_GetSts(AXIS_X, &sts);
-        sRtn = GT_GetPrfPos(AXIS_X, &prfPos);
-    }while(sts&0x060);
-
     sRtn = GT_Update(1<<(AXIS_Y-1));
-    do
-    {
-        sRtn = GT_GetSts(AXIS_Y, &sts);
-        sRtn = GT_GetPrfPos(AXIS_Y, &prfPos);
-        ui->label->setText(QString::number(sts));
-    }while(sts&0x060);
+//    do
+//    {
+//        sRtn = GT_GetSts(AXIS_X, &sts);
+//        sRtn = GT_GetPrfPos(AXIS_X, &prfPos);
+//    }while(sts&0x060);
+
+//    do
+//    {
+//        sRtn = GT_GetSts(AXIS_Y, &sts);
+//        sRtn = GT_GetPrfPos(AXIS_Y, &prfPos);
+
+//    }while(sts&0x060);
 
     //    sRtn = GT_SetPos(AXIS_X, 2000L);
     //    sRtn = GT_SetPos(AXIS_Y, 2000L);
@@ -388,4 +388,12 @@ void WindowCutting::on_push_Initial_clicked()
     //    }while(sts&0x400);
     //    sRtn = GT_ClrSts(1,8);
 
+}
+
+void WindowCutting::on_Getstatus_clicked()
+{
+    long sts1,sts2;
+    GT_GetSts(AXIS_X, &sts1);
+    GT_GetSts(AXIS_Y, &sts2);
+    ui->label->setText(QString::number(sts1)+' '+QString::number(sts2));
 }
