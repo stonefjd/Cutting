@@ -46,6 +46,9 @@ void WindowCutting::userLog_PermissionConfirm()
     QList<QWidget*> actionList;
     actionList.append(ui->mainToolBar->findChildren<QWidget*>());
     actionList.append(ui->menuBar->findChildren<QWidget*>());
+    actionList.append(ui->dockWgtOperate->findChildren<QWidget*>());
+    actionList.append(ui->dockWgtCutFile->findChildren<QWidget*>());
+
     if(user == nullptr)
     {
         for(int i = 0; i < actionList.size(); i++)
