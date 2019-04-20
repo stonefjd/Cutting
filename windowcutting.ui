@@ -226,11 +226,11 @@
       </item>
      </layout>
     </widget>
-    <widget class="QWidget" name="">
+    <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>180</y>
+       <y>240</y>
        <width>104</width>
        <height>104</height>
       </rect>
@@ -261,7 +261,7 @@
          <string>U</string>
         </property>
         <attribute name="buttonGroup">
-         <string notr="true">buttonGroup</string>
+         <string notr="true">btnDirGroup</string>
         </attribute>
        </widget>
       </item>
@@ -290,22 +290,9 @@
          <string>L</string>
         </property>
         <attribute name="buttonGroup">
-         <string notr="true">buttonGroup</string>
+         <string notr="true">btnDirGroup</string>
         </attribute>
        </widget>
-      </item>
-      <item row="1" column="1">
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>25</width>
-          <height>30</height>
-         </size>
-        </property>
-       </spacer>
       </item>
       <item row="1" column="2">
        <widget class="QPushButton" name="btnOpRight">
@@ -319,7 +306,7 @@
          <string>R</string>
         </property>
         <attribute name="buttonGroup">
-         <string notr="true">buttonGroup</string>
+         <string notr="true">btnDirGroup</string>
         </attribute>
        </widget>
       </item>
@@ -348,7 +335,7 @@
          <string>D</string>
         </property>
         <attribute name="buttonGroup">
-         <string notr="true">buttonGroup</string>
+         <string notr="true">btnDirGroup</string>
         </attribute>
        </widget>
       </item>
@@ -365,7 +352,62 @@
         </property>
        </spacer>
       </item>
+      <item row="1" column="1">
+       <widget class="QPushButton" name="btnOpOrg">
+        <property name="maximumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Org</string>
+        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">btnDirGroup</string>
+        </attribute>
+       </widget>
+      </item>
      </layout>
+    </widget>
+    <widget class="QLabel" name="lb_x">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>160</y>
+       <width>54</width>
+       <height>12</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lb_y">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>180</y>
+       <width>54</width>
+       <height>12</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lb_st">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>200</y>
+       <width>54</width>
+       <height>12</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
     </widget>
    </widget>
   </widget>
@@ -559,6 +601,10 @@
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="buttonGroup"/>
+  <buttongroup name="btnDirGroup">
+   <property name="exclusive">
+    <bool>false</bool>
+   </property>
+  </buttongroup>
  </buttongroups>
 </ui>

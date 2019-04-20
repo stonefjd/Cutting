@@ -12,7 +12,11 @@ WindowCutting::WindowCutting(QWidget *parent) :
     ui->menuViewItem->setDisabled(true);
     ui->menuHelpItem->setDisabled(true);
 
-
+    ui->btnDirGroup->setId(ui->btnOpLeft,BTN_ID_L);
+    ui->btnDirGroup->setId(ui->btnOpRight,BTN_ID_R);
+    ui->btnDirGroup->setId(ui->btnOpUp,BTN_ID_U);
+    ui->btnDirGroup->setId(ui->btnOpDown,BTN_ID_D);
+    ui->btnDirGroup->setId(ui->btnOpOrg,BTN_ID_O);
 //----CutFileOperator
     ui->dockWgtCutFile->setWindowTitle(tr("任务列表"));
     ui->dockWgtCutFile->setMaximumWidth(200);
@@ -21,11 +25,30 @@ WindowCutting::WindowCutting(QWidget *parent) :
     ui->paintFrame->installEventFilter(this);
 //----Machine Init
     //mMachine.mFan_1.StateMachineInit(ui->actionWindIn,ui->actionWindOut);
+    mMachine = new Machine;
+    connect(ui->btnDirGroup,SIGNAL(buttonPressed(int)),mMachine,SLOT(SubStateOpBtnPress(int)));
+    connect(ui->btnDirGroup,SIGNAL(buttonReleased(int)),mMachine,SLOT(SubStateOpBtnRelease(int)));
+    connect(this,SIGNAL(keyPressed(QKeyEvent)),mMachine,SLOT(SubStateOpKeyPress(QKeyEvent)));
+    connect(this,SIGNAL(keyReleased(QKeyEvent)),mMachine,SLOT(SubStateOpKeyRelease(QKeyEvent)));
+
 
 //----UserLog
     user = nullptr;
     this->userLog_PermissionConfirm();
 //    user.exec();
+
+    debugTimer=new QTimer(this);
+    connect(debugTimer,SIGNAL(timeout()),this,SLOT(debugTask_10ms()));
+    debugTimer->start(10);
+}
+void WindowCutting::debugTask_10ms()
+{
+    long x,y;
+    ADP_GetSts(1,&x);
+    ADP_GetSts(2,&y);
+    ui->lb_x->setText(QString::number(x));
+    ui->lb_y->setText(QString::number(y));
+    ui->lb_st->setText(QString::number(mMachine->machine_ctSubState_Operate_Key));
 }
 bool WindowCutting::eventFilter(QObject *watched, QEvent *e)
 {
@@ -67,47 +90,13 @@ void WindowCutting::userLog_PermissionConfirm()
 }
 
 //----override----//
+void WindowCutting::keyReleaseEvent(QKeyEvent *event)
+{
+    emit keyReleased(*event);
+}
 void WindowCutting::keyPressEvent(QKeyEvent *event)
 {
-    //-------------shift key should be first
-    if(event->modifiers() == Qt::ShiftModifier)
-    {
-        if(event->key() == Qt::Key_Left)
-        {
-            qDebug() << "Shift+left" ;
-        }
-        else if(event->key() == Qt::Key_Right)
-        {
-            qDebug() << "Shift+right" ;
-        }
-        else if(event->key() == Qt::Key_Up)
-        {
-            qDebug() << "Shift+Up" ;
-        }
-        else if(event->key() == Qt::Key_Down)
-        {
-            qDebug() << "Shift+Down" ;
-        }
-    }
-    else
-    {
-        if(event->key() == Qt::Key_Left)
-        {
-            qDebug() << "left" ;
-        }
-        else if(event->key() == Qt::Key_Right)
-        {
-            qDebug() << "right" ;
-        }
-        else if(event->key() == Qt::Key_Up)
-        {
-            qDebug() << "Up" ;
-        }
-        else if(event->key() == Qt::Key_Down)
-        {
-            qDebug() << "Down" ;
-        }
-    }
+    emit keyPressed(*event);
 }
 //-------------------signals and slots--------------------------
 void WindowCutting::on_actionSettingsParameter_triggered()
@@ -144,6 +133,7 @@ void WindowCutting::on_pushButton_2_clicked()
 {
 //    this->mMachine.mFan_1.SetState_FanStop();
 //    GT_SetDoBit(MC_GPO,0,1);
+
 }
 void WindowCutting::on_pushButton_3_clicked()
 {
@@ -236,13 +226,13 @@ void WindowCutting::on_actionWindIn_toggled(bool arg1)
     {
         //下面两句顺序不能反
         ui->actionWindOut->setChecked(false);
-        mMachine.mFan_1.Fan_SetNormalState(FanWindIn);
+        mMachine->mFan_1.Fan_SetNormalState(FanWindIn);
     }
     else
     {
-        mMachine.mFan_1.Fan_SetNormalState(FanStop);
+        mMachine->mFan_1.Fan_SetNormalState(FanStop);
     }
-    ui->testLable->setText(QString::number(mMachine.mFan_1.Fan_GetState()));
+    ui->testLable->setText(QString::number(mMachine->mFan_1.Fan_GetState()));
 }
 
 void WindowCutting::on_actionWindOut_toggled(bool arg1)
@@ -251,11 +241,11 @@ void WindowCutting::on_actionWindOut_toggled(bool arg1)
     {
         //下面两句顺序不能反
         ui->actionWindIn->setChecked(false);
-        mMachine.mFan_1.Fan_SetNormalState(FanWindOut);
+        mMachine->mFan_1.Fan_SetNormalState(FanWindOut);
     }
     else
     {
-        mMachine.mFan_1.Fan_SetNormalState(FanStop);
+        mMachine->mFan_1.Fan_SetNormalState(FanStop);
     }
-    ui->testLable->setText(QString::number(mMachine.mFan_1.Fan_GetState()));
+    ui->testLable->setText(QString::number(mMachine->mFan_1.Fan_GetState()));
 }

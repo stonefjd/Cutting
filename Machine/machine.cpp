@@ -10,13 +10,14 @@ Machine::Machine(QObject *parent) : QObject(parent)
     qDebug()<<sdKnifeConfigLib.GetKnifesCount();
     //--------StateMachine Setting--------//
     machine_stMainState = stMain_Init;
-//    machine_stSubState_Stop = stSubInitNotIn;
     machine_stSubState_Init = stSubInit_NotIn;
+    machine_stSubState_Operate = stSubOperate_NotIn;
+//    machine_stSubState_Stop = stSubInitNotIn;
 //    machine_stSubState_Wait = stSubNotIn;
-//    machine_stSubState_Operate = stSubNotIn;
 //    machine_stSubState_Cut = stSubNotIn;
 //    machine_stSubState_Pause = stSubNotIn;
 //    machine_stSubState_Err = stSubNotIn;
+    machine_ctSubState_Operate_Key = 0;
 
     mTimer=new QTimer(this);
     connect(mTimer,SIGNAL(timeout()),this,SLOT(Task_10ms()));
@@ -52,6 +53,7 @@ void Machine::MainStateRun()
         }
         case stMain_Operate:
         {
+            SubStateRunOperate();
             break;
         }
         case stMain_Cut:
@@ -67,6 +69,10 @@ void Machine::MainStateRun()
             break;
         }
     }
+}
+void Machine:: SubStateRunWait()
+{
+
 }
 void Machine::SubStateRunInitial()
 {
@@ -95,7 +101,6 @@ void Machine::SubStateRunInitial()
             //----prepare for jog mod
             ADP_PrfJog(AXIS_X);
             ADP_PrfJog(AXIS_Y);
-            TJogPrm Jog;
             Jog.acc = 0.05;
             Jog.dec = 0.05;
             Jog.smooth = 0.5;
@@ -136,7 +141,6 @@ void Machine::SubStateRunInitial()
                 //----prepare for 2 insert mode
                 ADP_SetPrfPos(AXIS_X, 0);
                 ADP_SetPrfPos(AXIS_Y, 0);
-                TCrdPrm crdPrm;
                 memset(&crdPrm, 0, sizeof(crdPrm));
                 crdPrm.dimension=2;   // 坐标系为二维坐标系
                 crdPrm.synVelMax=50;  // 最大合成速度：500pulse/ms
@@ -179,8 +183,181 @@ void Machine::SubStateRunInitial()
         }
     }
 }
+
+void Machine::SubStateRunOperate()
+{
+    switch(machine_stSubState_Operate)
+    {
+//        case:
+    }
+}
+
+void Machine::SubStateOpBtnPress(int id)
+{
+    qDebug()<<"pre"+QString::number(id);
+    if(machine_stMainState == stMain_Wait && machine_stSubState_Operate == stSubOperate_NotIn)
+    {
+        machine_stMainState = stMain_Operate;
+        Jog.acc = 0.05;
+        Jog.dec = 0.05;
+        Jog.smooth = 0.5;
+        ADP_ClrSts(1,4);
+        switch (id)
+        {
+        case 0:
+            machine_stSubState_Operate = stSubOperate_BtnL;
+            ADP_PrfJog(AXIS_X);
+            ADP_SetJogPrm (AXIS_X,&Jog);
+            ADP_SetVel(AXIS_X, -5);
+            ADP_Update(AXIS_X);
+            break;
+        case 1:
+            machine_stSubState_Operate = stSubOperate_BtnR;
+            ADP_PrfJog(AXIS_X);
+            ADP_SetJogPrm (AXIS_X,&Jog);
+            ADP_SetVel(AXIS_X, 5);
+            ADP_Update(AXIS_X);
+            break;
+        case 2:
+            machine_stSubState_Operate = stSubOperate_BtnU;
+            ADP_PrfJog(AXIS_Y);
+            ADP_SetJogPrm (AXIS_Y,&Jog);
+            ADP_SetVel(AXIS_Y, 5);
+            ADP_Update(AXIS_Y);
+            break;
+        case 3:
+            machine_stSubState_Operate = stSubOperate_BtnD;
+            ADP_PrfJog(AXIS_Y);
+            ADP_SetJogPrm (AXIS_Y,&Jog);
+            ADP_SetVel(AXIS_Y, -5);
+            ADP_Update(AXIS_Y);
+            break;
+        case 4:
+            machine_stSubState_Operate = stSubOperate_BtnO;
+            break;
+        }
+        ADP_ClrSts(1,4);
+    }
+}
+void Machine::SubStateOpBtnRelease(int id)
+{
+    qDebug()<<"rel"+QString::number(id);
+    if(machine_stMainState == stMain_Operate &&
+            (machine_stSubState_Operate == stSubOperate_BtnL||machine_stSubState_Operate == stSubOperate_BtnR||
+             machine_stSubState_Operate == stSubOperate_BtnU||machine_stSubState_Operate == stSubOperate_BtnD||machine_stSubState_Operate == stSubOperate_BtnO)
+      )
+    {
+        machine_stMainState = stMain_Wait;
+        machine_stSubState_Operate = stSubOperate_NotIn;
+        switch (id)
+        {
+        case 0:
+            ADP_Stop(1<<(AXIS_X-1),0);
+            break;
+        case 1:
+            ADP_Stop(1<<(AXIS_X-1),0);
+            break;
+        case 2:
+            ADP_Stop(1<<(AXIS_Y-1),0);
+            break;
+        case 3:
+            ADP_Stop(1<<(AXIS_Y-1),0);
+            break;
+        }
+        ADP_ClrSts(1,4);
+    }
+}
+void Machine::SubStateOpKeyPress(QKeyEvent event)
+{
+    if(!event.isAutoRepeat())
+    {
+        qDebug()<<"pre"+QString::number(event.key());
+        if(event.key() ==Qt::Key_A ||event.key() ==Qt::Key_D ||event.key() ==Qt::Key_W ||event.key() ==Qt::Key_S)
+        {
+            if((machine_stMainState == stMain_Wait && machine_stSubState_Operate == stSubOperate_NotIn)
+                ||(machine_stMainState == stMain_Operate && machine_stSubState_Operate == stSubOperate_Key)
+                    )
+            {
+                machine_ctSubState_Operate_Key++;
+                machine_stMainState = stMain_Operate;
+                machine_stSubState_Operate = stSubOperate_Key;
+                Jog.acc = 0.05;
+                Jog.dec = 0.05;
+                Jog.smooth = 0.5;
+                ADP_ClrSts(1,4);
+                double velRatio=1;
+                if(event.modifiers() == Qt::ShiftModifier)
+                {
+                    velRatio=2;
+                }
+                switch(event.key())
+                {
+                case Qt::Key_A:
+                    ADP_PrfJog(AXIS_X);
+                    ADP_SetJogPrm (AXIS_X,&Jog);
+                    ADP_SetVel(AXIS_X, -5*velRatio);
+                    ADP_Update(AXIS_X);
+                    break;
+                case Qt::Key_D:
+                    ADP_PrfJog(AXIS_X);
+                    ADP_SetJogPrm (AXIS_X,&Jog);
+                    ADP_SetVel(AXIS_X, 5*velRatio);
+                    ADP_Update(AXIS_X);
+                    break;
+                case Qt::Key_W:
+                    ADP_PrfJog(AXIS_Y);
+                    ADP_SetJogPrm (AXIS_Y,&Jog);
+                    ADP_SetVel(AXIS_Y, 5*velRatio);
+                    ADP_Update(AXIS_Y);
+                    break;
+                case Qt::Key_S:
+                    ADP_PrfJog(AXIS_Y);
+                    ADP_SetJogPrm (AXIS_Y,&Jog);
+                    ADP_SetVel(AXIS_Y, -5*velRatio);
+                    ADP_Update(AXIS_Y);
+                    break;
+                }
+            }
+        }
+    }
+}
+void Machine::SubStateOpKeyRelease(QKeyEvent event)
+{
+    if(!event.isAutoRepeat())
+    {
+        if(event.key() ==Qt::Key_A ||event.key() ==Qt::Key_D ||event.key() ==Qt::Key_W ||event.key() ==Qt::Key_S)
+        {
+            qDebug()<<"rel"+QString::number(event.key());
+            if(machine_stMainState == stMain_Operate && machine_stSubState_Operate == stSubOperate_Key)
+            {
+                machine_ctSubState_Operate_Key--;
+                if(machine_ctSubState_Operate_Key == 0)
+                {
+                    machine_stMainState = stMain_Wait;
+                    machine_stSubState_Operate = stSubOperate_NotIn;
+                }
+                switch (event.key())
+                {
+                case Qt::Key_A:
+                    ADP_Stop(1<<(AXIS_X-1),0);
+                    break;
+                case Qt::Key_D:
+                    ADP_Stop(1<<(AXIS_X-1),0);
+                    break;
+                case Qt::Key_W:
+                    ADP_Stop(1<<(AXIS_Y-1),0);
+                    break;
+                case Qt::Key_S:
+                    ADP_Stop(1<<(AXIS_Y-1),0);
+                    break;
+                }
+                ADP_ClrSts(1,4);
+            }
+        }
+    }
+}
+
 void Machine::Task_10ms()
 {
     MainStateRun();
-
 }

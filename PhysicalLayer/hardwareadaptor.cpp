@@ -168,6 +168,12 @@ void ADP_CrdStart(short _mask,short _option)
     GT_CrdStart(_mask,_option);
 #endif
 }
+void ADP_Stop(long _mask,long _option)
+{
+#ifdef GTSLIB
+    GT_Stop(_mask,_option);
+#endif
+}
 //void ADP_
 //{
 //#ifdef GTSLIB

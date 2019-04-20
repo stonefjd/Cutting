@@ -2,7 +2,7 @@
 #define MACHINE_H
 
 #include <QObject>
-
+#include <QKeyEvent>
 #include "Fan/fan.h"
 #include "PhysicalLayer/hardwareadaptor.h"
 #include "Machine/Knife/sdknifeconfig.h"
@@ -30,6 +30,16 @@
 #define stSubInit_Finish 4
 #define stSubInit_Fail   5
 
+#define stSubOperate_NotIn  0
+#define stSubOperate_Key   1
+#define stSubOperate_BtnL   5
+#define stSubOperate_BtnR   6
+#define stSubOperate_BtnU   7
+#define stSubOperate_BtnD   8
+#define stSubOperate_BtnO   9
+#define stSubOperate_Finish 10
+#define stSubOperate_Fail   11
+
 
 //#define stSubNotIn      0
 //#define stSubData       1
@@ -45,7 +55,6 @@ private:
     bool mPowerState;
     QTimer *mTimer;
 
-    uint8_t machine_stMainState;
     uint8_t machine_stSubState_Stop;
     uint8_t machine_stSubState_Init;
     uint8_t machine_stSubState_Wait;
@@ -54,9 +63,14 @@ private:
     uint8_t machine_stSubState_Pause;
     uint8_t machine_stSubState_Err;
 
+private:
+    TJogPrm Jog;
+    TCrdPrm crdPrm;
 public:
     explicit Machine(QObject *parent = nullptr);
 public: // sub class obj
+    uint8_t machine_stMainState;
+    uint8_t machine_ctSubState_Operate_Key;
     Fan mFan_1;
     SDKnifeConfig sdKnifeConfigLib;
 
@@ -64,9 +78,16 @@ public:
     void MInit();
     void MainStateRun();
     void SubStateRunInitial();
+    void SubStateRunWait();
+    void SubStateRunOperate();
 signals:
 public slots:
     void Task_10ms();
+    void SubStateOpBtnPress(int id);
+    void SubStateOpBtnRelease(int id);
+    void SubStateOpKeyPress(QKeyEvent event);
+    void SubStateOpKeyRelease(QKeyEvent event);
+
 };
 
 #endif // MACHINE_H

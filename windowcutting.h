@@ -19,6 +19,13 @@
 #include "Machine/machine.h"
 #include "PhysicalLayer/gts.h"
 #include "User/userlog.h"
+
+#define BTN_ID_L 0
+#define BTN_ID_R 1
+#define BTN_ID_U 2
+#define BTN_ID_D 3
+#define BTN_ID_O 4
+
 namespace Ui {
 class WindowCutting;
 }
@@ -29,6 +36,7 @@ class WindowCutting : public QMainWindow
 
 public:
     void keyPressEvent(QKeyEvent *event);
+    void keyReleaseEvent(QKeyEvent *event);
     explicit WindowCutting(QWidget *parent = nullptr);
     ~WindowCutting();
 
@@ -57,18 +65,22 @@ private slots:
 
     void on_actionWindOut_toggled(bool arg1);
 
-signals:
+    void debugTask_10ms();
 
+signals:
+    void keyPressed(QKeyEvent);
+    void keyReleased(QKeyEvent);
 protected:
     bool eventFilter(QObject *watched, QEvent *e);
     void userLog_PermissionConfirm();
 private:
     Ui::WindowCutting   *ui;
-    Machine             mMachine;
+    Machine             *mMachine;
     UserLog             *user;
 //    Settings    settings;
 //    IniOp               iniOp;
     CutFileListOp       cutFileList;
+    QTimer              *debugTimer;
 };
 
 #endif // WINDOWCUTTING_H
