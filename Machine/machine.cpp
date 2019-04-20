@@ -22,13 +22,6 @@ Machine::Machine(QObject *parent) : QObject(parent)
     connect(mTimer,SIGNAL(timeout()),this,SLOT(Task_10ms()));
     mTimer->start(10);
 
-
-    //------creat the limit State of the machine
-    for(short i=0;i<sdKnifeConfigLib.GetKnifesCount()+2;i++)
-    {
-        LimitSwitch *limit = new LimitSwitch(i+1,nullptr);
-        limitList.push_back(limit);
-    }
     //----
 }
 

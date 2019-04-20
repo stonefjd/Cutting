@@ -4,7 +4,6 @@
 #include <QObject>
 
 #include "Fan/fan.h"
-#include "Limit/limitswitch.h"
 #include "PhysicalLayer/hardwareadaptor.h"
 #include "Machine/Knife/sdknifeconfig.h"
 
@@ -61,7 +60,6 @@ public: // sub class obj
     Fan mFan_1;
     SDKnifeConfig sdKnifeConfigLib;
 
-    QList<LimitSwitch*> limitList ;//= new LimitSwitch(X_Limit);
 public:
     void MInit();
     void MainStateRun();
