@@ -38,7 +38,12 @@ SOURCES += \
     Machine/Knife/sdapron.cpp \
     Machine/Knife/sdmachinehead.cpp \
     Machine/Knife/sdmachine.cpp \
-    Machine/Knife/sdcuttoollib.cpp
+    Machine/Knife/sdcuttoollib.cpp \
+    Machine/Config/confighead.cpp \
+    Machine/Config/configseat.cpp \
+    Machine/Config/configknife.cpp \
+    Machine/Config/configmachine.cpp \
+    Machine/Config/configknifelib.cpp
 
 HEADERS += \
     windowcutting.h \
@@ -55,7 +60,12 @@ HEADERS += \
     Machine/Knife/sdapron.h \
     Machine/Knife/sdmachinehead.h \
     Machine/Knife/sdmachine.h \
-    Machine/Knife/sdcuttoollib.h
+    Machine/Knife/sdcuttoollib.h \
+    Machine/Config/confighead.h \
+    Machine/Config/configseat.h \
+    Machine/Config/configknife.h \
+    Machine/Config/configmachine.h \
+    Machine/Config/configknifelib.h
 
 FORMS += \
         windowcutting.ui \

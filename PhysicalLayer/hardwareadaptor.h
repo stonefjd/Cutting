@@ -51,6 +51,7 @@ void ADP_CrdClear(short _crd,short _fifo);
 void ADP_LnXY(short crd,long x,long y,double synVel,double synAcc,double velEnd,short fifo);
 void ADP_CrdStart(short _mask,short _option);
 void ADP_Stop(long _mask,long _option);
+void ADP_GetAxisPrfPos(short _axis,double *_pValue);
 
 void ADP_SetFanStop();
 void ADP_SetFanWindIn();

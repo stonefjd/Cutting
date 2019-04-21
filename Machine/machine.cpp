@@ -8,6 +8,9 @@ Machine::Machine(QObject *parent) : QObject(parent)
     //----set the knife of the machine
     sdKnifeConfigLib.ReadConfigFile();
     qDebug()<<sdKnifeConfigLib.GetKnifesCount();
+
+    mConfig.GetMachineInfo();
+
     //--------StateMachine Setting--------//
     machine_stMainState = stMain_Init;
     machine_stSubState_Init = stSubInit_NotIn;
@@ -135,10 +138,11 @@ void Machine::SubStateRunInitial()
                     ADP_Update(AXIS_Y);
                 }
             }
-
             if(limitStateXNeg == true && limitStateYNeg == true)
             {
                 //----prepare for 2 insert mode
+                ADP_ZeroPos(AXIS_X);
+                ADP_ZeroPos(AXIS_Y);
                 ADP_SetPrfPos(AXIS_X, 0);
                 ADP_SetPrfPos(AXIS_Y, 0);
                 memset(&crdPrm, 0, sizeof(crdPrm));
@@ -154,7 +158,7 @@ void Machine::SubStateRunInitial()
                 ADP_SetCrdPrm(1, &crdPrm);
                 ADP_CrdClear(1, 0);
                  // 该插补段的坐标系是坐标系1 //xy点// 该插补段的目标速度：3pulse/ms // 插补段的加速度：0.1pulse/ms^2// 终点速度为0 // 向坐标系1的FIFO0缓存区传递该直线插补数据
-                ADP_LnXY(1,2000,2000,3,0.05,0,0);
+                ADP_LnXY(1,5000,2000,3,0.05,0,0);
                 machine_stSubState_Init = stSubInit_LOrg;
                 ADP_CrdStart(1, 0);
                 break;
@@ -186,12 +190,91 @@ void Machine::SubStateRunInitial()
 
 void Machine::SubStateRunOperate()
 {
+    bool limitStateXNeg;
+    bool limitStateYNeg;
+    bool limitStateXPos;
+    bool limitStateYPos;
+    double xPos = 0;
+    double yPos = 0;
+    bool xUpd = false;
+    bool yUpd = false;
     switch(machine_stSubState_Operate)
     {
-//        case:
+    case stSubOperate_EdgeScane_step1:
+        ADP_GetLimitState(AXIS_X,false,&limitStateXNeg);
+        ADP_GetLimitState(AXIS_Y,false,&limitStateYNeg);
+        if(limitStateXNeg == true && limitStateYNeg == true)
+        {
+            machine_stSubState_Operate = stSubOperate_EdgeScane_step2;
+            ADP_ZeroPos(AXIS_X);
+            ADP_ZeroPos(AXIS_Y);
+            ADP_SetPrfPos(AXIS_X, 0);
+            ADP_SetPrfPos(AXIS_Y, 0);
+            ADP_ClrSts(1,4);
+            ADP_SetVel(AXIS_X, 8);
+            ADP_SetVel(AXIS_Y, 8);
+            ADP_Update(AXIS_X);
+            ADP_Update(AXIS_Y);
+        }
+        break;
+    case stSubOperate_EdgeScane_step2:
+        ADP_GetLimitState(AXIS_X,true,&limitStateXPos);
+        ADP_GetLimitState(AXIS_Y,true,&limitStateYPos);
+        if(limitStateXPos == true && limitStateYPos == true)
+        {
+            machine_stSubState_Operate = stSubOperate_EdgeScane_step3;
+
+            ADP_GetAxisPrfPos(AXIS_X,&xPos);
+            ADP_GetAxisPrfPos(AXIS_Y,&yPos);
+            xUpd = mConfig.UpdateMachRunMax(AXIS_X,xPos);
+            yUpd = mConfig.UpdateMachRunMax(AXIS_Y,yPos);
+            if(xUpd||yUpd)
+            {
+                mConfig.WritePrivateProfileString("MachInfo","MachRunMax",QString::number(mConfig.GetMachRunMax(AXIS_X))
+                                                  +','+ QString::number(mConfig.GetMachRunMax(AXIS_Y)),mConfig.GetMachCfgPath());
+            }
+            ADP_ClrSts(1,4);
+            ADP_SetVel(AXIS_X, -8);
+            ADP_SetVel(AXIS_Y, -8);
+            ADP_Update(AXIS_X);
+            ADP_Update(AXIS_Y);
+        }
+        break;
+    case stSubOperate_EdgeScane_step3:
+        ADP_GetLimitState(AXIS_X,false,&limitStateXNeg);
+        ADP_GetLimitState(AXIS_Y,false,&limitStateYNeg);
+        if(limitStateXNeg == true && limitStateYNeg == true)
+        {
+            machine_stSubState_Operate = stSubOperate_Finish;
+        }
+        break;
+    case stSubOperate_Finish:
+        machine_stSubState_Operate = stSubOperate_NotIn;
+        machine_stMainState = stMain_Wait;
     }
 }
 
+void Machine::SubStateOpBtnScanBoard()
+{
+    qDebug()<<"scane";
+    if(machine_stMainState == stMain_Wait && machine_stSubState_Operate == stSubOperate_NotIn)
+    {
+        machine_stMainState = stMain_Operate;
+        machine_stSubState_Operate = stSubOperate_EdgeScane_step1;
+        Jog.acc = 0.05;
+        Jog.dec = 0.05;
+        Jog.smooth = 0.5;
+        ADP_ClrSts(1,4);
+        ADP_PrfJog(AXIS_X);
+        ADP_PrfJog(AXIS_Y);
+        ADP_SetJogPrm (AXIS_X,&Jog);
+        ADP_SetJogPrm (AXIS_Y,&Jog);
+        ADP_SetVel(AXIS_X, -5);
+        ADP_SetVel(AXIS_Y, -5);
+        ADP_Update(AXIS_X);
+        ADP_Update(AXIS_Y);
+    }
+}
 void Machine::SubStateOpBtnPress(int id)
 {
     qDebug()<<"pre"+QString::number(id);

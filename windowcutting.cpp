@@ -30,6 +30,7 @@ WindowCutting::WindowCutting(QWidget *parent) :
     connect(ui->btnDirGroup,SIGNAL(buttonReleased(int)),mMachine,SLOT(SubStateOpBtnRelease(int)));
     connect(this,SIGNAL(keyPressed(QKeyEvent)),mMachine,SLOT(SubStateOpKeyPress(QKeyEvent)));
     connect(this,SIGNAL(keyReleased(QKeyEvent)),mMachine,SLOT(SubStateOpKeyRelease(QKeyEvent)));
+    connect(ui->actionSizeCalibration,SIGNAL(triggered()),mMachine,SLOT(SubStateOpBtnScanBoard()));
 
 
 //----UserLog
@@ -44,11 +45,16 @@ WindowCutting::WindowCutting(QWidget *parent) :
 void WindowCutting::debugTask_10ms()
 {
     long x,y;
+    double xPos=0,yPos=0;
     ADP_GetSts(1,&x);
     ADP_GetSts(2,&y);
+    ADP_GetAxisPrfPos(AXIS_X,&xPos);
+    ADP_GetAxisPrfPos(AXIS_Y,&yPos);
     ui->lb_x->setText(QString::number(x));
     ui->lb_y->setText(QString::number(y));
     ui->lb_st->setText(QString::number(mMachine->machine_ctSubState_Operate_Key));
+    ui->lb_xPos->setText("x "+QString::number(static_cast<int>(xPos)));
+    ui->lb_yPos->setText("y "+QString::number(static_cast<int>(yPos)));
 }
 bool WindowCutting::eventFilter(QObject *watched, QEvent *e)
 {

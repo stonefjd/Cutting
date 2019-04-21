@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>837</width>
-    <height>490</height>
+    <width>809</width>
+    <height>547</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -62,9 +62,10 @@
    <addaction name="actionWindOut"/>
    <addaction name="actionResetOrigin"/>
    <addaction name="actionMachToZero"/>
-   <addaction name="actionEdgeDetection"/>
+   <addaction name="actionEdgeScan"/>
    <addaction name="actionToolDeepCalibration"/>
    <addaction name="actionToolPositionCalibration"/>
+   <addaction name="actionSizeCalibration"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="dockWgtCutFile">
@@ -182,55 +183,8 @@
     <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>20</x>
        <y>10</y>
-       <width>77</width>
-       <height>130</height>
-      </rect>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QPushButton" name="pushButton">
-        <property name="text">
-         <string>TEST1</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton_2">
-        <property name="text">
-         <string>TEST2</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton_3">
-        <property name="text">
-         <string>TEST3</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton_4">
-        <property name="text">
-         <string>TEST4</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="testLable">
-        <property name="text">
-         <string>TextLabel</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-    <widget class="QWidget" name="layoutWidget">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>240</y>
        <width>104</width>
        <height>104</height>
       </rect>
@@ -370,45 +324,6 @@
       </item>
      </layout>
     </widget>
-    <widget class="QLabel" name="lb_x">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>160</y>
-       <width>54</width>
-       <height>12</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>TextLabel</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="lb_y">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>180</y>
-       <width>54</width>
-       <height>12</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>TextLabel</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="lb_st">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>200</y>
-       <width>54</width>
-       <height>12</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>TextLabel</string>
-     </property>
-    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -416,7 +331,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>837</width>
+     <width>809</width>
      <height>23</height>
     </rect>
    </property>
@@ -451,6 +366,125 @@
    <addaction name="menuSettings"/>
    <addaction name="menuViewItem"/>
    <addaction name="menuHelpItem"/>
+  </widget>
+  <widget class="QDockWidget" name="dockWgtDebug">
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <widget class="QLabel" name="lb_x">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>20</y>
+       <width>54</width>
+       <height>12</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lb_st">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>60</y>
+       <width>54</width>
+       <height>12</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lb_y">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>40</y>
+       <width>54</width>
+       <height>12</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>150</y>
+       <width>77</width>
+       <height>130</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QPushButton" name="pushButton">
+        <property name="text">
+         <string>TEST1</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_2">
+        <property name="text">
+         <string>TEST2</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_3">
+        <property name="text">
+         <string>TEST3</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_4">
+        <property name="text">
+         <string>TEST4</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="testLable">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QLabel" name="lb_xPos">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>80</y>
+       <width>54</width>
+       <height>12</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>x</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lb_yPos">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>100</y>
+       <width>54</width>
+       <height>12</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>y</string>
+     </property>
+    </widget>
+   </widget>
   </widget>
   <action name="actionImportCutFile">
    <property name="text">
@@ -488,7 +522,7 @@
     <string>机械回零</string>
    </property>
   </action>
-  <action name="actionEdgeDetection">
+  <action name="actionEdgeScan">
    <property name="text">
     <string>边缘扫描</string>
    </property>
@@ -594,6 +628,11 @@
    </property>
    <property name="text">
     <string>切割列表操作栏</string>
+   </property>
+  </action>
+  <action name="actionSizeCalibration">
+   <property name="text">
+    <string>尺寸校准</string>
    </property>
   </action>
  </widget>

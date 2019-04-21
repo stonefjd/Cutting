@@ -6,6 +6,7 @@
 #include "Fan/fan.h"
 #include "PhysicalLayer/hardwareadaptor.h"
 #include "Machine/Knife/sdknifeconfig.h"
+#include "Machine/Config/configmachine.h"
 
 #define AXIS_X 1
 #define AXIS_Y 2
@@ -39,7 +40,10 @@
 #define stSubOperate_BtnO   9
 #define stSubOperate_Finish 10
 #define stSubOperate_Fail   11
-
+#define stSubOperate_EdgeScane_step1   12
+#define stSubOperate_EdgeScane_step2   13
+#define stSubOperate_EdgeScane_step3   14
+#define stSubOperate_EdgeScane_step4   15
 
 //#define stSubNotIn      0
 //#define stSubData       1
@@ -73,7 +77,7 @@ public: // sub class obj
     uint8_t machine_ctSubState_Operate_Key;
     Fan mFan_1;
     SDKnifeConfig sdKnifeConfigLib;
-
+    ConfigMachine mConfig;
 public:
     void MInit();
     void MainStateRun();
@@ -87,6 +91,7 @@ public slots:
     void SubStateOpBtnRelease(int id);
     void SubStateOpKeyPress(QKeyEvent event);
     void SubStateOpKeyRelease(QKeyEvent event);
+    void SubStateOpBtnScanBoard();
 
 };
 

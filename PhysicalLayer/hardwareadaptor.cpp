@@ -174,6 +174,12 @@ void ADP_Stop(long _mask,long _option)
     GT_Stop(_mask,_option);
 #endif
 }
+void ADP_GetAxisPrfPos(short _axis,double *_pValue)
+{
+#ifdef GTSLIB
+    GT_GetAxisPrfPos( _axis, _pValue);
+#endif
+}
 //void ADP_
 //{
 //#ifdef GTSLIB
