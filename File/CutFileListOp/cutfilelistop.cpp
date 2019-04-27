@@ -104,13 +104,13 @@ void CutFileListOp::CutFileList_ExportFileFromList(QTableWidget *_tableWidget)
         QTextStream in(&file);
         for(int i=0;i<fileVector.count();i++)
         {
-            in<<fileVector.at(i).cutCount<<' '<<fileVector.at(i).cutFilePath<<'\n';
+            in<<fileVector.at(i).cutCount<<'|'<<fileVector.at(i).cutFilePath<<'\n';
         }
         file.close();
     }
 }
 //导入单个裁切文件
-void CutFileListOp::CutFileList_ChoseSingleFile()
+void CutFileListOp::CutFileList_ChoseSingleFile(QTableWidget *_tableWidget)
 {
     QStringList tempStrList;
     tempStrList = CutFileList_ViewOpenFile(QTranslator::tr("打开刀路文件"),QTranslator::tr("file(*.xml *.png)"),QFileDialog::ExistingFiles);
@@ -148,11 +148,14 @@ void CutFileListOp::CutFileList_ChoseSingleFile()
             CutFileList_LoadCutData(fileVector.count()-1);
         }
     }
-//    CutFileList_PrintVector(fileVector);
-
+}
+void CutFileListOp::CutFileList_SelectFirstRow(QTableWidget *_tableWidget)
+{
+    if(_tableWidget->currentRow()>0)
+        _tableWidget->setCurrentCell(1,0,QItemSelectionModel::Select);
 }
 //--2019.03.01导入文件列表
-void CutFileListOp::CutFileList_ChoseList()
+void CutFileListOp::CutFileList_ChoseList(QTableWidget *_tableWidget)
 {
     //打开文件获取切割任务列表文件
     QStringList tempStrList;
@@ -175,14 +178,14 @@ void CutFileListOp::CutFileList_ChoseList()
     {
         QString pathInFileList = in.readLine();
         //没有文档地址
-        if(pathInFileList.split(' ').count()<2)
+        if(pathInFileList.split('|').count()<2)
         {
             QMessageBox msgBox;
             msgBox.setText(tr("列表内有文件不存在，损坏或者路径被修改"));
             msgBox.exec();
             return;
         }
-        QFileInfo fileinfo(pathInFileList.split(' ').at(1));
+        QFileInfo fileinfo(pathInFileList.split('|').at(1));
         //如果列表内的文件不存在则报错
         if(!fileinfo.isFile())
         {
@@ -197,11 +200,11 @@ void CutFileListOp::CutFileList_ChoseList()
     while(!in.atEnd())
     {
         QString pathInFileList = in.readLine();
-        QFileInfo fileinfo(pathInFileList.split(' ').at(1));
+        QFileInfo fileinfo(pathInFileList.split('|').at(1));
         fileData_t fileData;
         fileData.cutFileName = fileinfo.fileName();
         fileData.cutFilePath = fileinfo.filePath();
-        fileData.cutCount = pathInFileList.split(' ').at(0).toInt();
+        fileData.cutCount = pathInFileList.split('|').at(0).toInt();
         //将文件特性加载入文件容器中
         fileVector.insert(fileVector.end(),fileData);
     }
@@ -238,23 +241,18 @@ void CutFileListOp::CutFileList_DrawFileData(QFrame *_ptFrame)
                     {
                         if(l >=1)
                         {
-                            painter.drawLine(fileVector.at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l-1),
-                                             fileVector.at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l));
+                            painter.drawLine(fileVector.at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l-1)/128,
+                                             fileVector.at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l)/128);
                         }
-//                        else if(fileVector.at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).lineType==1)
-//                        {
-//                            painter.drawEllipse(fileVector.at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).dotCluster.at(l).dotOrg,
-//                                                2,2);
-//                        }
                     }
                 }
                 for(int punchCnt = 0;punchCnt<fileVector.at(0).pageCluster.at(i).sampleCluster.at(j).punchDotCount;punchCnt++)
                 {
-                    painter.drawEllipse(fileVector.at(0).pageCluster.at(i).sampleCluster.at(j).punchCluster.at(punchCnt).dot,2,2);
+                    painter.drawEllipse(fileVector.at(0).pageCluster.at(i).sampleCluster.at(j).punchCluster.at(punchCnt).dot/128,2,2);
                 }
                 for(int drillCnt = 0;drillCnt<fileVector.at(0).pageCluster.at(i).sampleCluster.at(j).punchDotCount;drillCnt++)
                 {
-                    painter.drawEllipse(fileVector.at(0).pageCluster.at(i).sampleCluster.at(j).punchCluster.at(drillCnt).dot,1,1);
+                    painter.drawEllipse(fileVector.at(0).pageCluster.at(i).sampleCluster.at(j).punchCluster.at(drillCnt).dot/128,1,1);
                 }
             }
         }
@@ -368,10 +366,6 @@ void CutFileListOp::CutFileList_LoadCutData(int _fIdx)
                                 {
                                     fileVector[fIdx].pageCluster[wIdx].sampleCluster[sIdx].lineCluster[lIdx].lineId = d.toElement().text().toInt();
                                 }
-//                                else if(d.toElement().tagName() == "PtCount")
-//                                {
-//                                    fileVector[fIdx].pageCluster[wIdx].sampleCluster[sIdx].lineCluster[lIdx].lineType = d.toElement().text().toInt();
-//                                }
                                 else if(d.toElement().tagName() == "Sp")
                                 {
                                     fileVector[fIdx].pageCluster[wIdx].sampleCluster[sIdx].lineCluster[lIdx].toolId = d.toElement().text().toInt();
@@ -387,8 +381,8 @@ void CutFileListOp::CutFileList_LoadCutData(int _fIdx)
                                     {
                                         QPointF dot;
                                         fileVector[fIdx].pageCluster[wIdx].sampleCluster[sIdx].lineCluster[lIdx].pointCluster.append(dot);
-                                        fileVector[fIdx].pageCluster[wIdx].sampleCluster[sIdx].lineCluster[lIdx].pointCluster[dIdx].setX(d.toElement().text().split(';').at(dIdx).split(',').at(0).toInt()>>12);
-                                        fileVector[fIdx].pageCluster[wIdx].sampleCluster[sIdx].lineCluster[lIdx].pointCluster[dIdx].setY(d.toElement().text().split(';').at(dIdx).split(',').at(1).toInt()>>12);
+                                        fileVector[fIdx].pageCluster[wIdx].sampleCluster[sIdx].lineCluster[lIdx].pointCluster[dIdx].setX(d.toElement().text().split(';').at(dIdx).split(',').at(0).toInt()>>5);
+                                        fileVector[fIdx].pageCluster[wIdx].sampleCluster[sIdx].lineCluster[lIdx].pointCluster[dIdx].setY(d.toElement().text().split(';').at(dIdx).split(',').at(1).toInt()>>5);
                                     }
                                 }
                             }
@@ -419,8 +413,8 @@ void CutFileListOp::CutFileList_LoadCutData(int _fIdx)
                                 }
                                 else if(d.toElement().tagName() == "PtCoor")
                                 {
-                                    fileVector[fIdx].pageCluster[wIdx].sampleCluster[sIdx].punchCluster[punchIdx].dot.setX(d.toElement().text().split(';').at(0).split(',').at(0).toInt()>>12);
-                                    fileVector[fIdx].pageCluster[wIdx].sampleCluster[sIdx].punchCluster[punchIdx].dot.setY(d.toElement().text().split(';').at(0).split(',').at(1).toInt()>>12);
+                                    fileVector[fIdx].pageCluster[wIdx].sampleCluster[sIdx].punchCluster[punchIdx].dot.setX(d.toElement().text().split(';').at(0).split(',').at(0).toInt()>>5);
+                                    fileVector[fIdx].pageCluster[wIdx].sampleCluster[sIdx].punchCluster[punchIdx].dot.setY(d.toElement().text().split(';').at(0).split(',').at(1).toInt()>>5);
                                 }
                             }
                             punchIdx++;
@@ -449,8 +443,8 @@ void CutFileListOp::CutFileList_LoadCutData(int _fIdx)
                                 }
                                 else if(d.toElement().tagName() == "PtCoor")
                                 {
-                                    fileVector[fIdx].pageCluster[wIdx].sampleCluster[sIdx].drillCluster[drillIdx].dot.setX(d.toElement().text().split(';').at(0).split(',').at(0).toInt()>>12);
-                                    fileVector[fIdx].pageCluster[wIdx].sampleCluster[sIdx].drillCluster[drillIdx].dot.setY(d.toElement().text().split(';').at(0).split(',').at(1).toInt()>>12);
+                                    fileVector[fIdx].pageCluster[wIdx].sampleCluster[sIdx].drillCluster[drillIdx].dot.setX(d.toElement().text().split(';').at(0).split(',').at(0).toInt()>>5);
+                                    fileVector[fIdx].pageCluster[wIdx].sampleCluster[sIdx].drillCluster[drillIdx].dot.setY(d.toElement().text().split(';').at(0).split(',').at(1).toInt()>>5);
                                 }
                             }
                             drillIdx++;

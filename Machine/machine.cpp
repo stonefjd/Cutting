@@ -77,6 +77,10 @@ void Machine:: SubStateRunWait()
 {
 
 }
+void Machine::SubStateRunCut()
+{
+
+}
 void Machine::SubStateRunInitial()
 {
     switch(machine_stSubState_Init)

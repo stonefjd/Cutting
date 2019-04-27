@@ -84,6 +84,8 @@ public:
     void SubStateRunInitial();
     void SubStateRunWait();
     void SubStateRunOperate();
+    void SubStateRunCut();
+
 signals:
 public slots:
     void Task_10ms();
