@@ -18,10 +18,11 @@
 struct dotData_t
 {
     int dotId;
+    int toolId;//切割当前线条的刀ID
     float dotAngle;
-    QPointF dotOrg;
+    float dotDeep;
+    QPointF dot;
 };
-
 struct lineData_t
 {
     int toolId;//切割当前线条的刀ID
@@ -30,19 +31,24 @@ struct lineData_t
     int dotCount;//当前线条的点数量
     float lineDeep;//当前线条刀深
     QPointF toolOffset;//刀偏置
-    QList<dotData_t> dotCluster;//当前线条的点集合
+    QList<QPointF> pointCluster;//当前线条的点集合
+
 };
 struct sampleData_t
 {
     int sampleId;//当前样片ID
     int lineCount;//当前窗中线条数量
+    int punchDotCount;
+    int drillDotCount;
     QList<lineData_t> lineCluster;//当前窗线条数据集
+    QList<dotData_t> punchCluster;
+    QList<dotData_t> drillCluster;
 };
-struct windowData_t
+struct pageData_t
 {
-    int windowId;//当前窗ID
+    int pageId;//当前窗ID pageId
     int sampleCount;//当前窗中的样片数量
-    float windowLength;//当前窗裁完后，调用该长度进行移动
+    float pageLength;//当前窗裁完后，调用该长度进行移动
     QList<sampleData_t> sampleCluster;//当前窗的样片数据集
 };
 
@@ -51,8 +57,8 @@ struct fileData_t
     QString cutFileName;
     QString cutFilePath;
     int cutCount;
-    int windowCount;//当前文档中窗数量
-    QList<windowData_t> windowCluster;//当前文档中的窗数据集
+    int pageCount;//当前文档中窗数量
+    QList<pageData_t> pageCluster;//当前文档中的窗数据集
 };
 
 class CutFileListOp : public QObject
