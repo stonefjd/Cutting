@@ -1,8 +1,9 @@
 #include "configmachine.h"
+#include "configinfo.h"
 
 ConfigMachine::ConfigMachine(QWidget *parent) : QWidget(parent)
 {
-    machCfgPath = "Settings\\CutterSet.ini";
+    machCfgPath = SETTING_PATH;
 }
 QString ConfigMachine::GetMachCfgPath()
 {

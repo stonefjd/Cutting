@@ -7,14 +7,9 @@
 #include "PhysicalLayer/hardwareadaptor.h"
 #include "Machine/Knife/sdknifeconfig.h"
 #include "Machine/Config/configmachine.h"
+#include "Machine/Config/confighead.h"
 
-#define AXIS_X 1
-#define AXIS_Y 2
 
-#define X_Limit 1
-#define Y_Limit 2
-#define Z_Limit 3
-#define A_Limit 4
 
 #define stMain_Stop         0
 #define stMain_Init         1
@@ -77,7 +72,8 @@ public: // sub class obj
     uint8_t machine_ctSubState_Operate_Key;
     Fan mFan_1;
     SDKnifeConfig sdKnifeConfigLib;
-    ConfigMachine mConfig;
+    ConfigMachine   mConfig;
+    ConfigHead      hConfig;
 public:
     void MInit();
     void MainStateRun();
