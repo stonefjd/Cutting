@@ -66,9 +66,8 @@ class CutFileListOp : public QObject
     Q_OBJECT
 public:
     explicit CutFileListOp(QObject *parent = nullptr);
-    void CutFileList_SelectFirstRow(QTableWidget *_tableWidget);
-    void CutFileList_ChoseList(QTableWidget *_tableWidget);
-    void CutFileList_ChoseSingleFile(QTableWidget *_tableWidget);
+    void CutFileList_ChoseList();
+    void CutFileList_ChoseSingleFile();
     void CutFileList_RemoveFileFromList(QTableWidget *_tableWidget);
     void CutFileList_UpFileFromList(QTableWidget *_tableWidget);
     void CutFileList_DownFileFromList(QTableWidget *_tableWidget);

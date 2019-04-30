@@ -57,7 +57,6 @@ private slots:
     void on_actionSettingsParameter_triggered();
 
     void on_actionImportCutFile_triggered();
-
     void on_actionImportCutFileList_triggered();
 
     void on_actionLogOn_triggered();
@@ -73,6 +72,9 @@ signals:
 protected:
     bool eventFilter(QObject *watched, QEvent *e);
     void userLog_PermissionConfirm();
+private:
+    void messageBoxAutoRemove(QString _str);
+
 private:
     Ui::WindowCutting   *ui;
     Machine             *mMachine;

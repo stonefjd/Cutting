@@ -44,6 +44,10 @@ void CutFileListOp::CutFileList_DisplayList(QTableWidget *_tableWidget)
             _tableWidget->setItem(i,2,tablePath);
             connect(spinBox,SIGNAL(valueChanged(int)),this,SLOT(CutFileList_SpinBoxChg(int)));
         }
+        if(fileVector.count() ==1 )
+        {
+            _tableWidget->setCurrentCell(0,QItemSelectionModel::Select);
+        }
     }
     else
     {
@@ -59,7 +63,6 @@ void CutFileListOp::CutFileList_DisplayList(QTableWidget *_tableWidget)
 void CutFileListOp::CutFileList_RemoveFileFromList(QTableWidget *_tableWidget)
 {
     int rowNow = _tableWidget->currentRow();
-    qDebug()<<rowNow;
     if(fileVector.count()>0)
     {
         QMessageBox msgBox;
@@ -86,7 +89,7 @@ void CutFileListOp::CutFileList_UpFileFromList(QTableWidget *_tableWidget)
 void CutFileListOp::CutFileList_DownFileFromList(QTableWidget *_tableWidget)
 {
     int rowNow = _tableWidget->currentRow();
-    if(rowNow<_tableWidget->rowCount()-1)
+    if(rowNow<(_tableWidget->rowCount()-1)&&rowNow>0&&_tableWidget->rowCount()>1)
     {
         fileVector.move(rowNow,rowNow+1);
         _tableWidget->setCurrentCell(rowNow,QItemSelectionModel::Deselect);
@@ -110,7 +113,7 @@ void CutFileListOp::CutFileList_ExportFileFromList(QTableWidget *_tableWidget)
     }
 }
 //导入单个裁切文件
-void CutFileListOp::CutFileList_ChoseSingleFile(QTableWidget *_tableWidget)
+void CutFileListOp::CutFileList_ChoseSingleFile()
 {
     QStringList tempStrList;
     tempStrList = CutFileList_ViewOpenFile(QTranslator::tr("打开刀路文件"),QTranslator::tr("file(*.xml *.png)"),QFileDialog::ExistingFiles);
@@ -149,13 +152,8 @@ void CutFileListOp::CutFileList_ChoseSingleFile(QTableWidget *_tableWidget)
         }
     }
 }
-void CutFileListOp::CutFileList_SelectFirstRow(QTableWidget *_tableWidget)
-{
-    if(_tableWidget->currentRow()>0)
-        _tableWidget->setCurrentCell(1,0,QItemSelectionModel::Select);
-}
 //--2019.03.01导入文件列表
-void CutFileListOp::CutFileList_ChoseList(QTableWidget *_tableWidget)
+void CutFileListOp::CutFileList_ChoseList()
 {
     //打开文件获取切割任务列表文件
     QStringList tempStrList;

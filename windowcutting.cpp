@@ -17,6 +17,8 @@ WindowCutting::WindowCutting(QWidget *parent) :
     ui->btnDirGroup->setId(ui->btnOpUp,BTN_ID_U);
     ui->btnDirGroup->setId(ui->btnOpDown,BTN_ID_D);
     ui->btnDirGroup->setId(ui->btnOpOrg,BTN_ID_O);
+//----status bar
+    ui->statusBar->showMessage("ready");
 //----CutFileOperator
     ui->dockWgtCutFile->setWindowTitle(tr("任务列表"));
     ui->dockWgtCutFile->setMaximumWidth(200);
@@ -201,18 +203,27 @@ void WindowCutting::on_pushButton_4_clicked()
 //    this->mMachine.mFan_1.SetState_FanWindOut();
 }
 
+void WindowCutting::messageBoxAutoRemove(QString _str)
+{
+    QMessageBox *msgBox = new QMessageBox;
+    msgBox->setText(_str);
+    QTimer::singleShot(500,msgBox,SLOT(accept()));
+    msgBox->exec();
+    delete msgBox;
+}
+
 //--CutFileOperator
 void WindowCutting::on_btnFileAdd_clicked()
 {
-    cutFileList.CutFileList_ChoseSingleFile(ui->tableWgtCutFile);
+    cutFileList.CutFileList_ChoseSingleFile();
     cutFileList.CutFileList_DisplayList(ui->tableWgtCutFile);
-    cutFileList.CutFileList_SelectFirstRow(ui->tableWgtCutFile);
+    ui->paintFrame->repaint();
 }
 void WindowCutting::on_btnFileImport_clicked()
 {
-    cutFileList.CutFileList_ChoseList(ui->tableWgtCutFile);
+    cutFileList.CutFileList_ChoseList();
     cutFileList.CutFileList_DisplayList(ui->tableWgtCutFile);
-    cutFileList.CutFileList_SelectFirstRow(ui->tableWgtCutFile);
+    ui->paintFrame->repaint();
 }
 void WindowCutting::on_btnFileRmv_clicked()
 {
@@ -235,12 +246,12 @@ void WindowCutting::on_btnFileExport_clicked()
 }
 void WindowCutting::on_actionImportCutFile_triggered()
 {
-    cutFileList.CutFileList_ChoseSingleFile(ui->tableWgtCutFile);
+    cutFileList.CutFileList_ChoseSingleFile();
     cutFileList.CutFileList_DisplayList(ui->tableWgtCutFile);
 }
 void WindowCutting::on_actionImportCutFileList_triggered()
 {
-    cutFileList.CutFileList_ChoseList(ui->tableWgtCutFile);
+    cutFileList.CutFileList_ChoseList();
     cutFileList.CutFileList_DisplayList(ui->tableWgtCutFile);
 }
 //--userLog
