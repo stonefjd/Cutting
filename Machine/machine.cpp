@@ -9,8 +9,7 @@ Machine::Machine(QObject *parent) : QObject(parent)
     sdKnifeConfigLib.ReadConfigFile();
     qDebug()<<sdKnifeConfigLib.GetKnifesCount();
 
-    mConfig.GetMachineInfo();
-
+    mConfig.GetMachineBaseInfo();
     //--------StateMachine Setting--------//
     machine_stMainState = stMain_Init;
     machine_stSubState_Init = stSubInit_NotIn;
@@ -162,7 +161,7 @@ void Machine::SubStateRunInitial()
                 ADP_SetCrdPrm(1, &crdPrm);
                 ADP_CrdClear(1, 0);
                  // 该插补段的坐标系是坐标系1 //xy点// 该插补段的目标速度：3pulse/ms // 插补段的加速度：0.1pulse/ms^2// 终点速度为0 // 向坐标系1的FIFO0缓存区传递该直线插补数据
-                ADP_LnXY(1,5000,2000,3,0.05,0,0);
+                ADP_LnXY(1,2000,2000,3,0.05,0,0);
                 machine_stSubState_Init = stSubInit_LOrg;
                 ADP_CrdStart(1, 0);
                 break;

@@ -1,4 +1,4 @@
-#include "configmachine.h"
+﻿#include "configmachine.h"
 #include "configinfo.h"
 
 ConfigMachine::ConfigMachine(QWidget *parent) : QWidget(parent)
@@ -39,8 +39,7 @@ double  ConfigMachine::GetMachPulsePerMillimeter(int _axis)
 {
     return machPulsePerMillimeter[_axis-1];
 }
-
-void ConfigMachine::GetMachineInfo()
+void ConfigMachine::GetMachineBaseInfo()
 {
     QString strConfigPath = machCfgPath;
 
@@ -114,12 +113,48 @@ void ConfigMachine::GetMachineInfo()
         for(int i=0;i<AXIS_SUM;i++)
             machPulsePerMillimeter[i] = (*szBuf).split(',').at(i).toDouble();
     }
-
+    //压料时间(s)
+    strKey = ("MachTimeSwage");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        machTimeSwage = (*szBuf).toInt();
+    }
+    //吹气时间(s)
+    strKey = ("MachTimeBlow");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        machTimeBlow = (*szBuf).toInt();
+    }
+    //放料开始提前时间(s)
+    strKey = ("MachTimeLoadBefore");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        machTimeLoadBefore = (*szBuf).toInt();
+    }
+    //放料结束提前时间(s)
+    strKey = ("MachTimeLoadAfter");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        machTimeLoadAfter = (*szBuf).toInt();
+    }
+    //吸气延迟时间(ms)
+    strKey = ("MachTimeInhaleDelay");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        machTimeInhaleDelay = (*szBuf).toInt();
+    }
     //机头个数
     strKey = ("MachHeadCount");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
         machHeadCount = (*szBuf).toInt();
+    }
+    //机头信息
+    for(int _headCnt=0;_headCnt<machHeadCount;_headCnt++)
+    {
+        ConfigHead *head = new ConfigHead;
+        head->GetHeadInfo(_headCnt);
+        headConfig.append(head);
     }
 }
 bool ConfigMachine::WritePrivateProfileString(QString strSect,QString strKey,QString strText,QString strConfigPath)

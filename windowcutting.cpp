@@ -203,14 +203,7 @@ void WindowCutting::on_pushButton_4_clicked()
 //    this->mMachine.mFan_1.SetState_FanWindOut();
 }
 
-void WindowCutting::messageBoxAutoRemove(QString _str)
-{
-    QMessageBox *msgBox = new QMessageBox;
-    msgBox->setText(_str);
-    QTimer::singleShot(500,msgBox,SLOT(accept()));
-    msgBox->exec();
-    delete msgBox;
-}
+
 
 //--CutFileOperator
 void WindowCutting::on_btnFileAdd_clicked()
@@ -318,3 +311,12 @@ void WindowCutting::on_actionWindOut_toggled(bool arg1)
     }
     ui->testLable->setText(QString::number(mMachine->mFan_1.Fan_GetState()));
 }
+
+//void WindowCutting::messageBoxAutoRemove(QString _str)
+//{
+//    QMessageBox *msgBox = new QMessageBox;
+//    msgBox->setText(_str);
+//    QTimer::singleShot(500,msgBox,SLOT(accept()));
+//    msgBox->exec();
+//    delete msgBox;
+//}

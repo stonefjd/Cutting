@@ -73,7 +73,6 @@ protected:
     bool eventFilter(QObject *watched, QEvent *e);
     void userLog_PermissionConfirm();
 private:
-    void messageBoxAutoRemove(QString _str);
 
 private:
     Ui::WindowCutting   *ui;

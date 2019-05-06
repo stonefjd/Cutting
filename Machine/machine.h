@@ -73,7 +73,6 @@ public: // sub class obj
     Fan mFan_1;
     SDKnifeConfig sdKnifeConfigLib;
     ConfigMachine   mConfig;
-    ConfigHead      hConfig;
 public:
     void MInit();
     void MainStateRun();

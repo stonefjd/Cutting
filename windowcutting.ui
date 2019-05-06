@@ -60,7 +60,7 @@
    <addaction name="actionStop"/>
    <addaction name="actionWindIn"/>
    <addaction name="actionWindOut"/>
-   <addaction name="actionResetOrigin"/>
+   <addaction name="actionResetRange"/>
    <addaction name="actionMachToZero"/>
    <addaction name="actionEdgeScan"/>
    <addaction name="actionToolDeepCalibration"/>
@@ -580,9 +580,12 @@
     <string>导出</string>
    </property>
   </action>
-  <action name="actionResetOrigin">
+  <action name="actionResetRange">
    <property name="text">
-    <string>重设原点</string>
+    <string>重设范围</string>
+   </property>
+   <property name="toolTip">
+    <string>重设范围</string>
    </property>
   </action>
   <action name="actionlanguage">
