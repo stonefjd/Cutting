@@ -2,7 +2,6 @@
 
 CutFileListOp::CutFileListOp(QObject *parent) : QObject(parent)
 {
-
 }
 void CutFileListOp::CutFileList_WidgetInit(QTableWidget *_tableWidget)
 {
@@ -89,7 +88,7 @@ void CutFileListOp::CutFileList_UpFileFromList(QTableWidget *_tableWidget)
 void CutFileListOp::CutFileList_DownFileFromList(QTableWidget *_tableWidget)
 {
     int rowNow = _tableWidget->currentRow();
-    if(rowNow<(_tableWidget->rowCount()-1)&&rowNow>0&&_tableWidget->rowCount()>1)
+    if(rowNow<(_tableWidget->rowCount()-1)&&rowNow>=0&&_tableWidget->rowCount()>1)
     {
         fileVector.move(rowNow,rowNow+1);
         _tableWidget->setCurrentCell(rowNow,QItemSelectionModel::Deselect);
@@ -219,43 +218,6 @@ QString CutFileListOp::CutFileList_GetListPath()
     return filePath;
 }
 
-void CutFileListOp::CutFileList_DrawFileData(QFrame *_ptFrame)
-{
-    QPainter painter(_ptFrame);
-    QPen pen(QColor(100,212,100),0);
-
-    painter.setViewport(0,0,150,150);
-    painter.setWindow(0,0,150,150);
-    painter.setPen(pen);
-    if(!fileVector.isEmpty())
-    {
-        for(int i= 0;i<fileVector.at(0).pageCluster.count();i++)
-        {
-            for(int j = 0;j<fileVector.at(0).pageCluster.at(i).sampleCluster.count();j++)
-            {
-                for(int k = 0;k<fileVector.at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.count();k++)
-                {
-                    for(int l = 0;l<fileVector.at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.count();l++)
-                    {
-                        if(l >=1)
-                        {
-                            painter.drawLine(fileVector.at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l-1)/128,
-                                             fileVector.at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l)/128);
-                        }
-                    }
-                }
-                for(int punchCnt = 0;punchCnt<fileVector.at(0).pageCluster.at(i).sampleCluster.at(j).punchDotCount;punchCnt++)
-                {
-                    painter.drawEllipse(fileVector.at(0).pageCluster.at(i).sampleCluster.at(j).punchCluster.at(punchCnt).dot/128,2,2);
-                }
-                for(int drillCnt = 0;drillCnt<fileVector.at(0).pageCluster.at(i).sampleCluster.at(j).punchDotCount;drillCnt++)
-                {
-                    painter.drawEllipse(fileVector.at(0).pageCluster.at(i).sampleCluster.at(j).punchCluster.at(drillCnt).dot/128,1,1);
-                }
-            }
-        }
-    }
-}
 
 //--槽函数
 //2019.03.01修改内容

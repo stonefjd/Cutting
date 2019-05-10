@@ -43,7 +43,8 @@ SOURCES += \
     Machine/Config/configknife.cpp \
     Machine/Config/configmachine.cpp \
     Machine/Config/configknifelib.cpp \
-    Machine/Config/configapron.cpp
+    Machine/Config/configapron.cpp \
+    File/cutfiledraw.cpp
 
 HEADERS += \
     windowcutting.h \
@@ -66,7 +67,9 @@ HEADERS += \
     Machine/Config/configmachine.h \
     Machine/Config/configknifelib.h \
     Machine/Config/configapron.h \
-    Machine/Config/configinfo.h
+    Machine/Config/configinfo.h \
+    File/cutfiledraw.h \
+    File/cutfileformat.h
 
 FORMS += \
         windowcutting.ui \

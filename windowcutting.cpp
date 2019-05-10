@@ -7,6 +7,8 @@ WindowCutting::WindowCutting(QWidget *parent) :
     ui(new Ui::WindowCutting)
 {
     ui->setupUi(this);
+//----Initial the private variable
+
 //----disable the ui
     ui->menuSettings->setDisabled(true);
     ui->menuViewItem->setDisabled(true);
@@ -24,7 +26,11 @@ WindowCutting::WindowCutting(QWidget *parent) :
     ui->dockWgtCutFile->setMaximumWidth(200);
     cutFileList.CutFileList_WidgetInit(ui->tableWgtCutFile);
 
+//----CutFileDraw
+    ui->paintFrame->setMouseTracking(false);
     ui->paintFrame->installEventFilter(this);
+    cutFlieDraw.CutFileDraw_SetPaintFrame(ui->paintFrame);
+    cutFlieDraw.CutFileDraw_SetPaintContent(&cutFileList.fileVector);
 //----Machine Init
     //mMachine.mFan_1.StateMachineInit(ui->actionWindIn,ui->actionWindOut);
     mMachine = new Machine;
@@ -60,11 +66,43 @@ void WindowCutting::debugTask_10ms()
 }
 bool WindowCutting::eventFilter(QObject *watched, QEvent *e)
 {
-    if(watched == ui->paintFrame && e->type() == QEvent::Paint)
+    if(watched == ui->paintFrame)
     {
-        cutFileList.CutFileList_DrawFileData(ui->paintFrame);
+        if(e->type() == QEvent::Paint)
+        {
+            cutFlieDraw.CutFileDraw_DisplayFileData();
+        }
+        if(e->type() == QEvent::Wheel)
+        {
+            bool subDiv =false;
+            QKeyEvent *eventKey = static_cast<QKeyEvent*>(e);
+            if(eventKey->modifiers() == Qt::ControlModifier)
+            {
+                subDiv = true;
+            }
+            QWheelEvent *eventWheel = static_cast<QWheelEvent*>(e);
+            cutFlieDraw.CutFileDraw_SetPosFWheel(eventWheel->pos());
+            cutFlieDraw.CutFileDraw_SetFactor(eventWheel->delta(),subDiv);
+            ui->paintFrame->repaint();
+        }
+        if(e->type() == QEvent::MouseMove)
+        {
+            QMouseEvent *eventMouse = static_cast<QMouseEvent*>(e);
+            cutFlieDraw.CutFileDraw_SetPosFMouseMoveDelta(eventMouse->localPos());
+            ui->paintFrame->repaint();
+        }
+        if(e->type() == QEvent::MouseButtonRelease)
+        {
+            QMouseEvent *eventMouse = static_cast<QMouseEvent*>(e);
+            cutFlieDraw.CutFileDraw_SetPosFMouseReleased(eventMouse->localPos());
+        }
+        if(e->type() == QEvent::MouseButtonPress)
+        {
+            QMouseEvent *eventMouse = static_cast<QMouseEvent*>(e);
+            cutFlieDraw.CutFileDraw_SetPosFMousePressed(eventMouse->localPos());
+        }
     }
-    return QWidget::eventFilter(watched,e);
+    return QMainWindow::eventFilter(watched,e);
 }
 
 WindowCutting::~WindowCutting()
@@ -227,11 +265,13 @@ void WindowCutting::on_btnFileUp_clicked()
 {
     cutFileList.CutFileList_UpFileFromList(ui->tableWgtCutFile);
     cutFileList.CutFileList_DisplayList(ui->tableWgtCutFile);
+    ui->paintFrame->repaint();
 }
 void WindowCutting::on_btnFileDown_clicked()
 {
     cutFileList.CutFileList_DownFileFromList(ui->tableWgtCutFile);
     cutFileList.CutFileList_DisplayList(ui->tableWgtCutFile);
+    ui->paintFrame->repaint();
 }
 void WindowCutting::on_btnFileExport_clicked()
 {

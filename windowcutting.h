@@ -16,6 +16,7 @@
 //#include "File/Settings/settings.h"
 #include "File/CutFileListOp/cutfilelistop.h"
 #include "File/IniOp/iniop.h"
+#include "File/cutfiledraw.h"
 #include "Machine/machine.h"
 #include "PhysicalLayer/gts.h"
 #include "User/userlog.h"
@@ -76,12 +77,13 @@ private:
 
 private:
     Ui::WindowCutting   *ui;
-    Machine             *mMachine;
-    UserLog             *user;
-//    Settings    settings;
-//    IniOp               iniOp;
-    CutFileListOp       cutFileList;
-    QTimer              *debugTimer;
+    Machine         *mMachine;
+    UserLog         *user;
+//  Settings        settings;
+//  IniOp           iniOp;
+    CutFileDraw     cutFlieDraw;
+    CutFileListOp   cutFileList;
+    QTimer          *debugTimer;
 };
 
 #endif // WINDOWCUTTING_H
