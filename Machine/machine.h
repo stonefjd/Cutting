@@ -88,7 +88,7 @@ public slots:
     void SubStateOpBtnRelease(int id);
     void SubStateOpKeyPress(QKeyEvent event);
     void SubStateOpKeyRelease(QKeyEvent event);
-    void SubStateOpBtnScanBoard();
+    void SubStateOpBtnSizeCalibration();
 
 };
 

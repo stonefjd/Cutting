@@ -77,7 +77,7 @@ private:
 
 private:
     Ui::WindowCutting   *ui;
-    Machine         *mMachine;
+    Machine         *mMachine = new Machine;
     UserLog         *user;
 //  Settings        settings;
 //  IniOp           iniOp;

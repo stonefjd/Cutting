@@ -15,7 +15,11 @@ public:
 signals:
 public:
     void GetHeadInfo(int _index);
+    QString GetHeadCfgPath();
 
+    void UpdateHeadMaxPluse(int _xPluse,int _yPluse);
+    void UpdateHeadCutLimit(int _xPluse,int _yPluse);
+    void UpdateHeadCutRange();
     bool GetPrivateProfileString(QString strSect,QString strKey,QString *szBuf,QString strConfigPath);
     bool WritePrivateProfileString(QString strSect,QString strKey,QString strText,QString strConfigPath);
 
@@ -23,23 +27,8 @@ private:
     QString headCfgPath;
     int headIndex;
 
-    double headOrgX;//红色激光点
-    double headOrgY;
-
-    double headPosX;//当前位置
-    double headPosY;
-
-    double headPluseScaleX;//脉冲每毫米
-    double headPluseScaleY;
-
-    int headMaxPluseX;//行走的最大脉冲数,取决于限位开关,目前等价于机械极限尺寸
-    int headMaxPluseY;
-
-    double headMaxLengthX;
-    double headMaxLengthY;
-
-    int headCutLimitX;  //区域限位，人为设定尺寸
-    int headCutLimitY;
+    double  headMaxLengthX;
+    double  headMaxLengthY;
 
     double cameraOffsetX;		//摄像头 X偏移
     double cameraOffsetY;		//摄像头 Y偏移
@@ -51,6 +40,14 @@ private:
 
     double moveSpd;		//空走速度 (m/s)
     double moveAcc;     //空走加速度(G)
+public:
+    QPoint  headOrg;//红色激光点
+    QPoint  headPos;//当前位置
+    QPointF headPluseScale;//脉冲每毫米
+    QPoint  headMaxPluse;//行走的最大脉冲数,取决于限位开关,目前等价于机械极限尺寸
+    QPoint  headCutLimit;  //区域限位，人为设定尺寸
+    QRect   headCutRect;
+
 
 
 

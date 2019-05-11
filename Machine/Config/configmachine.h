@@ -7,10 +7,8 @@
 #include <QSettings>
 #include <QDebug>
 #include "confighead.h"
+#include "configinfo.h"
 
-#define AXIS_X 1
-#define AXIS_Y 2
-#define AXIS_SUM 2
 class ConfigMachine : public QWidget
 {
     Q_OBJECT
@@ -32,7 +30,7 @@ private:
     int     machTimeInhaleDelay;		//吸气延迟时间(ms)
 
     int     machHeadCount;
-
+public:
     QList<ConfigHead*> headConfig;
 
 private:

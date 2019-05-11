@@ -1,5 +1,5 @@
 ﻿#include "configmachine.h"
-#include "configinfo.h"
+
 
 ConfigMachine::ConfigMachine(QWidget *parent) : QWidget(parent)
 {

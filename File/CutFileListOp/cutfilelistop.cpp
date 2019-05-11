@@ -341,8 +341,8 @@ void CutFileListOp::CutFileList_LoadCutData(int _fIdx)
                                     {
                                         QPointF dot;
                                         fileVector[fIdx].pageCluster[wIdx].sampleCluster[sIdx].lineCluster[lIdx].pointCluster.append(dot);
-                                        fileVector[fIdx].pageCluster[wIdx].sampleCluster[sIdx].lineCluster[lIdx].pointCluster[dIdx].setX(d.toElement().text().split(';').at(dIdx).split(',').at(0).toInt()>>5);
-                                        fileVector[fIdx].pageCluster[wIdx].sampleCluster[sIdx].lineCluster[lIdx].pointCluster[dIdx].setY(d.toElement().text().split(';').at(dIdx).split(',').at(1).toInt()>>5);
+                                        fileVector[fIdx].pageCluster[wIdx].sampleCluster[sIdx].lineCluster[lIdx].pointCluster[dIdx].setX(d.toElement().text().split(';').at(dIdx).split(',').at(0).toInt());
+                                        fileVector[fIdx].pageCluster[wIdx].sampleCluster[sIdx].lineCluster[lIdx].pointCluster[dIdx].setY(d.toElement().text().split(';').at(dIdx).split(',').at(1).toInt());
                                     }
                                 }
                             }
@@ -373,8 +373,8 @@ void CutFileListOp::CutFileList_LoadCutData(int _fIdx)
                                 }
                                 else if(d.toElement().tagName() == "PtCoor")
                                 {
-                                    fileVector[fIdx].pageCluster[wIdx].sampleCluster[sIdx].punchCluster[punchIdx].dot.setX(d.toElement().text().split(';').at(0).split(',').at(0).toInt()>>5);
-                                    fileVector[fIdx].pageCluster[wIdx].sampleCluster[sIdx].punchCluster[punchIdx].dot.setY(d.toElement().text().split(';').at(0).split(',').at(1).toInt()>>5);
+                                    fileVector[fIdx].pageCluster[wIdx].sampleCluster[sIdx].punchCluster[punchIdx].dot.setX(d.toElement().text().split(';').at(0).split(',').at(0).toInt());
+                                    fileVector[fIdx].pageCluster[wIdx].sampleCluster[sIdx].punchCluster[punchIdx].dot.setY(d.toElement().text().split(';').at(0).split(',').at(1).toInt());
                                 }
                             }
                             punchIdx++;
@@ -403,8 +403,8 @@ void CutFileListOp::CutFileList_LoadCutData(int _fIdx)
                                 }
                                 else if(d.toElement().tagName() == "PtCoor")
                                 {
-                                    fileVector[fIdx].pageCluster[wIdx].sampleCluster[sIdx].drillCluster[drillIdx].dot.setX(d.toElement().text().split(';').at(0).split(',').at(0).toInt()>>5);
-                                    fileVector[fIdx].pageCluster[wIdx].sampleCluster[sIdx].drillCluster[drillIdx].dot.setY(d.toElement().text().split(';').at(0).split(',').at(1).toInt()>>5);
+                                    fileVector[fIdx].pageCluster[wIdx].sampleCluster[sIdx].drillCluster[drillIdx].dot.setX(d.toElement().text().split(';').at(0).split(',').at(0).toInt());
+                                    fileVector[fIdx].pageCluster[wIdx].sampleCluster[sIdx].drillCluster[drillIdx].dot.setY(d.toElement().text().split(';').at(0).split(',').at(1).toInt());
                                 }
                             }
                             drillIdx++;

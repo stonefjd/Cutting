@@ -112,8 +112,8 @@ void Machine::SubStateRunInitial()
             Jog.smooth = 0.5;
             ADP_SetJogPrm (AXIS_X,&Jog);
             ADP_SetJogPrm (AXIS_Y,&Jog);
-            ADP_SetVel(AXIS_X, -5);
-            ADP_SetVel(AXIS_Y, -5);
+            ADP_SetVel(AXIS_X, -10);
+            ADP_SetVel(AXIS_Y, -10);
             machine_stSubState_Init = stSubInit_MOrg;
             break;
         }
@@ -231,10 +231,18 @@ void Machine::SubStateRunOperate()
             ADP_GetAxisPrfPos(AXIS_Y,&yPos);
             xUpd = mConfig.UpdateMachRunMax(AXIS_X,xPos);
             yUpd = mConfig.UpdateMachRunMax(AXIS_Y,yPos);
-            if(xUpd||yUpd)
+            mConfig.headConfig.at(0)->UpdateHeadMaxPluse(static_cast<int>(xPos),static_cast<int>(yPos));
+            mConfig.headConfig.at(0)->UpdateHeadCutLimit(static_cast<int>(xPos),static_cast<int>(yPos));
+
+//            if(xUpd||yUpd)
             {
                 mConfig.WritePrivateProfileString("MachInfo","MachRunMax",QString::number(mConfig.GetMachRunMax(AXIS_X))
                                                   +','+ QString::number(mConfig.GetMachRunMax(AXIS_Y)),mConfig.GetMachCfgPath());
+                mConfig.headConfig.at(0)->WritePrivateProfileString("MachHead0","HeadMaxPluseX",QString::number(mConfig.headConfig.at(0)->headMaxPluse.x()),mConfig.headConfig.at(0)->GetHeadCfgPath());
+                mConfig.headConfig.at(0)->WritePrivateProfileString("MachHead0","HeadMaxPluseY",QString::number(mConfig.headConfig.at(0)->headMaxPluse.y()),mConfig.headConfig.at(0)->GetHeadCfgPath());
+                mConfig.headConfig.at(0)->WritePrivateProfileString("MachHead0","HeadCutLimitX",QString::number(mConfig.headConfig.at(0)->headCutLimit.x()),mConfig.headConfig.at(0)->GetHeadCfgPath());
+                mConfig.headConfig.at(0)->WritePrivateProfileString("MachHead0","HeadCutLimitY",QString::number(mConfig.headConfig.at(0)->headCutLimit.y()),mConfig.headConfig.at(0)->GetHeadCfgPath());
+                mConfig.headConfig.at(0)->UpdateHeadCutRange();
             }
             ADP_ClrSts(1,4);
             ADP_SetVel(AXIS_X, -8);
@@ -257,7 +265,7 @@ void Machine::SubStateRunOperate()
     }
 }
 
-void Machine::SubStateOpBtnScanBoard()
+void Machine::SubStateOpBtnSizeCalibration()
 {
     qDebug()<<"scane";
     if(machine_stMainState == stMain_Wait && machine_stSubState_Operate == stSubOperate_NotIn)
@@ -272,8 +280,8 @@ void Machine::SubStateOpBtnScanBoard()
         ADP_PrfJog(AXIS_Y);
         ADP_SetJogPrm (AXIS_X,&Jog);
         ADP_SetJogPrm (AXIS_Y,&Jog);
-        ADP_SetVel(AXIS_X, -5);
-        ADP_SetVel(AXIS_Y, -5);
+        ADP_SetVel(AXIS_X, -8);
+        ADP_SetVel(AXIS_Y, -8);
         ADP_Update(AXIS_X);
         ADP_Update(AXIS_Y);
     }

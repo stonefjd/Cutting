@@ -31,14 +31,15 @@ WindowCutting::WindowCutting(QWidget *parent) :
     ui->paintFrame->installEventFilter(this);
     cutFlieDraw.CutFileDraw_SetPaintFrame(ui->paintFrame);
     cutFlieDraw.CutFileDraw_SetPaintContent(&cutFileList.fileVector);
+    cutFlieDraw.CutFileDraw_SetPageRange(&mMachine->mConfig.headConfig.at(0)->headCutRect);
+    cutFlieDraw.CutFileDraw_SetPaintFactor(&mMachine->mConfig.headConfig.at(0)->headPluseScale);
 //----Machine Init
     //mMachine.mFan_1.StateMachineInit(ui->actionWindIn,ui->actionWindOut);
-    mMachine = new Machine;
     connect(ui->btnDirGroup,SIGNAL(buttonPressed(int)),mMachine,SLOT(SubStateOpBtnPress(int)));
     connect(ui->btnDirGroup,SIGNAL(buttonReleased(int)),mMachine,SLOT(SubStateOpBtnRelease(int)));
     connect(this,SIGNAL(keyPressed(QKeyEvent)),mMachine,SLOT(SubStateOpKeyPress(QKeyEvent)));
     connect(this,SIGNAL(keyReleased(QKeyEvent)),mMachine,SLOT(SubStateOpKeyRelease(QKeyEvent)));
-    connect(ui->actionSizeCalibration,SIGNAL(triggered()),mMachine,SLOT(SubStateOpBtnScanBoard()));
+    connect(ui->actionSizeCalibration,SIGNAL(triggered()),mMachine,SLOT(SubStateOpBtnSizeCalibration()));
 
 
 //----UserLog
@@ -48,7 +49,7 @@ WindowCutting::WindowCutting(QWidget *parent) :
 
     debugTimer=new QTimer(this);
     connect(debugTimer,SIGNAL(timeout()),this,SLOT(debugTask_10ms()));
-    debugTimer->start(10);
+    debugTimer->start(50);
 }
 void WindowCutting::debugTask_10ms()
 {
@@ -90,11 +91,6 @@ bool WindowCutting::eventFilter(QObject *watched, QEvent *e)
             QMouseEvent *eventMouse = static_cast<QMouseEvent*>(e);
             cutFlieDraw.CutFileDraw_SetPosFMouseMoveDelta(eventMouse->localPos());
             ui->paintFrame->repaint();
-        }
-        if(e->type() == QEvent::MouseButtonRelease)
-        {
-            QMouseEvent *eventMouse = static_cast<QMouseEvent*>(e);
-            cutFlieDraw.CutFileDraw_SetPosFMouseReleased(eventMouse->localPos());
         }
         if(e->type() == QEvent::MouseButtonPress)
         {

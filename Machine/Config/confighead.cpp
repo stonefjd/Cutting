@@ -29,45 +29,45 @@ void ConfigHead::GetHeadInfo(int _index)
     strKey = ("MachHeadXOrigon");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        headOrgX = (*szBuf).toInt();
+        headOrg.setX((*szBuf).toInt());
     }
     strKey = ("MachHeadYOrigon");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        headOrgY = (*szBuf).toInt();
+        headOrg.setY((*szBuf).toInt());
     }
     //机头当前位置
     strKey = ("MachHeadXPos");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        headPosX = (*szBuf).toInt();
+        headPos.setX((*szBuf).toInt());
     }
     strKey = ("MachHeadYPos");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        headPosY = (*szBuf).toInt();
+        headPos.setY((*szBuf).toInt());
     }
     //X方向最大行走脉冲数
     strKey = ("HeadMaxPluseX");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        headMaxPluseX = (*szBuf).toInt();
+        headMaxPluse.setX((*szBuf).toInt());
     }
     strKey = ("HeadMaxPluseY");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        headMaxPluseY = (*szBuf).toInt();
+        headMaxPluse.setY((*szBuf).toInt());
     }
     //比例因子：脉冲每毫米
     strKey = ("HeadPluseScaleX");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        headPluseScaleX = (*szBuf).toInt();
+        headPluseScale.setX((*szBuf).toDouble());
     }
     strKey = ("HeadPluseScaleY");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        headPluseScaleY = (*szBuf).toInt();
+        headPluseScale.setY((*szBuf).toDouble());
     }
     //最大长度：毫米
     strKey = ("HeadMaxLengthX");
@@ -85,12 +85,12 @@ void ConfigHead::GetHeadInfo(int _index)
     strKey = ("HeadCutLimitX");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        headCutLimitX = (*szBuf).toInt();
+        headCutLimit.setX((*szBuf).toInt());
     }
     strKey = ("HeadCutLimitY");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        headCutLimitY = (*szBuf).toInt();
+        headCutLimit.setY((*szBuf).toInt());
     }
     //摄像头 X偏移
     strKey = ("CameraOffsetX");
@@ -140,8 +140,27 @@ void ConfigHead::GetHeadInfo(int _index)
     {
         moveAcc = (*szBuf).toInt();
     }
+    UpdateHeadCutRange();
 }
-
+QString ConfigHead::GetHeadCfgPath()
+{
+    return headCfgPath;
+}
+void ConfigHead::UpdateHeadMaxPluse(int _xPluse,int _yPluse)
+{
+    headMaxPluse.setX(_xPluse);
+    headMaxPluse.setY(_yPluse);
+}
+void ConfigHead::UpdateHeadCutLimit(int _xPluse,int _yPluse)
+{
+    headCutLimit.setX(_xPluse);
+    headCutLimit.setY(_yPluse);
+}
+void ConfigHead::UpdateHeadCutRange()
+{
+    headCutRect.setTopLeft(headOrg);
+    headCutRect.setBottomRight(headCutLimit);
+}
 bool ConfigHead::WritePrivateProfileString(QString strSect,QString strKey,QString strText,QString strConfigPath)
 {
     QFile file(strConfigPath);
