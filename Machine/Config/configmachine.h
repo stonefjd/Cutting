@@ -31,7 +31,6 @@ private:
 
     int     machHeadCount;
 public:
-    QList<ConfigHead*> headConfig;
 
 private:
 public:
@@ -41,7 +40,8 @@ public:
     QString GetMachCfgPath();
     void    SetMachRunMax(int _axis,double _pos);
     double  GetMachRunMax(int _axis);
-    bool    UpdateMachRunMax(int _axis,double _pos);
+    int     GetMachHeadCount();
+    void    UpdateMachRunMax(int _xPos, int _yPos);
 
     void    SetMachPulsePerMillimeter(int _axis,double _pos);
     double  GetMachPulsePerMillimeter(int _axis);

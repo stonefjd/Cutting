@@ -17,8 +17,8 @@ public:
     void GetHeadInfo(int _index);
     QString GetHeadCfgPath();
 
-    void UpdateHeadMaxPluse(int _xPluse,int _yPluse);
-    void UpdateHeadCutLimit(int _xPluse,int _yPluse);
+    void UpdateHeadMaxPluse(int _xPluse,int _yPluse,int _hIndex);
+    void UpdateHeadCutLimit(int _xPluse,int _yPluse,int _hIndex);
     void UpdateHeadCutRange();
     bool GetPrivateProfileString(QString strSect,QString strKey,QString *szBuf,QString strConfigPath);
     bool WritePrivateProfileString(QString strSect,QString strKey,QString strText,QString strConfigPath);

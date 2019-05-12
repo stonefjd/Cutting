@@ -16,8 +16,10 @@ public:
 
     void CutFileDraw_SetPaintFrame(QFrame *_paintFrame);
     void CutFileDraw_SetPaintContent(QList<fileData_t> *_fileContent);
-    void CutFileDraw_SetPageRange(QRect *_rectPageRange);
     void CutFileDraw_SetPaintFactor(QPointF *_factorPulsePerMillimeter);
+    void CutFileDraw_SetPaintOrgLogic(QPoint *_org);
+    void CutFileDraw_SetRangePage(QPoint *_rectRangePage);
+    void CutFileDraw_SetRangeMax(QPoint *_rectRangeMax);
     void CutFileDraw_SetPosFWheel(QPointF _posFMouse);
     void CutFileDraw_SetPosFMousePressed(QPointF _posFMouse);
     void CutFileDraw_SetPosFMouseMoveDelta(QPointF _posFMouse);
@@ -26,7 +28,9 @@ public:
 private:
     QFrame *paintFrame;
     QList<fileData_t> *fileContent;
-    QRect   *rectPageRange;
+    QPoint  *posRangeLimit;
+    QPoint  *posRangeMax;
+    QPoint  *posOrgLogic;
     QPointF *factorPulsePerMillimeter;
     QPointF posFWheel;
     QPointF posFMousePressed;

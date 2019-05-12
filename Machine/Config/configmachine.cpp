@@ -17,18 +17,15 @@ double ConfigMachine::GetMachRunMax(int _axis)
 {
     return machRunMax[_axis-1];
 }
-bool ConfigMachine::UpdateMachRunMax(int _axis,double _pos)
+int ConfigMachine::GetMachHeadCount()
 {
-    bool _b=false;
-    double _runMax;
-
-    _runMax = _pos/machPulsePerMillimeter[_axis-1];
-    if(qAbs(machRunMax[_axis-1]-_runMax)>10)
-    {
-       machRunMax[_axis-1] = _runMax;
-       _b = true;
-    }
-    return _b;
+    return machHeadCount;
+}
+void ConfigMachine::UpdateMachRunMax(int _xPos,int _yPos)
+{
+    machRunMax[0] = static_cast<double>(_xPos)/machPulsePerMillimeter[0];
+    machRunMax[1] = static_cast<double>(_yPos)/machPulsePerMillimeter[1];
+    WritePrivateProfileString("MachInfo","MachRunMax",QString::number(machRunMax[0])+','+ QString::number(machRunMax[1]),machCfgPath);
 }
 
 void    ConfigMachine::SetMachPulsePerMillimeter(int _axis,double _pos)
@@ -149,13 +146,7 @@ void ConfigMachine::GetMachineBaseInfo()
     {
         machHeadCount = (*szBuf).toInt();
     }
-    //机头信息
-    for(int _headCnt=0;_headCnt<machHeadCount;_headCnt++)
-    {
-        ConfigHead *head = new ConfigHead;
-        head->GetHeadInfo(_headCnt);
-        headConfig.append(head);
-    }
+
 }
 bool ConfigMachine::WritePrivateProfileString(QString strSect,QString strKey,QString strText,QString strConfigPath)
 {

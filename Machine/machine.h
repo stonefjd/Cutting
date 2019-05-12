@@ -71,8 +71,11 @@ public: // sub class obj
     uint8_t machine_stMainState;
     uint8_t machine_ctSubState_Operate_Key;
     Fan mFan_1;
-    SDKnifeConfig sdKnifeConfigLib;
-    ConfigMachine   mConfig;
+//    SDKnifeConfig sdKnifeConfigLib;
+private:
+    QPoint *head0_Org;
+public:
+    void Mach_SetHead0Org(QPoint *_head0_Org);
 public:
     void MInit();
     void MainStateRun();
@@ -82,6 +85,7 @@ public:
     void SubStateRunCut();
 
 signals:
+    void UpdateMachineMaxPluse(double _xPos, double _yPos);
 public slots:
     void Task_10ms();
     void SubStateOpBtnPress(int id);

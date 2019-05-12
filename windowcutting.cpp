@@ -31,16 +31,20 @@ WindowCutting::WindowCutting(QWidget *parent) :
     ui->paintFrame->installEventFilter(this);
     cutFlieDraw.CutFileDraw_SetPaintFrame(ui->paintFrame);
     cutFlieDraw.CutFileDraw_SetPaintContent(&cutFileList.fileVector);
-    cutFlieDraw.CutFileDraw_SetPageRange(&mMachine->mConfig.headConfig.at(0)->headCutRect);
-    cutFlieDraw.CutFileDraw_SetPaintFactor(&mMachine->mConfig.headConfig.at(0)->headPluseScale);
+    cutFlieDraw.CutFileDraw_SetRangePage(&wConfig->hConfig.at(0)->headCutLimit);
+    cutFlieDraw.CutFileDraw_SetRangeMax(&wConfig->hConfig.at(0)->headMaxPluse);
+    cutFlieDraw.CutFileDraw_SetPaintFactor(&wConfig->hConfig.at(0)->headPluseScale);
+    cutFlieDraw.CutFileDraw_SetPaintOrgLogic(&wConfig->hConfig.at(0)->headOrg);
 //----Machine Init
     //mMachine.mFan_1.StateMachineInit(ui->actionWindIn,ui->actionWindOut);
+    mMachine->Mach_SetHead0Org(&wConfig->hConfig.at(0)->headOrg);
+
     connect(ui->btnDirGroup,SIGNAL(buttonPressed(int)),mMachine,SLOT(SubStateOpBtnPress(int)));
     connect(ui->btnDirGroup,SIGNAL(buttonReleased(int)),mMachine,SLOT(SubStateOpBtnRelease(int)));
     connect(this,SIGNAL(keyPressed(QKeyEvent)),mMachine,SLOT(SubStateOpKeyPress(QKeyEvent)));
     connect(this,SIGNAL(keyReleased(QKeyEvent)),mMachine,SLOT(SubStateOpKeyRelease(QKeyEvent)));
     connect(ui->actionSizeCalibration,SIGNAL(triggered()),mMachine,SLOT(SubStateOpBtnSizeCalibration()));
-
+    connect(mMachine,SIGNAL(UpdateMachineMaxPluse(double,double)),wConfig,SLOT(UpdateConfigMaxPluse(double,double)));
 
 //----UserLog
     user = nullptr;
@@ -204,8 +208,8 @@ void WindowCutting::on_pushButton_clicked()
         for(int i=0;i<cutFileList.fileVector[0].pageCluster[0].sampleCluster[0].lineCluster[0].dotCount!=0;i++)
         {
             sRtn = GT_LnXY(    1,    // 该插补段的坐标系是坐标系1
-                               static_cast<long>(cutFileList.fileVector[0].pageCluster[0].sampleCluster[0].lineCluster[0].pointCluster[i].x()),
-                               static_cast<long>(cutFileList.fileVector[0].pageCluster[0].sampleCluster[0].lineCluster[0].pointCluster[i].y()),  // 该插补段的终点坐标(15000, 15000)
+                               static_cast<long>(cutFileList.fileVector[0].pageCluster[0].sampleCluster[0].lineCluster[0].pointCluster[i].x()/20),
+                               static_cast<long>(cutFileList.fileVector[0].pageCluster[0].sampleCluster[0].lineCluster[0].pointCluster[i].y()/20),  // 该插补段的终点坐标(15000, 15000)
                                20,    // 该插补段的目标速度：100pulse/ms
                                0.05,    // 插补段的加速度：0.1pulse/ms^2
                                0,    // 终点速度为0

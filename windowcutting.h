@@ -17,10 +17,10 @@
 #include "File/CutFileListOp/cutfilelistop.h"
 #include "File/IniOp/iniop.h"
 #include "File/cutfiledraw.h"
-#include "Machine/machine.h"
 #include "PhysicalLayer/gts.h"
 #include "User/userlog.h"
-
+#include "Machine/machine.h"
+#include "Machine/Config/configwhole.h"
 #define BTN_ID_L 0
 #define BTN_ID_R 1
 #define BTN_ID_U 2
@@ -62,7 +62,6 @@ private slots:
 
     void on_actionLogOn_triggered();
     void on_actionWindIn_toggled(bool arg1);
-
     void on_actionWindOut_toggled(bool arg1);
 
     void debugTask_10ms();
@@ -78,6 +77,7 @@ private:
 private:
     Ui::WindowCutting   *ui;
     Machine         *mMachine = new Machine;
+    ConfigWhole     *wConfig = new ConfigWhole;
     UserLog         *user;
 //  Settings        settings;
 //  IniOp           iniOp;

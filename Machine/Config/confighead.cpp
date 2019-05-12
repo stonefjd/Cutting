@@ -146,15 +146,37 @@ QString ConfigHead::GetHeadCfgPath()
 {
     return headCfgPath;
 }
-void ConfigHead::UpdateHeadMaxPluse(int _xPluse,int _yPluse)
+void ConfigHead::UpdateHeadMaxPluse(int _xPluse,int _yPluse,int _hIndex)
 {
     headMaxPluse.setX(_xPluse);
     headMaxPluse.setY(_yPluse);
+    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadMaxPluseX",QString::number(_xPluse),headCfgPath);
+    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadMaxPluseY",QString::number(_yPluse),headCfgPath);
+    if(_xPluse <= headCutLimit.x())
+    {
+        headCutLimit.setX(_xPluse);
+        WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadCutLimitX",QString::number(_xPluse),headCfgPath);
+    }
+    if(_yPluse <= headCutLimit.y())
+    {
+        headCutLimit.setX(_xPluse);
+        WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadCutLimitY",QString::number(_yPluse),headCfgPath);
+    }
+    UpdateHeadCutRange();
 }
-void ConfigHead::UpdateHeadCutLimit(int _xPluse,int _yPluse)
+void ConfigHead::UpdateHeadCutLimit(int _xPluse,int _yPluse,int _hIndex)
 {
-    headCutLimit.setX(_xPluse);
-    headCutLimit.setY(_yPluse);
+    if(_xPluse <= headMaxPluse.x())
+    {
+        headCutLimit.setX(_xPluse);
+    }
+    if(_yPluse <= headMaxPluse.y())
+    {
+        headCutLimit.setY(_yPluse);
+    }
+    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadCutLimitX",QString::number(_xPluse),headCfgPath);
+    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadCutLimitY",QString::number(_yPluse),headCfgPath);
+    UpdateHeadCutRange();
 }
 void ConfigHead::UpdateHeadCutRange()
 {

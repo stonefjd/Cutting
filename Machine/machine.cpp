@@ -6,10 +6,9 @@ Machine::Machine(QObject *parent) : QObject(parent)
 
     //--------DATA structure settings--------//
     //----set the knife of the machine
-    sdKnifeConfigLib.ReadConfigFile();
-    qDebug()<<sdKnifeConfigLib.GetKnifesCount();
+//    sdKnifeConfigLib.ReadConfigFile();
+//    qDebug()<<sdKnifeConfigLib.GetKnifesCount();
 
-    mConfig.GetMachineBaseInfo();
     //--------StateMachine Setting--------//
     machine_stMainState = stMain_Init;
     machine_stSubState_Init = stSubInit_NotIn;
@@ -45,6 +44,8 @@ void Machine::MainStateRun()
             if(machine_stSubState_Init == stSubInit_Finish)
             {
                 machine_stMainState = stMain_Wait;
+                machine_stSubState_Init = stSubInit_NotIn;
+
             }
             break;
         }
@@ -144,6 +145,7 @@ void Machine::SubStateRunInitial()
             if(limitStateXNeg == true && limitStateYNeg == true)
             {
                 //----prepare for 2 insert mode
+                ADP_ClrSts(1,4);
                 ADP_ZeroPos(AXIS_X);
                 ADP_ZeroPos(AXIS_Y);
                 ADP_SetPrfPos(AXIS_X, 0);
@@ -161,7 +163,7 @@ void Machine::SubStateRunInitial()
                 ADP_SetCrdPrm(1, &crdPrm);
                 ADP_CrdClear(1, 0);
                  // 该插补段的坐标系是坐标系1 //xy点// 该插补段的目标速度：3pulse/ms // 插补段的加速度：0.1pulse/ms^2// 终点速度为0 // 向坐标系1的FIFO0缓存区传递该直线插补数据
-                ADP_LnXY(1,2000,2000,3,0.05,0,0);
+                ADP_LnXY(1,head0_Org->x(),head0_Org->y() ,3,0.05,0,0);
                 machine_stSubState_Init = stSubInit_LOrg;
                 ADP_CrdStart(1, 0);
                 break;
@@ -181,7 +183,6 @@ void Machine::SubStateRunInitial()
         }
         case stSubInit_Finish:
         {
-            machine_stSubState_Init = stSubInit_NotIn;
             break;
         }
         case stSubInit_Fail:
@@ -199,8 +200,7 @@ void Machine::SubStateRunOperate()
     bool limitStateYPos;
     double xPos = 0;
     double yPos = 0;
-    bool xUpd = false;
-    bool yUpd = false;
+
     switch(machine_stSubState_Operate)
     {
     case stSubOperate_EdgeScane_step1:
@@ -229,32 +229,32 @@ void Machine::SubStateRunOperate()
 
             ADP_GetAxisPrfPos(AXIS_X,&xPos);
             ADP_GetAxisPrfPos(AXIS_Y,&yPos);
-            xUpd = mConfig.UpdateMachRunMax(AXIS_X,xPos);
-            yUpd = mConfig.UpdateMachRunMax(AXIS_Y,yPos);
-            mConfig.headConfig.at(0)->UpdateHeadMaxPluse(static_cast<int>(xPos),static_cast<int>(yPos));
-            mConfig.headConfig.at(0)->UpdateHeadCutLimit(static_cast<int>(xPos),static_cast<int>(yPos));
+            emit UpdateMachineMaxPluse(xPos,yPos);
 
-//            if(xUpd||yUpd)
-            {
-                mConfig.WritePrivateProfileString("MachInfo","MachRunMax",QString::number(mConfig.GetMachRunMax(AXIS_X))
-                                                  +','+ QString::number(mConfig.GetMachRunMax(AXIS_Y)),mConfig.GetMachCfgPath());
-                mConfig.headConfig.at(0)->WritePrivateProfileString("MachHead0","HeadMaxPluseX",QString::number(mConfig.headConfig.at(0)->headMaxPluse.x()),mConfig.headConfig.at(0)->GetHeadCfgPath());
-                mConfig.headConfig.at(0)->WritePrivateProfileString("MachHead0","HeadMaxPluseY",QString::number(mConfig.headConfig.at(0)->headMaxPluse.y()),mConfig.headConfig.at(0)->GetHeadCfgPath());
-                mConfig.headConfig.at(0)->WritePrivateProfileString("MachHead0","HeadCutLimitX",QString::number(mConfig.headConfig.at(0)->headCutLimit.x()),mConfig.headConfig.at(0)->GetHeadCfgPath());
-                mConfig.headConfig.at(0)->WritePrivateProfileString("MachHead0","HeadCutLimitY",QString::number(mConfig.headConfig.at(0)->headCutLimit.y()),mConfig.headConfig.at(0)->GetHeadCfgPath());
-                mConfig.headConfig.at(0)->UpdateHeadCutRange();
-            }
             ADP_ClrSts(1,4);
-            ADP_SetVel(AXIS_X, -8);
-            ADP_SetVel(AXIS_Y, -8);
-            ADP_Update(AXIS_X);
-            ADP_Update(AXIS_Y);
+            memset(&crdPrm, 0, sizeof(crdPrm));
+            crdPrm.dimension=2;   // 坐标系为二维坐标系
+            crdPrm.synVelMax=50;  // 最大合成速度：500pulse/ms
+            crdPrm.synAccMax=1;   // 最大加速度：1pulse/ms^2
+            crdPrm.evenTime = 50;   // 最小匀速时间：50ms
+            crdPrm.profile[0] = 1;   // 规划器1对应到X轴
+            crdPrm.profile[1] = 2;   // 规划器2对应到Y轴
+            crdPrm.setOriginFlag = 1;  // 表示需要指定坐标系的原点坐标的规划位置
+            crdPrm.originPos[0] = 00000;  // 坐标系的原点坐标的规划位置为（100, 100）
+            crdPrm.originPos[1] = 00000;
+            ADP_SetCrdPrm(1, &crdPrm);
+            ADP_CrdClear(1, 0);
+             // 该插补段的坐标系是坐标系1 //xy点// 该插补段的目标速度：3pulse/ms // 插补段的加速度：0.1pulse/ms^2// 终点速度为0 // 向坐标系1的FIFO0缓存区传递该直线插补数据
+            ADP_LnXY(1,head0_Org->x(),head0_Org->y(),20,0.05,0,0);
+            machine_stSubState_Init = stSubInit_LOrg;
+            ADP_CrdStart(1, 0);
         }
         break;
     case stSubOperate_EdgeScane_step3:
-        ADP_GetLimitState(AXIS_X,false,&limitStateXNeg);
-        ADP_GetLimitState(AXIS_Y,false,&limitStateYNeg);
-        if(limitStateXNeg == true && limitStateYNeg == true)
+        short run;  // 坐标系运动完成段查询变量
+        long segment;  // 坐标系的缓存区剩余空间查询变量
+        GT_CrdStatus(1, &run, &segment, 0);
+        if(run == 0)
         {
             machine_stSubState_Operate = stSubOperate_Finish;
         }
@@ -454,4 +454,10 @@ void Machine::SubStateOpKeyRelease(QKeyEvent event)
 void Machine::Task_10ms()
 {
     MainStateRun();
+    if(machine_stMainState == stMain_Init)
+        qDebug()<<machine_stSubState_Init;
+}
+void Machine::Mach_SetHead0Org(QPoint *_head0_Org)
+{
+    this->head0_Org = _head0_Org;
 }
