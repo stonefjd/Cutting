@@ -5,6 +5,21 @@ Machine::Machine(QObject *parent) : QObject(parent)
 //    this->mFan_1.SetState_FanStop();
 
     //--------DATA structure settings--------//
+    Jog.acc = 0.05;
+    Jog.dec = 0.05;
+    Jog.smooth = 0.5;
+
+    memset(&crdPrm, 0, sizeof(crdPrm));
+    crdPrm.dimension=2;   // 坐标系为二维坐标系
+    crdPrm.synVelMax=50;  // 最大合成速度：500pulse/ms
+    crdPrm.synAccMax=1;   // 最大加速度：1pulse/ms^2
+    crdPrm.evenTime = 50;   // 最小匀速时间：50ms
+    crdPrm.profile[0] = 1;   // 规划器1对应到X轴
+    crdPrm.profile[1] = 2;   // 规划器2对应到Y轴
+    crdPrm.setOriginFlag = 1;  // 表示需要指定坐标系的原点坐标的规划位置
+    crdPrm.originPos[0] = 00000;  // 坐标系的原点坐标的规划位置为（100, 100）
+    crdPrm.originPos[1] = 00000;
+
     //----set the knife of the machine
 //    sdKnifeConfigLib.ReadConfigFile();
 //    qDebug()<<sdKnifeConfigLib.GetKnifesCount();
@@ -108,9 +123,7 @@ void Machine::SubStateRunInitial()
             //----prepare for jog mod
             ADP_PrfJog(AXIS_X);
             ADP_PrfJog(AXIS_Y);
-            Jog.acc = 0.05;
-            Jog.dec = 0.05;
-            Jog.smooth = 0.5;
+
             ADP_SetJogPrm (AXIS_X,&Jog);
             ADP_SetJogPrm (AXIS_Y,&Jog);
             ADP_SetVel(AXIS_X, -10);
@@ -150,16 +163,7 @@ void Machine::SubStateRunInitial()
                 ADP_ZeroPos(AXIS_Y);
                 ADP_SetPrfPos(AXIS_X, 0);
                 ADP_SetPrfPos(AXIS_Y, 0);
-                memset(&crdPrm, 0, sizeof(crdPrm));
-                crdPrm.dimension=2;   // 坐标系为二维坐标系
-                crdPrm.synVelMax=50;  // 最大合成速度：500pulse/ms
-                crdPrm.synAccMax=1;   // 最大加速度：1pulse/ms^2
-                crdPrm.evenTime = 50;   // 最小匀速时间：50ms
-                crdPrm.profile[0] = 1;   // 规划器1对应到X轴
-                crdPrm.profile[1] = 2;   // 规划器2对应到Y轴
-                crdPrm.setOriginFlag = 1;  // 表示需要指定坐标系的原点坐标的规划位置
-                crdPrm.originPos[0] = 00000;  // 坐标系的原点坐标的规划位置为（100, 100）
-                crdPrm.originPos[1] = 00000;
+
                 ADP_SetCrdPrm(1, &crdPrm);
                 ADP_CrdClear(1, 0);
                  // 该插补段的坐标系是坐标系1 //xy点// 该插补段的目标速度：3pulse/ms // 插补段的加速度：0.1pulse/ms^2// 终点速度为0 // 向坐标系1的FIFO0缓存区传递该直线插补数据
@@ -232,19 +236,10 @@ void Machine::SubStateRunOperate()
             emit UpdateMachineMaxPluse(xPos,yPos);
 
             ADP_ClrSts(1,4);
-            memset(&crdPrm, 0, sizeof(crdPrm));
-            crdPrm.dimension=2;   // 坐标系为二维坐标系
-            crdPrm.synVelMax=50;  // 最大合成速度：500pulse/ms
-            crdPrm.synAccMax=1;   // 最大加速度：1pulse/ms^2
-            crdPrm.evenTime = 50;   // 最小匀速时间：50ms
-            crdPrm.profile[0] = 1;   // 规划器1对应到X轴
-            crdPrm.profile[1] = 2;   // 规划器2对应到Y轴
-            crdPrm.setOriginFlag = 1;  // 表示需要指定坐标系的原点坐标的规划位置
-            crdPrm.originPos[0] = 00000;  // 坐标系的原点坐标的规划位置为（100, 100）
-            crdPrm.originPos[1] = 00000;
+
             ADP_SetCrdPrm(1, &crdPrm);
             ADP_CrdClear(1, 0);
-             // 该插补段的坐标系是坐标系1 //xy点// 该插补段的目标速度：3pulse/ms // 插补段的加速度：0.1pulse/ms^2// 终点速度为0 // 向坐标系1的FIFO0缓存区传递该直线插补数据
+             // 该插补段的坐标系是坐标系1 //xy点// 该插补段的目标速度：3pulse/ms // 插补段的加速度：0.05pulse/ms^2// 终点速度为0 // 向坐标系1的FIFO0缓存区传递该直线插补数据
             ADP_LnXY(1,head0_Org->x(),head0_Org->y(),20,0.05,0,0);
             machine_stSubState_Init = stSubInit_LOrg;
             ADP_CrdStart(1, 0);
@@ -272,9 +267,7 @@ void Machine::SubStateOpBtnSizeCalibration()
     {
         machine_stMainState = stMain_Operate;
         machine_stSubState_Operate = stSubOperate_EdgeScane_step1;
-        Jog.acc = 0.05;
-        Jog.dec = 0.05;
-        Jog.smooth = 0.5;
+
         ADP_ClrSts(1,4);
         ADP_PrfJog(AXIS_X);
         ADP_PrfJog(AXIS_Y);
@@ -454,8 +447,7 @@ void Machine::SubStateOpKeyRelease(QKeyEvent event)
 void Machine::Task_10ms()
 {
     MainStateRun();
-    if(machine_stMainState == stMain_Init)
-        qDebug()<<machine_stSubState_Init;
+//    qDebug()<<machine_stMainState<<' '<<machine_stSubState_Operate;
 }
 void Machine::Mach_SetHead0Org(QPoint *_head0_Org)
 {

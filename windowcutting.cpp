@@ -29,6 +29,7 @@ WindowCutting::WindowCutting(QWidget *parent) :
 //----CutFileDraw
     ui->paintFrame->setMouseTracking(false);
     ui->paintFrame->installEventFilter(this);
+//    ui->paintFrame->setFocusPolicy(Qt::StrongFocus);
     cutFlieDraw.CutFileDraw_SetPaintFrame(ui->paintFrame);
     cutFlieDraw.CutFileDraw_SetPaintContent(&cutFileList.fileVector);
     cutFlieDraw.CutFileDraw_SetRangePage(&wConfig->hConfig.at(0)->headCutLimit);
@@ -39,10 +40,10 @@ WindowCutting::WindowCutting(QWidget *parent) :
     //mMachine.mFan_1.StateMachineInit(ui->actionWindIn,ui->actionWindOut);
     mMachine->Mach_SetHead0Org(&wConfig->hConfig.at(0)->headOrg);
 
-    connect(ui->btnDirGroup,SIGNAL(buttonPressed(int)),mMachine,SLOT(SubStateOpBtnPress(int)));
-    connect(ui->btnDirGroup,SIGNAL(buttonReleased(int)),mMachine,SLOT(SubStateOpBtnRelease(int)));
     connect(this,SIGNAL(keyPressed(QKeyEvent)),mMachine,SLOT(SubStateOpKeyPress(QKeyEvent)));
     connect(this,SIGNAL(keyReleased(QKeyEvent)),mMachine,SLOT(SubStateOpKeyRelease(QKeyEvent)));
+    connect(ui->btnDirGroup,SIGNAL(buttonPressed(int)),mMachine,SLOT(SubStateOpBtnPress(int)));
+    connect(ui->btnDirGroup,SIGNAL(buttonReleased(int)),mMachine,SLOT(SubStateOpBtnRelease(int)));
     connect(ui->actionSizeCalibration,SIGNAL(triggered()),mMachine,SLOT(SubStateOpBtnSizeCalibration()));
     connect(mMachine,SIGNAL(UpdateMachineMaxPluse(double,double)),wConfig,SLOT(UpdateConfigMaxPluse(double,double)));
 
@@ -101,7 +102,18 @@ bool WindowCutting::eventFilter(QObject *watched, QEvent *e)
             QMouseEvent *eventMouse = static_cast<QMouseEvent*>(e);
             cutFlieDraw.CutFileDraw_SetPosFMousePressed(eventMouse->localPos());
         }
+
     }
+//    if(e->type() == QEvent::KeyPress)
+//    {
+//        QKeyEvent *eventKey = static_cast<QKeyEvent*>(e);
+//        emit keyPressed(*eventKey);
+//    }
+//    if(e->type() == QEvent::KeyRelease)
+//    {
+//        QKeyEvent *eventKey = static_cast<QKeyEvent*>(e);
+//        emit keyReleased(*eventKey);
+//    }
     return QMainWindow::eventFilter(watched,e);
 }
 
@@ -136,13 +148,13 @@ void WindowCutting::userLog_PermissionConfirm()
 }
 
 //----override----//
-void WindowCutting::keyReleaseEvent(QKeyEvent *event)
-{
-    emit keyReleased(*event);
-}
 void WindowCutting::keyPressEvent(QKeyEvent *event)
 {
     emit keyPressed(*event);
+}
+void WindowCutting::keyReleaseEvent(QKeyEvent *event)
+{
+    emit keyReleased(*event);
 }
 //-------------------signals and slots--------------------------
 void WindowCutting::on_actionSettingsParameter_triggered()
