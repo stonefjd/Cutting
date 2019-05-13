@@ -64,7 +64,7 @@ private slots:
     void on_actionWindIn_toggled(bool arg1);
     void on_actionWindOut_toggled(bool arg1);
 
-    void debugTask_10ms();
+    void debugTask_100ms();
 
 signals:
     void keyPressed(QKeyEvent);

@@ -10,19 +10,25 @@
 class CutFileDraw : public QWidget
 {
     Q_OBJECT
+private:
+    void CutFileDraw_DrawLine(QPointF q1,QPointF q2,QPointF fact,QPointF offset);
 public:
     explicit CutFileDraw(QWidget *parent = nullptr);
     void CutFileDraw_DisplayFileData();
 
     void CutFileDraw_SetPaintFrame(QFrame *_paintFrame);
     void CutFileDraw_SetPaintContent(QList<fileData_t> *_fileContent);
-    void CutFileDraw_SetPaintFactor(QPointF *_factorPulsePerMillimeter);
-    void CutFileDraw_SetPaintOrgLogic(QPoint *_org);
+    void CutFileDraw_SetPaintFactorPulsePerMillimeter(QPointF *_factorPulsePerMillimeter);
+    void CutFileDraw_SetPaintLogicOrg(QPoint *_org);
+    void CutFileDraw_SetPaintLogicRealTime(QPoint *_pos);
+
     void CutFileDraw_SetRangePage(QPoint *_rectRangePage);
     void CutFileDraw_SetRangeMax(QPoint *_rectRangeMax);
     void CutFileDraw_SetPosFWheel(QPointF _posFMouse);
     void CutFileDraw_SetPosFMousePressed(QPointF _posFMouse);
+    void CutFileDraw_SetPosFMouseReleased();
     void CutFileDraw_SetPosFMouseMoveDelta(QPointF _posFMouse);
+    void CutFileDraw_SetSizeFixed();
 
     void CutFileDraw_SetFactor(int _dir,bool _divEn);
 private:
@@ -30,7 +36,8 @@ private:
     QList<fileData_t> *fileContent;
     QPoint  *posRangeLimit;
     QPoint  *posRangeMax;
-    QPoint  *posOrgLogic;
+    QPoint  *posLogicOrg;
+    QPoint  *posLogicRealTime;
     QPointF *factorPulsePerMillimeter;
     QPointF posFWheel;
     QPointF posFMousePressed;
@@ -39,6 +46,7 @@ private:
     QTransform transPosToLogic;
     QPointF posLogic;
     double  paintFactor;
+
 signals:
 
 public slots:

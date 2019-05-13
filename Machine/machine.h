@@ -75,6 +75,8 @@ public: // sub class obj
 private:
     QPoint *head0_Org;
 public:
+    QPoint head0_Pos;
+public:
     void Mach_SetHead0Org(QPoint *_head0_Org);
 public:
     void MInit();
@@ -83,6 +85,8 @@ public:
     void SubStateRunWait();
     void SubStateRunOperate();
     void SubStateRunCut();
+
+    void GetRunningData();
 
 signals:
     void UpdateMachineMaxPluse(double _xPos, double _yPos);

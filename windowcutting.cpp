@@ -8,7 +8,7 @@ WindowCutting::WindowCutting(QWidget *parent) :
 {
     ui->setupUi(this);
 //----Initial the private variable
-
+    this->setFocus();
 //----disable the ui
     ui->menuSettings->setDisabled(true);
     ui->menuViewItem->setDisabled(true);
@@ -24,18 +24,20 @@ WindowCutting::WindowCutting(QWidget *parent) :
 //----CutFileOperator
     ui->dockWgtCutFile->setWindowTitle(tr("任务列表"));
     ui->dockWgtCutFile->setMaximumWidth(200);
+    ui->tableWgtCutFile->setFocusPolicy(Qt::NoFocus);
     cutFileList.CutFileList_WidgetInit(ui->tableWgtCutFile);
 
 //----CutFileDraw
     ui->paintFrame->setMouseTracking(false);
     ui->paintFrame->installEventFilter(this);
-//    ui->paintFrame->setFocusPolicy(Qt::StrongFocus);
+    ui->paintFrame->setFocusPolicy(Qt::StrongFocus);
     cutFlieDraw.CutFileDraw_SetPaintFrame(ui->paintFrame);
     cutFlieDraw.CutFileDraw_SetPaintContent(&cutFileList.fileVector);
     cutFlieDraw.CutFileDraw_SetRangePage(&wConfig->hConfig.at(0)->headCutLimit);
     cutFlieDraw.CutFileDraw_SetRangeMax(&wConfig->hConfig.at(0)->headMaxPluse);
-    cutFlieDraw.CutFileDraw_SetPaintFactor(&wConfig->hConfig.at(0)->headPluseScale);
-    cutFlieDraw.CutFileDraw_SetPaintOrgLogic(&wConfig->hConfig.at(0)->headOrg);
+    cutFlieDraw.CutFileDraw_SetPaintFactorPulsePerMillimeter(&wConfig->hConfig.at(0)->headPluseScale);
+    cutFlieDraw.CutFileDraw_SetPaintLogicOrg(&wConfig->hConfig.at(0)->headOrg);
+    cutFlieDraw.CutFileDraw_SetPaintLogicRealTime(&mMachine->head0_Pos);
 //----Machine Init
     //mMachine.mFan_1.StateMachineInit(ui->actionWindIn,ui->actionWindOut);
     mMachine->Mach_SetHead0Org(&wConfig->hConfig.at(0)->headOrg);
@@ -53,10 +55,10 @@ WindowCutting::WindowCutting(QWidget *parent) :
 //    user.exec();
 
     debugTimer=new QTimer(this);
-    connect(debugTimer,SIGNAL(timeout()),this,SLOT(debugTask_10ms()));
-    debugTimer->start(50);
+    connect(debugTimer,SIGNAL(timeout()),this,SLOT(debugTask_100ms()));
+    debugTimer->start(20);
 }
-void WindowCutting::debugTask_10ms()
+void WindowCutting::debugTask_100ms()
 {
     long x,y;
     double xPos=0,yPos=0;
@@ -69,6 +71,11 @@ void WindowCutting::debugTask_10ms()
     ui->lb_st->setText(QString::number(mMachine->machine_ctSubState_Operate_Key));
     ui->lb_xPos->setText("x "+QString::number(static_cast<int>(xPos)));
     ui->lb_yPos->setText("y "+QString::number(static_cast<int>(yPos)));
+
+    if(mMachine->machine_stMainState != stMain_Wait)
+    {
+        ui->paintFrame->update();
+    }
 }
 bool WindowCutting::eventFilter(QObject *watched, QEvent *e)
 {
@@ -95,14 +102,23 @@ bool WindowCutting::eventFilter(QObject *watched, QEvent *e)
         {
             QMouseEvent *eventMouse = static_cast<QMouseEvent*>(e);
             cutFlieDraw.CutFileDraw_SetPosFMouseMoveDelta(eventMouse->localPos());
-            ui->paintFrame->repaint();
+            ui->paintFrame->update();
         }
         if(e->type() == QEvent::MouseButtonPress)
         {
             QMouseEvent *eventMouse = static_cast<QMouseEvent*>(e);
             cutFlieDraw.CutFileDraw_SetPosFMousePressed(eventMouse->localPos());
         }
-
+        if(e->type() == QEvent::MouseButtonRelease)
+        {
+            cutFlieDraw.CutFileDraw_SetPosFMouseReleased();
+        }
+        if(e->type() == QEvent::MouseButtonDblClick)
+        {
+//            QMouseEvent *eventMouse = static_cast<QMouseEvent*>(e);
+            cutFlieDraw.CutFileDraw_SetSizeFixed();
+            ui->paintFrame->repaint();
+        }
     }
 //    if(e->type() == QEvent::KeyPress)
 //    {

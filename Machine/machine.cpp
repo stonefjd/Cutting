@@ -56,12 +56,6 @@ void Machine::MainStateRun()
         case stMain_Init:
         {
             SubStateRunInitial();
-            if(machine_stSubState_Init == stSubInit_Finish)
-            {
-                machine_stMainState = stMain_Wait;
-                machine_stSubState_Init = stSubInit_NotIn;
-
-            }
             break;
         }
         case stMain_Wait:
@@ -167,7 +161,7 @@ void Machine::SubStateRunInitial()
                 ADP_SetCrdPrm(1, &crdPrm);
                 ADP_CrdClear(1, 0);
                  // 该插补段的坐标系是坐标系1 //xy点// 该插补段的目标速度：3pulse/ms // 插补段的加速度：0.1pulse/ms^2// 终点速度为0 // 向坐标系1的FIFO0缓存区传递该直线插补数据
-                ADP_LnXY(1,head0_Org->x(),head0_Org->y() ,3,0.05,0,0);
+                ADP_LnXY(1,head0_Org->x(),head0_Org->y() ,20,0.05,0,0);
                 machine_stSubState_Init = stSubInit_LOrg;
                 ADP_CrdStart(1, 0);
                 break;
@@ -187,6 +181,8 @@ void Machine::SubStateRunInitial()
         }
         case stSubInit_Finish:
         {
+            machine_stMainState = stMain_Wait;
+            machine_stSubState_Init = stSubInit_NotIn;
             break;
         }
         case stSubInit_Fail:
@@ -240,12 +236,13 @@ void Machine::SubStateRunOperate()
             ADP_SetCrdPrm(1, &crdPrm);
             ADP_CrdClear(1, 0);
              // 该插补段的坐标系是坐标系1 //xy点// 该插补段的目标速度：3pulse/ms // 插补段的加速度：0.05pulse/ms^2// 终点速度为0 // 向坐标系1的FIFO0缓存区传递该直线插补数据
-            ADP_LnXY(1,head0_Org->x(),head0_Org->y(),20,0.05,0,0);
+            ADP_LnXY(1,head0_Org->x(),head0_Org->y(),20,0.2,0,0);
             machine_stSubState_Init = stSubInit_LOrg;
             ADP_CrdStart(1, 0);
         }
         break;
     case stSubOperate_EdgeScane_step3:
+    case stSubOperate_BtnO:
         short run;  // 坐标系运动完成段查询变量
         long segment;  // 坐标系的缓存区剩余空间查询变量
         GT_CrdStatus(1, &run, &segment, 0);
@@ -254,6 +251,7 @@ void Machine::SubStateRunOperate()
             machine_stSubState_Operate = stSubOperate_Finish;
         }
         break;
+
     case stSubOperate_Finish:
         machine_stSubState_Operate = stSubOperate_NotIn;
         machine_stMainState = stMain_Wait;
@@ -321,6 +319,12 @@ void Machine::SubStateOpBtnPress(int id)
             break;
         case 4:
             machine_stSubState_Operate = stSubOperate_BtnO;
+            ADP_SetCrdPrm(1, &crdPrm);
+            ADP_CrdClear(1, 0);
+             // 该插补段的坐标系是坐标系1 //xy点// 该插补段的目标速度：3pulse/ms // 插补段的加速度：0.1pulse/ms^2// 终点速度为0 // 向坐标系1的FIFO0缓存区传递该直线插补数据
+            ADP_LnXY(1,head0_Org->x(),head0_Org->y() ,20,0.2,0,0);
+            machine_stSubState_Init = stSubInit_LOrg;
+            ADP_CrdStart(1, 0);
             break;
         }
         ADP_ClrSts(1,4);
@@ -448,6 +452,15 @@ void Machine::Task_10ms()
 {
     MainStateRun();
 //    qDebug()<<machine_stMainState<<' '<<machine_stSubState_Operate;
+    GetRunningData();
+}
+void Machine::GetRunningData()
+{
+    double xPos,yPos;
+    ADP_GetAxisPrfPos(AXIS_X,&xPos);
+    ADP_GetAxisPrfPos(AXIS_Y,&yPos);
+    head0_Pos.setX(static_cast<int>(xPos));
+    head0_Pos.setY(static_cast<int>(yPos));
 }
 void Machine::Mach_SetHead0Org(QPoint *_head0_Org)
 {
