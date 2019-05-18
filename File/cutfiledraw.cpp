@@ -23,19 +23,19 @@ void CutFileDraw::CutFileDraw_SetPaintFactorPulsePerMillimeter(QPointF *_factorP
 {
     this->factorPulsePerMillimeter = _factorPulsePerMillimeter;
 }
-void CutFileDraw::CutFileDraw_SetPaintLogicOrg(QPoint *_org)
+void CutFileDraw::CutFileDraw_SetPaintLogicOrg(QPointF *_org)
 {
     this->posLogicOrg = _org;
 }
-void CutFileDraw::CutFileDraw_SetPaintLogicRealTime(QPoint *_pos)
+void CutFileDraw::CutFileDraw_SetPaintLogicRealTime(QPointF *_pos)
 {
     this->posLogicRealTime = _pos;
 }
-void CutFileDraw::CutFileDraw_SetRangePage(QPoint *_rectRangePage)
+void CutFileDraw::CutFileDraw_SetRangePage(QPointF *_rectRangePage)
 {
     this->posRangeLimit = _rectRangePage;
 }
-void CutFileDraw::CutFileDraw_SetRangeMax(QPoint *_rectRangeMax)
+void CutFileDraw::CutFileDraw_SetRangeMax(QPointF *_rectRangeMax)
 {
     this->posRangeMax = _rectRangeMax;
 }
@@ -93,15 +93,15 @@ void CutFileDraw::CutFileDraw_DisplayFileData()
     painter.save();
     //----绘制机床最大尺寸和允许裁剪尺寸
     painter.setPen(penPaintMax);
-    painter.drawRect(0,0,posRangeMax->x(),posRangeMax->y());
+    painter.drawRect(QRectF(0.0,0.0,posRangeMax->x(), posRangeMax->y()));
     painter.setPen(penPaintLimit);
-    painter.drawRect(posLogicOrg->x(),posLogicOrg->y(),posRangeLimit->x()-posLogicOrg->x(),posRangeLimit->y()-posLogicOrg->y());
+    painter.drawRect(QRectF(posLogicOrg->x(),posLogicOrg->y(),posRangeLimit->x()-posLogicOrg->x(),posRangeLimit->y()-posLogicOrg->y()));
     //----绘制下刀
-    QPointF paintCutLable[5]={QPointF(0*factorPulsePerMillimeter->x()+posLogicRealTime->x(),0*factorPulsePerMillimeter->y()+posLogicRealTime->y()),
-                              QPointF(5*factorPulsePerMillimeter->x()+posLogicRealTime->x(),5*factorPulsePerMillimeter->y()+posLogicRealTime->y()),
-                              QPointF(20*factorPulsePerMillimeter->x()+posLogicRealTime->x(),5*factorPulsePerMillimeter->y()+posLogicRealTime->y()),
-                              QPointF(20*factorPulsePerMillimeter->x()+posLogicRealTime->x(),-5*factorPulsePerMillimeter->y()+posLogicRealTime->y()),
-                              QPointF(5*factorPulsePerMillimeter->x()+posLogicRealTime->x(),-5*factorPulsePerMillimeter->y()+posLogicRealTime->y())};
+    QPointF paintCutLable[5]={QPointF(0 +posLogicRealTime->x(), 0+posLogicRealTime->y()),
+                              QPointF(5 +posLogicRealTime->x(), 5+posLogicRealTime->y()),
+                              QPointF(20+posLogicRealTime->x(), 5+posLogicRealTime->y()),
+                              QPointF(20+posLogicRealTime->x(),-5+posLogicRealTime->y()),
+                              QPointF(5 +posLogicRealTime->x(),-5+posLogicRealTime->y())};
 
     painter.setBrush(QBrush(Qt::green));
     painter.setPen(penCutLable);
@@ -111,6 +111,8 @@ void CutFileDraw::CutFileDraw_DisplayFileData()
     if(!fileContent->isEmpty())
     {
         painter.setPen(pen);
+        painter.setRenderHint(QPainter::Antialiasing,true);
+
         for(int i= 0;i<fileContent->at(0).pageCluster.count();i++)
         {
             for(int j = 0;j<fileContent->at(0).pageCluster.at(i).sampleCluster.count();j++)
@@ -121,30 +123,23 @@ void CutFileDraw::CutFileDraw_DisplayFileData()
                     {
                         if(l >=1)
                         {
-                            painter.drawLine(static_cast<int>(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l-1).x()/1000*factorPulsePerMillimeter->x()+posLogicOrg->x()),
-                                             static_cast<int>(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l-1).y()/1000*factorPulsePerMillimeter->y()+posLogicOrg->y()),
-                                             static_cast<int>(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l).x()  /1000*factorPulsePerMillimeter->x()+posLogicOrg->x()),
-                                             static_cast<int>(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l).y()  /1000*factorPulsePerMillimeter->y()+posLogicOrg->y()));
+                            painter.drawLine(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l-1)/1000+*posLogicOrg,
+                                             fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l)  /1000+*posLogicOrg);
                         }
                     }
                 }
                 for(int punchCnt = 0;punchCnt<fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).punchDotCount;punchCnt++)
                 {
-                    QPointF center = QPointF(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).punchCluster.at(punchCnt).dot.x()/1000*factorPulsePerMillimeter->x(),
-                                             fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).punchCluster.at(punchCnt).dot.y()/1000*factorPulsePerMillimeter->y())
-                                    +*posLogicOrg;
+                    QPointF center = fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).punchCluster.at(punchCnt).dot/1000 + *posLogicOrg;
                     QLineF line;
-//                    painter.drawEllipse(center,2*factorPulsePerMillimeter->x(),2*factorPulsePerMillimeter->y());
-                    line.setPoints(center,QPointF(center.x()+5*factorPulsePerMillimeter->x(),center.y()));
+                    line.setPoints(center,QPointF(center.x()+5,center.y()));
                     line.setAngle(-static_cast<qreal>(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).punchCluster.at(punchCnt).dotAngle));
                     painter.drawLine(line);
                 }
                 for(int drillCnt = 0;drillCnt<fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).punchDotCount;drillCnt++)
                 {
-                    QPointF center = QPointF(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).punchCluster.at(drillCnt).dot.x()/1000*factorPulsePerMillimeter->x(),
-                                             fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).punchCluster.at(drillCnt).dot.y()/1000*factorPulsePerMillimeter->y())
-                                     +*posLogicOrg;
-                    painter.drawEllipse(center,3*factorPulsePerMillimeter->x(),3*factorPulsePerMillimeter->y());
+                    QPointF center = fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).punchCluster.at(drillCnt).dot/1000 + *posLogicOrg;
+                    painter.drawEllipse(center,3,3);
                 }
             }
         }

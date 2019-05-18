@@ -73,11 +73,11 @@ public: // sub class obj
     Fan mFan_1;
 //    SDKnifeConfig sdKnifeConfigLib;
 private:
-    QPoint *head0_Org;
+    QPointF *head0_Org;
 public:
-    QPoint head0_Pos;
+    QPointF head0_Pos;
 public:
-    void Mach_SetHead0Org(QPoint *_head0_Org);
+    void Mach_SetHead0Org(QPointF *_head0_Org);
 public:
     void MInit();
     void MainStateRun();

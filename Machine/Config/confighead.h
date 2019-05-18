@@ -41,12 +41,13 @@ private:
     double moveSpd;		//空走速度 (m/s)
     double moveAcc;     //空走加速度(G)
 public:
-    QPoint  headOrg;//红色激光点
-    QPoint  headPos;//当前位置
+    QPointF headOrg;//红色激光点
+    QPointF headPos;//当前位置
     QPointF headPluseScale;//脉冲每毫米
-    QPoint  headMaxPluse;//行走的最大脉冲数,取决于限位开关,目前等价于机械极限尺寸
-    QPoint  headCutLimit;  //区域限位，人为设定尺寸
-    QRect   headCutRect;
+    QPointF headMaxPluse;//行走的最大脉冲数,取决于限位开关,目前等价于机械极限尺寸
+    QPointF headMaxLength;//最大实际长度，毫米
+    QPointF headCutLimit;  //区域限位，人为设定尺寸
+    QRectF  headCutRect;
 
 
 

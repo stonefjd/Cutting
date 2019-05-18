@@ -34,7 +34,7 @@ WindowCutting::WindowCutting(QWidget *parent) :
     cutFlieDraw.CutFileDraw_SetPaintFrame(ui->paintFrame);
     cutFlieDraw.CutFileDraw_SetPaintContent(&cutFileList.fileVector);
     cutFlieDraw.CutFileDraw_SetRangePage(&wConfig->hConfig.at(0)->headCutLimit);
-    cutFlieDraw.CutFileDraw_SetRangeMax(&wConfig->hConfig.at(0)->headMaxPluse);
+    cutFlieDraw.CutFileDraw_SetRangeMax(&wConfig->hConfig.at(0)->headMaxLength);
     cutFlieDraw.CutFileDraw_SetPaintFactorPulsePerMillimeter(&wConfig->hConfig.at(0)->headPluseScale);
     cutFlieDraw.CutFileDraw_SetPaintLogicOrg(&wConfig->hConfig.at(0)->headOrg);
     cutFlieDraw.CutFileDraw_SetPaintLogicRealTime(&mMachine->head0_Pos);

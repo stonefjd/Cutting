@@ -462,7 +462,7 @@ void Machine::GetRunningData()
     head0_Pos.setX(static_cast<int>(xPos));
     head0_Pos.setY(static_cast<int>(yPos));
 }
-void Machine::Mach_SetHead0Org(QPoint *_head0_Org)
+void Machine::Mach_SetHead0Org(QPointF *_head0_Org)
 {
     this->head0_Org = _head0_Org;
 }
