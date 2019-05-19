@@ -97,11 +97,11 @@ void CutFileDraw::CutFileDraw_DisplayFileData()
     painter.setPen(penPaintLimit);
     painter.drawRect(QRectF(posLogicOrg->x(),posLogicOrg->y(),posRangeLimit->x()-posLogicOrg->x(),posRangeLimit->y()-posLogicOrg->y()));
     //----绘制下刀
-    QPointF paintCutLable[5]={QPointF(0 +posLogicRealTime->x(), 0+posLogicRealTime->y()),
-                              QPointF(5 +posLogicRealTime->x(), 5+posLogicRealTime->y()),
-                              QPointF(20+posLogicRealTime->x(), 5+posLogicRealTime->y()),
-                              QPointF(20+posLogicRealTime->x(),-5+posLogicRealTime->y()),
-                              QPointF(5 +posLogicRealTime->x(),-5+posLogicRealTime->y())};
+    QPointF paintCutLable[5]={QPointF(0 +posLogicRealTime->x()/factorPulsePerMillimeter->x(), 0+posLogicRealTime->y()/factorPulsePerMillimeter->y()),
+                              QPointF(5 +posLogicRealTime->x()/factorPulsePerMillimeter->x(), 5+posLogicRealTime->y()/factorPulsePerMillimeter->y()),
+                              QPointF(20+posLogicRealTime->x()/factorPulsePerMillimeter->x(), 5+posLogicRealTime->y()/factorPulsePerMillimeter->y()),
+                              QPointF(20+posLogicRealTime->x()/factorPulsePerMillimeter->x(),-5+posLogicRealTime->y()/factorPulsePerMillimeter->y()),
+                              QPointF(5 +posLogicRealTime->x()/factorPulsePerMillimeter->x(),-5+posLogicRealTime->y()/factorPulsePerMillimeter->y())};
 
     painter.setBrush(QBrush(Qt::green));
     painter.setPen(penCutLable);

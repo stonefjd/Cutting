@@ -161,7 +161,7 @@ void Machine::SubStateRunInitial()
                 ADP_SetCrdPrm(1, &crdPrm);
                 ADP_CrdClear(1, 0);
                  // 该插补段的坐标系是坐标系1 //xy点// 该插补段的目标速度：3pulse/ms // 插补段的加速度：0.1pulse/ms^2// 终点速度为0 // 向坐标系1的FIFO0缓存区传递该直线插补数据
-                ADP_LnXY(1,static_cast<long>(head0_Org->x()),static_cast<long>(head0_Org->y()) ,20,0.05,0,0);
+                ADP_LnXY(1,static_cast<long>(head0_Org->x()*head0_PulsePerMillimeter->x()),static_cast<long>(head0_Org->y()*head0_PulsePerMillimeter->y()) ,20,0.05,0,0);
                 machine_stSubState_Init = stSubInit_LOrg;
                 ADP_CrdStart(1, 0);
                 break;
@@ -203,12 +203,12 @@ void Machine::SubStateRunOperate()
 
     switch(machine_stSubState_Operate)
     {
-    case stSubOperate_EdgeScane_step1:
+    case stSubOperate_SizeCalibration_step1:
         ADP_GetLimitState(AXIS_X,false,&limitStateXNeg);
         ADP_GetLimitState(AXIS_Y,false,&limitStateYNeg);
         if(limitStateXNeg == true && limitStateYNeg == true)
         {
-            machine_stSubState_Operate = stSubOperate_EdgeScane_step2;
+            machine_stSubState_Operate = stSubOperate_SizeCalibration_step2;
             ADP_ZeroPos(AXIS_X);
             ADP_ZeroPos(AXIS_Y);
             ADP_SetPrfPos(AXIS_X, 0);
@@ -220,12 +220,12 @@ void Machine::SubStateRunOperate()
             ADP_Update(AXIS_Y);
         }
         break;
-    case stSubOperate_EdgeScane_step2:
+    case stSubOperate_SizeCalibration_step2:
         ADP_GetLimitState(AXIS_X,true,&limitStateXPos);
         ADP_GetLimitState(AXIS_Y,true,&limitStateYPos);
         if(limitStateXPos == true && limitStateYPos == true)
         {
-            machine_stSubState_Operate = stSubOperate_EdgeScane_step3;
+            machine_stSubState_Operate = stSubOperate_SizeCalibration_step3;
 
             ADP_GetAxisPrfPos(AXIS_X,&xPos);
             ADP_GetAxisPrfPos(AXIS_Y,&yPos);
@@ -236,12 +236,12 @@ void Machine::SubStateRunOperate()
             ADP_SetCrdPrm(1, &crdPrm);
             ADP_CrdClear(1, 0);
              // 该插补段的坐标系是坐标系1 //xy点// 该插补段的目标速度：3pulse/ms // 插补段的加速度：0.05pulse/ms^2// 终点速度为0 // 向坐标系1的FIFO0缓存区传递该直线插补数据
-            ADP_LnXY(1,static_cast<long>(head0_Org->x()),static_cast<long>(head0_Org->y()),20,0.2,0,0);
-            machine_stSubState_Init = stSubInit_LOrg;
+            ADP_LnXY(1,static_cast<long>(head0_Org->x()*head0_PulsePerMillimeter->x()),static_cast<long>(head0_Org->y()*head0_PulsePerMillimeter->y()),20,0.2,0,0);
             ADP_CrdStart(1, 0);
         }
         break;
-    case stSubOperate_EdgeScane_step3:
+    case stSubOperate_SizeCalibration_step3:
+    case stSubOperate_EdgeScane_step1:
     case stSubOperate_BtnO:
         short run;  // 坐标系运动完成段查询变量
         long segment;  // 坐标系的缓存区剩余空间查询变量
@@ -257,14 +257,33 @@ void Machine::SubStateRunOperate()
         machine_stMainState = stMain_Wait;
     }
 }
+void Machine::SubStateOpBtnEdgeScan()
+{
+    if(machine_stMainState == stMain_Wait && machine_stSubState_Operate == stSubOperate_NotIn)
+    {
+        machine_stMainState = stMain_Operate;
+        machine_stSubState_Operate = stSubOperate_EdgeScane_step1;
+    //        machine_stSubState_Operate = stSubOperate_E_step1;
 
+        ADP_ClrSts(1,4);
+        ADP_SetCrdPrm(1, &crdPrm);
+        ADP_CrdClear(1, 0);
+        // 该插补段的坐标系是坐标系1 //xy点// 该插补段的目标速度：3pulse/ms // 插补段的加速度：0.05pulse/ms^2// 终点速度为0 // 向坐标系1的FIFO0缓存区传递该直线插补数据
+        ADP_LnXY(1,static_cast<long>(head0_Org->x()*head0_PulsePerMillimeter->x()),static_cast<long>(head0_Org->y()*head0_PulsePerMillimeter->y()),40,0.1,0,0);
+        ADP_LnXY(1,static_cast<long>(head0_Org->x()*head0_PulsePerMillimeter->x()),static_cast<long>(head0_Limit->y()*head0_PulsePerMillimeter->y()),40,0.1,0,0);
+        ADP_LnXY(1,static_cast<long>(head0_Limit->x()*head0_PulsePerMillimeter->x()),static_cast<long>(head0_Limit->y()*head0_PulsePerMillimeter->y()),40,0.1,0,0);
+        ADP_LnXY(1,static_cast<long>(head0_Limit->x()*head0_PulsePerMillimeter->x()),static_cast<long>(head0_Org->y()*head0_PulsePerMillimeter->y()),40,0.1,0,0);
+        ADP_LnXY(1,static_cast<long>(head0_Org->x()*head0_PulsePerMillimeter->x()),static_cast<long>(head0_Org->y()*head0_PulsePerMillimeter->y()),40,0.1,0,0);
+        ADP_CrdStart(1, 0);
+    }
+}
 void Machine::SubStateOpBtnSizeCalibration()
 {
     qDebug()<<"scane";
     if(machine_stMainState == stMain_Wait && machine_stSubState_Operate == stSubOperate_NotIn)
     {
         machine_stMainState = stMain_Operate;
-        machine_stSubState_Operate = stSubOperate_EdgeScane_step1;
+        machine_stSubState_Operate = stSubOperate_SizeCalibration_step1;
 
         ADP_ClrSts(1,4);
         ADP_PrfJog(AXIS_X);
@@ -322,8 +341,7 @@ void Machine::SubStateOpBtnPress(int id)
             ADP_SetCrdPrm(1, &crdPrm);
             ADP_CrdClear(1, 0);
              // 该插补段的坐标系是坐标系1 //xy点// 该插补段的目标速度：3pulse/ms // 插补段的加速度：0.1pulse/ms^2// 终点速度为0 // 向坐标系1的FIFO0缓存区传递该直线插补数据
-            ADP_LnXY(1,static_cast<long>(head0_Org->x()),static_cast<long>(head0_Org->y()) ,20,0.2,0,0);
-            machine_stSubState_Init = stSubInit_LOrg;
+            ADP_LnXY(1,static_cast<long>(head0_Org->x()*head0_PulsePerMillimeter->x()),static_cast<long>(head0_Org->y()*head0_PulsePerMillimeter->y()) ,20,0.2,0,0);
             ADP_CrdStart(1, 0);
             break;
         }
@@ -472,4 +490,20 @@ void Machine::GetRunningData()
 void Machine::Mach_SetHead0Org(QPointF *_head0_Org)
 {
     this->head0_Org = _head0_Org;
+}
+void Machine::Mach_SetHead0PulsePerMillimeter(QPointF *_head0_PulsePerMillimeter)
+{
+    this->head0_PulsePerMillimeter = _head0_PulsePerMillimeter;
+}
+void Machine::Mach_SetHead0Limit(QPointF *_head0_Limit)
+{
+    this->head0_Limit = _head0_Limit;
+}
+bool Machine::getStateMotorRunningX()
+{
+    return mStateMotorRunningX;
+}
+bool Machine::getStateMotorRunningY()
+{
+    return mStateMotorRunningY;
 }

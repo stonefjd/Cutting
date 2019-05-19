@@ -9,33 +9,33 @@ QString ConfigMachine::GetMachCfgPath()
 {
     return machCfgPath;
 }
-void ConfigMachine::SetMachRunMax(int _axis,double _pos)
-{
-    machRunMax[_axis-1] = _pos;
-}
-double ConfigMachine::GetMachRunMax(int _axis)
-{
-    return machRunMax[_axis-1];
-}
+//void ConfigMachine::SetMachRunMax(int _axis,double _pos)
+//{
+//    machRunMax[_axis-1] = _pos;
+//}
+//double ConfigMachine::GetMachRunMax(int _axis)
+//{
+//    return machRunMax[_axis-1];
+//}
 int ConfigMachine::GetMachHeadCount()
 {
     return machHeadCount;
 }
-void ConfigMachine::UpdateMachRunMax(int _xPos,int _yPos)
-{
-    machRunMax[0] = static_cast<double>(_xPos)/machPulsePerMillimeter[0];
-    machRunMax[1] = static_cast<double>(_yPos)/machPulsePerMillimeter[1];
-    WritePrivateProfileString("MachInfo","MachRunMax",QString::number(machRunMax[0])+','+ QString::number(machRunMax[1]),machCfgPath);
-}
+//void ConfigMachine::UpdateMachRunMax(int _xPos,int _yPos)
+//{
+//    machRunMax[0] = static_cast<double>(_xPos)/machPulsePerMillimeter[0];
+//    machRunMax[1] = static_cast<double>(_yPos)/machPulsePerMillimeter[1];
+//    WritePrivateProfileString("MachInfo","MachRunMax",QString::number(machRunMax[0])+','+ QString::number(machRunMax[1]),machCfgPath);
+//}
 
-void    ConfigMachine::SetMachPulsePerMillimeter(int _axis,double _pos)
-{
-    machPulsePerMillimeter[_axis-1] = _pos;
-}
-double  ConfigMachine::GetMachPulsePerMillimeter(int _axis)
-{
-    return machPulsePerMillimeter[_axis-1];
-}
+//void    ConfigMachine::SetMachPulsePerMillimeter(int _axis,double _pos)
+//{
+//    machPulsePerMillimeter[_axis-1] = _pos;
+//}
+//double  ConfigMachine::GetMachPulsePerMillimeter(int _axis)
+//{
+//    return machPulsePerMillimeter[_axis-1];
+//}
 void ConfigMachine::GetMachineBaseInfo()
 {
     QString strConfigPath = machCfgPath;
@@ -91,25 +91,25 @@ void ConfigMachine::GetMachineBaseInfo()
     strKey = ("MachPhysical");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        for(int i=0;i<AXIS_SUM;i++)
+        for(int i=0;i<2;i++)
             machPhysical[i] = (*szBuf).split(',').at(i).toDouble();
     }
 
-    //机器实际行走长宽度
-    strKey = ("MachRunMax");
-    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
-    {
-        for(int i=0;i<AXIS_SUM;i++)
-            machRunMax[i] = (*szBuf).split(',').at(i).toDouble();
-    }
+//    //机器实际行走长宽度
+//    strKey = ("MachRunMax");
+//    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+//    {
+//        for(int i=0;i<AXIS_SUM;i++)
+//            machRunMax[i] = (*szBuf).split(',').at(i).toDouble();
+//    }
 
-    //脉冲个数每毫秒X,Y
-    strKey = ("MachPulsePerMillimeter");
-    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
-    {
-        for(int i=0;i<AXIS_SUM;i++)
-            machPulsePerMillimeter[i] = (*szBuf).split(',').at(i).toDouble();
-    }
+//    //脉冲个数每毫秒X,Y
+//    strKey = ("MachPulsePerMillimeter");
+//    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+//    {
+//        for(int i=0;i<AXIS_SUM;i++)
+//            machPulsePerMillimeter[i] = (*szBuf).split(',').at(i).toDouble();
+//    }
     //压料时间(s)
     strKey = ("MachTimeSwage");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))

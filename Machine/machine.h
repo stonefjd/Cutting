@@ -5,7 +5,7 @@
 #include <QKeyEvent>
 #include "Fan/fan.h"
 #include "PhysicalLayer/hardwareadaptor.h"
-#include "Machine/Knife/sdknifeconfig.h"
+//#include "Machine/Knife/sdknifeconfig.h"
 #include "Machine/Config/configmachine.h"
 #include "Machine/Config/confighead.h"
 
@@ -35,10 +35,10 @@
 #define stSubOperate_BtnO   9
 #define stSubOperate_Finish 10
 #define stSubOperate_Fail   11
-#define stSubOperate_EdgeScane_step1   12
-#define stSubOperate_EdgeScane_step2   13
-#define stSubOperate_EdgeScane_step3   14
-#define stSubOperate_EdgeScane_step4   15
+#define stSubOperate_SizeCalibration_step1   12
+#define stSubOperate_SizeCalibration_step2   13
+#define stSubOperate_SizeCalibration_step3   14
+#define stSubOperate_EdgeScane_step1   15
 
 //#define stSubNotIn      0
 //#define stSubData       1
@@ -54,6 +54,10 @@ private:
     bool mStatePower;
     bool mStateMotorRunningX;
     bool mStateMotorRunningY;
+public:
+    bool getStateMotorRunningX();
+    bool getStateMotorRunningY();
+private:
     QTimer *mTimer;
 
     uint8_t machine_stSubState_Stop;
@@ -76,10 +80,15 @@ public: // sub class obj
 //    SDKnifeConfig sdKnifeConfigLib;
 private:
     QPointF *head0_Org;
+    QPointF *head0_Limit;
+    QPointF *head0_PulsePerMillimeter;
 public:
     QPointF head0_Pos;
 public:
     void Mach_SetHead0Org(QPointF *_head0_Org);
+    void Mach_SetHead0PulsePerMillimeter(QPointF *_head0_PulsePerMillimeter);
+    void Mach_SetHead0Limit(QPointF *_head0_Limit);
+
 public:
     void MInit();
     void MainStateRun();
@@ -98,6 +107,7 @@ public slots:
     void SubStateOpKeyPress(QKeyEvent event);
     void SubStateOpKeyRelease(QKeyEvent event);
     void SubStateOpBtnSizeCalibration();
+    void SubStateOpBtnEdgeScan();
 
 };
 

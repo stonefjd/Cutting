@@ -43,7 +43,6 @@
    <addaction name="actionWindIn"/>
    <addaction name="actionWindOut"/>
    <addaction name="actionResetRange"/>
-   <addaction name="actionMachToZero"/>
    <addaction name="actionEdgeScan"/>
    <addaction name="actionToolDeepCalibration"/>
    <addaction name="actionToolPositionCalibration"/>

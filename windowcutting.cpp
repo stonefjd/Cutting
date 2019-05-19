@@ -33,7 +33,7 @@ WindowCutting::WindowCutting(QWidget *parent) :
     ui->paintFrame->setFocusPolicy(Qt::StrongFocus);
     cutFlieDraw.CutFileDraw_SetPaintFrame(ui->paintFrame);
     cutFlieDraw.CutFileDraw_SetPaintContent(&cutFileList.fileVector);
-    cutFlieDraw.CutFileDraw_SetRangePage(&wConfig->hConfig.at(0)->headCutLimit);
+    cutFlieDraw.CutFileDraw_SetRangePage(&wConfig->hConfig.at(0)->headLimit);
     cutFlieDraw.CutFileDraw_SetRangeMax(&wConfig->hConfig.at(0)->headMaxLength);
     cutFlieDraw.CutFileDraw_SetPaintFactorPulsePerMillimeter(&wConfig->hConfig.at(0)->headPluseScale);
     cutFlieDraw.CutFileDraw_SetPaintLogicOrg(&wConfig->hConfig.at(0)->headOrg);
@@ -41,12 +41,15 @@ WindowCutting::WindowCutting(QWidget *parent) :
 //----Machine Init
     //mMachine.mFan_1.StateMachineInit(ui->actionWindIn,ui->actionWindOut);
     mMachine->Mach_SetHead0Org(&wConfig->hConfig.at(0)->headOrg);
+    mMachine->Mach_SetHead0PulsePerMillimeter(&wConfig->hConfig.at(0)->headPluseScale);
+    mMachine->Mach_SetHead0Limit(&wConfig->hConfig.at(0)->headLimit);
 
     connect(this,SIGNAL(keyPressed(QKeyEvent)),mMachine,SLOT(SubStateOpKeyPress(QKeyEvent)));
     connect(this,SIGNAL(keyReleased(QKeyEvent)),mMachine,SLOT(SubStateOpKeyRelease(QKeyEvent)));
     connect(ui->btnDirGroup,SIGNAL(buttonPressed(int)),mMachine,SLOT(SubStateOpBtnPress(int)));
     connect(ui->btnDirGroup,SIGNAL(buttonReleased(int)),mMachine,SLOT(SubStateOpBtnRelease(int)));
     connect(ui->actionSizeCalibration,SIGNAL(triggered()),mMachine,SLOT(SubStateOpBtnSizeCalibration()));
+    connect(ui->actionEdgeScan,SIGNAL(triggered()),mMachine,SLOT(SubStateOpBtnEdgeScan()));
     connect(mMachine,SIGNAL(UpdateMachineMaxPluse(double,double)),wConfig,SLOT(UpdateConfigMaxPluse(double,double)));
 
 //----UserLog
@@ -58,25 +61,7 @@ WindowCutting::WindowCutting(QWidget *parent) :
     connect(debugTimer,SIGNAL(timeout()),this,SLOT(debugTask_100ms()));
     debugTimer->start(20);
 }
-void WindowCutting::debugTask_100ms()
-{
-    long x,y;
-    double xPos=0,yPos=0;
-    ADP_GetSts(1,&x);
-    ADP_GetSts(2,&y);
-    ADP_GetAxisPrfPos(AXIS_X,&xPos);
-    ADP_GetAxisPrfPos(AXIS_Y,&yPos);
-    ui->lb_x->setText(QString::number(x));
-    ui->lb_y->setText(QString::number(y));
-    ui->lb_st->setText(QString::number(mMachine->machine_ctSubState_Operate_Key));
-    ui->lb_xPos->setText("x "+QString::number(static_cast<int>(xPos)));
-    ui->lb_yPos->setText("y "+QString::number(static_cast<int>(yPos)));
 
-    if(mMachine->machine_stMainState != stMain_Wait)
-    {
-        ui->paintFrame->update();
-    }
-}
 bool WindowCutting::eventFilter(QObject *watched, QEvent *e)
 {
     if(watched == ui->paintFrame)
@@ -233,7 +218,7 @@ void WindowCutting::on_pushButton_clicked()
     // 向缓存区写入第一段插补数据
     if(cutFileList.fileVector[0].pageCluster[0].sampleCluster[0].lineCluster[0].dotCount!=0)
     {
-        for(int i=0;i<cutFileList.fileVector[0].pageCluster[0].sampleCluster[0].lineCluster[0].dotCount!=0;i++)
+        for(int i=0;i<cutFileList.fileVector[0].pageCluster[0].sampleCluster[0].lineCluster[0].dotCount;i++)
         {
             sRtn = GT_LnXY(    1,    // 该插补段的坐标系是坐标系1
                                static_cast<long>(cutFileList.fileVector[0].pageCluster[0].sampleCluster[0].lineCluster[0].pointCluster[i].x()/20),
@@ -256,17 +241,12 @@ void WindowCutting::on_pushButton_clicked()
 }
 void WindowCutting::on_pushButton_2_clicked()
 {
-//    this->mMachine.mFan_1.SetState_FanStop();
-//    GT_SetDoBit(MC_GPO,0,1);
-
 }
 void WindowCutting::on_pushButton_3_clicked()
 {
-//    this->mMachine.mFan_1.SetState_FanWindIn();
 }
 void WindowCutting::on_pushButton_4_clicked()
 {
-//    this->mMachine.mFan_1.SetState_FanWindOut();
 }
 
 
@@ -379,7 +359,25 @@ void WindowCutting::on_actionWindOut_toggled(bool arg1)
     }
     ui->testLable->setText(QString::number(mMachine->mFan_1.Fan_GetState()));
 }
+void WindowCutting::debugTask_100ms()
+{
+    long x,y;
+    double xPos=0,yPos=0;
+    ADP_GetSts(1,&x);
+    ADP_GetSts(2,&y);
+    ADP_GetAxisPrfPos(AXIS_X,&xPos);
+    ADP_GetAxisPrfPos(AXIS_Y,&yPos);
+    ui->lb_x->setText(QString::number(x));
+    ui->lb_y->setText(QString::number(y));
+    ui->lb_st->setText(QString::number(mMachine->machine_ctSubState_Operate_Key));
+    ui->lb_xPos->setText("x "+QString::number(static_cast<int>(xPos)));
+    ui->lb_yPos->setText("y "+QString::number(static_cast<int>(yPos)));
 
+    if(mMachine->machine_stMainState != stMain_Wait || mMachine->getStateMotorRunningX()||mMachine->getStateMotorRunningY())
+    {
+        ui->paintFrame->update();
+    }
+}
 //void WindowCutting::messageBoxAutoRemove(QString _str)
 //{
 //    QMessageBox *msgBox = new QMessageBox;

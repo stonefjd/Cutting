@@ -10,6 +10,7 @@ class ConfigWhole : public QWidget
 public:
     explicit ConfigWhole(QWidget *parent = nullptr);
 public:
+    //这样定义，割裂了机器，机头从属关系，但可以理解为两者本身耦合不紧密。
     ConfigMachine   mConfig;
     QList<ConfigHead*> hConfig;
 

@@ -85,30 +85,12 @@ void ConfigHead::GetHeadInfo(int _index)
     strKey = ("HeadCutLimitX");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        headCutLimit.setX((*szBuf).toDouble());
+        headLimit.setX((*szBuf).toDouble());
     }
     strKey = ("HeadCutLimitY");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        headCutLimit.setY((*szBuf).toDouble());
-    }
-    //摄像头 X偏移
-    strKey = ("CameraOffsetX");
-    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
-    {
-        cameraOffsetX = (*szBuf).toInt();
-    }
-    //摄像头 Y偏移
-    strKey = ("CameraOffsetY");
-    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
-    {
-        cameraOffsetY = (*szBuf).toInt();
-    }
-    //摄像头 高度
-    strKey = ("CameraHeight");
-    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
-    {
-        cameraHeight = (*szBuf).toInt();
+        headLimit.setY((*szBuf).toDouble());
     }
     //送料长度
     strKey = ("FeedLen");
@@ -129,18 +111,38 @@ void ConfigHead::GetHeadInfo(int _index)
         feedAcc = (*szBuf).toInt();
     }
     //空走速度 (m/s)
-    strKey = ("MoveSpd");
+    strKey = ("IdleMoveSpeed");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        moveSpd = (*szBuf).toInt();
+        idleMoveSpeed = (*szBuf).toInt();
     }
     //空走加速度(G)
-    strKey = ("moveAcc");
+    strKey = ("IdleMoveAcc");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        moveAcc = (*szBuf).toInt();
+        idleMoveAcc = (*szBuf).toInt();
     }
-    UpdateHeadCutRange();
+    //获取机座列表
+    strKey = ("Aprons");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        apronCount = (*szBuf).toInt();
+    }
+    for(int _apronCnt=0;_apronCnt<apronCount;_apronCnt++)
+    {
+        strKey = ("Apron"+QString::number(_apronCnt));
+        QStringList apronParam;
+        if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+        {
+            apronParam = (szBuf)->split(',');
+        }
+        configApron *apron = new configApron;
+        apron->SetApronIndex(_apronCnt);
+        apron->SetKnifeGuid(KNIFETOOLID2GUID(apronParam.at(1).toInt(),apronParam.at(2).toInt()));
+        apron->SetXOffset(apronParam.at(3).toDouble());
+        apron->SetXOffset(apronParam.at(4).toDouble());
+        aConfig.append(apron);
+    }
 }
 QString ConfigHead::GetHeadCfgPath()
 {
@@ -150,39 +152,37 @@ void ConfigHead::UpdateHeadMaxPluse(int _xPluse,int _yPluse,int _hIndex)
 {
     headMaxPluse.setX(_xPluse);
     headMaxPluse.setY(_yPluse);
+    headMaxLength.setX(_xPluse/headPluseScale.x());
+    headMaxLength.setY(_yPluse/headPluseScale.y());
     WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadMaxPluseX",QString::number(_xPluse),headCfgPath);
     WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadMaxPluseY",QString::number(_yPluse),headCfgPath);
-    if(_xPluse <= headCutLimit.x())
+    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadMaxLengthX",QString::number(_xPluse/headPluseScale.x()),headCfgPath);
+    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadMaxLengthY",QString::number(_yPluse/headPluseScale.y()),headCfgPath);
+    if(_xPluse <= headLimit.x())
     {
-        headCutLimit.setX(_xPluse);
+        headLimit.setX(_xPluse);
         WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadCutLimitX",QString::number(_xPluse),headCfgPath);
     }
-    if(_yPluse <= headCutLimit.y())
+    if(_yPluse <= headLimit.y())
     {
-        headCutLimit.setX(_xPluse);
+        headLimit.setX(_xPluse);
         WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadCutLimitY",QString::number(_yPluse),headCfgPath);
     }
-    UpdateHeadCutRange();
 }
 void ConfigHead::UpdateHeadCutLimit(int _xPluse,int _yPluse,int _hIndex)
 {
     if(_xPluse <= headMaxPluse.x())
     {
-        headCutLimit.setX(_xPluse);
+        headLimit.setX(_xPluse);
     }
     if(_yPluse <= headMaxPluse.y())
     {
-        headCutLimit.setY(_yPluse);
+        headLimit.setY(_yPluse);
     }
     WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadCutLimitX",QString::number(_xPluse),headCfgPath);
     WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadCutLimitY",QString::number(_yPluse),headCfgPath);
-    UpdateHeadCutRange();
 }
-void ConfigHead::UpdateHeadCutRange()
-{
-    headCutRect.setTopLeft(headOrg);
-    headCutRect.setBottomRight(headCutLimit);
-}
+
 bool ConfigHead::WritePrivateProfileString(QString strSect,QString strKey,QString strText,QString strConfigPath)
 {
     QFile file(strConfigPath);

@@ -14,7 +14,7 @@ ConfigWhole::ConfigWhole(QWidget *parent) : QWidget(parent)
 
 void ConfigWhole::UpdateConfigMaxPluse(double _xPos, double _yPos)
 {
-    mConfig.UpdateMachRunMax(static_cast<int>(_xPos),static_cast<int>(_yPos));
+//    mConfig.UpdateMachRunMax(static_cast<int>(_xPos),static_cast<int>(_yPos));
     hConfig.at(0)->UpdateHeadMaxPluse(static_cast<int>(_xPos),static_cast<int>(_yPos),0);
 //    hConfig.at(0)->UpdateHeadCutLimit(static_cast<int>(_xPos),static_cast<int>(_yPos),0);
 }
