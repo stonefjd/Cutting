@@ -51,7 +51,9 @@ class Machine : public QObject
 {
     Q_OBJECT
 private:
-    bool mPowerState;
+    bool mStatePower;
+    bool mStateMotorRunningX;
+    bool mStateMotorRunningY;
     QTimer *mTimer;
 
     uint8_t machine_stSubState_Stop;
@@ -87,7 +89,6 @@ public:
     void SubStateRunCut();
 
     void GetRunningData();
-
 signals:
     void UpdateMachineMaxPluse(double _xPos, double _yPos);
 public slots:

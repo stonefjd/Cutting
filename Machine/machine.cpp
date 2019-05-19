@@ -161,7 +161,7 @@ void Machine::SubStateRunInitial()
                 ADP_SetCrdPrm(1, &crdPrm);
                 ADP_CrdClear(1, 0);
                  // 该插补段的坐标系是坐标系1 //xy点// 该插补段的目标速度：3pulse/ms // 插补段的加速度：0.1pulse/ms^2// 终点速度为0 // 向坐标系1的FIFO0缓存区传递该直线插补数据
-                ADP_LnXY(1,head0_Org->x(),head0_Org->y() ,20,0.05,0,0);
+                ADP_LnXY(1,static_cast<long>(head0_Org->x()),static_cast<long>(head0_Org->y()) ,20,0.05,0,0);
                 machine_stSubState_Init = stSubInit_LOrg;
                 ADP_CrdStart(1, 0);
                 break;
@@ -236,7 +236,7 @@ void Machine::SubStateRunOperate()
             ADP_SetCrdPrm(1, &crdPrm);
             ADP_CrdClear(1, 0);
              // 该插补段的坐标系是坐标系1 //xy点// 该插补段的目标速度：3pulse/ms // 插补段的加速度：0.05pulse/ms^2// 终点速度为0 // 向坐标系1的FIFO0缓存区传递该直线插补数据
-            ADP_LnXY(1,head0_Org->x(),head0_Org->y(),20,0.2,0,0);
+            ADP_LnXY(1,static_cast<long>(head0_Org->x()),static_cast<long>(head0_Org->y()),20,0.2,0,0);
             machine_stSubState_Init = stSubInit_LOrg;
             ADP_CrdStart(1, 0);
         }
@@ -322,7 +322,7 @@ void Machine::SubStateOpBtnPress(int id)
             ADP_SetCrdPrm(1, &crdPrm);
             ADP_CrdClear(1, 0);
              // 该插补段的坐标系是坐标系1 //xy点// 该插补段的目标速度：3pulse/ms // 插补段的加速度：0.1pulse/ms^2// 终点速度为0 // 向坐标系1的FIFO0缓存区传递该直线插补数据
-            ADP_LnXY(1,head0_Org->x(),head0_Org->y() ,20,0.2,0,0);
+            ADP_LnXY(1,static_cast<long>(head0_Org->x()),static_cast<long>(head0_Org->y()) ,20,0.2,0,0);
             machine_stSubState_Init = stSubInit_LOrg;
             ADP_CrdStart(1, 0);
             break;
@@ -456,11 +456,18 @@ void Machine::Task_10ms()
 }
 void Machine::GetRunningData()
 {
+    //----x,y position
     double xPos,yPos;
     ADP_GetAxisPrfPos(AXIS_X,&xPos);
     ADP_GetAxisPrfPos(AXIS_Y,&yPos);
     head0_Pos.setX(static_cast<int>(xPos));
     head0_Pos.setY(static_cast<int>(yPos));
+    //----x,y running state
+    long xSts,ySts;
+    ADP_GetSts(AXIS_X,&xSts);
+    ADP_GetSts(AXIS_Y,&ySts);
+    ((xSts&0x0400) != 0)?(mStateMotorRunningX=true):(mStateMotorRunningX=false);
+    ((ySts&0x0400) != 0)?(mStateMotorRunningY=true):(mStateMotorRunningY=false);
 }
 void Machine::Mach_SetHead0Org(QPointF *_head0_Org)
 {

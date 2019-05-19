@@ -22,6 +22,12 @@ void ADP_Connect()
     GT_Open();
 #endif
 }
+void ADP_Disconnect()
+{
+#ifdef GTSLIB
+    GT_Close();
+#endif
+}
 void ADP_Reset()
 {
 #ifdef GTSLIB
@@ -58,12 +64,6 @@ void ADP_LoadCfgFile(QString _path)
     QByteArray qByteArray= _path.toUtf8();
     char *cStr = qByteArray.data();
     GT_LoadConfig(cStr);
-#endif
-}
-void ADP_Disconnect()
-{
-#ifdef GTSLIB
-    GT_Close();
 #endif
 }
 
