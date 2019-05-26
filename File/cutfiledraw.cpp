@@ -94,6 +94,8 @@ void CutFileDraw::CutFileDraw_DisplayFileData()
     //----绘制机床最大尺寸和允许裁剪尺寸
     painter.setPen(penPaintMax);
     painter.drawRect(QRectF(0.0,0.0,posRangeMax->x(), posRangeMax->y()));
+//    painter.setFont(QFont("华文行楷", 30));
+//    painter.drawText(QPointF(200,200), "你好123");
     painter.setPen(penPaintLimit);
     painter.drawRect(QRectF(posLogicOrg->x(),posLogicOrg->y(),posRangeLimit->x()-posLogicOrg->x(),posRangeLimit->y()-posLogicOrg->y()));
     //----绘制下刀
@@ -123,14 +125,17 @@ void CutFileDraw::CutFileDraw_DisplayFileData()
                     {
                         if(l >=1)
                         {
-                            painter.drawLine(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l-1)/1000+*posLogicOrg,
-                                             fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l)  /1000+*posLogicOrg);
+                            painter.drawLine(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l-1)/HEX_PER_MM+*posLogicOrg,
+                                             fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l)  /HEX_PER_MM+*posLogicOrg);
                         }
                     }
                 }
+                painter.drawEllipse(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).focusInSample/HEX_PER_MM+*posLogicOrg,3,3);
+                painter.setFont(QFont("华文行楷", 30));
+                painter.drawText(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).focusInSample/HEX_PER_MM+*posLogicOrg, QString::number(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).sampleId));
                 for(int punchCnt = 0;punchCnt<fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).punchDotCount;punchCnt++)
                 {
-                    QPointF center = fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).punchCluster.at(punchCnt).dot/1000 + *posLogicOrg;
+                    QPointF center = fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).punchCluster.at(punchCnt).dot/HEX_PER_MM + *posLogicOrg;
                     QLineF line;
                     line.setPoints(center,QPointF(center.x()+5,center.y()));
                     line.setAngle(-static_cast<qreal>(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).punchCluster.at(punchCnt).dotAngle));
@@ -138,7 +143,7 @@ void CutFileDraw::CutFileDraw_DisplayFileData()
                 }
                 for(int drillCnt = 0;drillCnt<fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).punchDotCount;drillCnt++)
                 {
-                    QPointF center = fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).punchCluster.at(drillCnt).dot/1000 + *posLogicOrg;
+                    QPointF center = fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).punchCluster.at(drillCnt).dot/HEX_PER_MM + *posLogicOrg;
                     painter.drawEllipse(center,3,3);
                 }
             }
@@ -147,10 +152,10 @@ void CutFileDraw::CutFileDraw_DisplayFileData()
 }
 //void CutFileDraw::CutFileDraw_DrawLine(QPointF q1,QPointF q2,QPointF fact,QPointF offset)
 //{
-//    painter.drawLine(static_cast<int>(q1.x()/1000*fact->x()+offset->x()),
-//                     static_cast<int>(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l-1).y()/1000*factorPulsePerMillimeter->y()+posLogicOrg->y()),
-//                     static_cast<int>(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l).x()  /1000*factorPulsePerMillimeter->x()+posLogicOrg->x()),
-//                     static_cast<int>(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l).y()  /1000*factorPulsePerMillimeter->y()+posLogicOrg->y()));
+//    painter.drawLine(static_cast<int>(q1.x()/HEX_PER_MM*fact->x()+offset->x()),
+//                     static_cast<int>(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l-1).y()/HEX_PER_MM*factorPulsePerMillimeter->y()+posLogicOrg->y()),
+//                     static_cast<int>(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l).x()  /HEX_PER_MM*factorPulsePerMillimeter->x()+posLogicOrg->x()),
+//                     static_cast<int>(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l).y()  /HEX_PER_MM*factorPulsePerMillimeter->y()+posLogicOrg->y()));
 
 //}
 

@@ -111,10 +111,10 @@ void ConfigHead::GetHeadInfo(int _index)
         feedAcc = (*szBuf).toInt();
     }
     //空走速度 (m/s)
-    strKey = ("IdleMoveSpeed");
+    strKey = ("IdleMoveSpd");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        idleMoveSpeed = (*szBuf).toInt();
+        idleMoveSpd = (*szBuf).toInt();
     }
     //空走加速度(G)
     strKey = ("IdleMoveAcc");
@@ -126,9 +126,9 @@ void ConfigHead::GetHeadInfo(int _index)
     strKey = ("Aprons");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        apronCount = (*szBuf).toInt();
+        apronIndexList = szBuf->split(',');
     }
-    for(int _apronCnt=0;_apronCnt<apronCount;_apronCnt++)
+    for(int _apronCnt=0;_apronCnt<apronIndexList.count();_apronCnt++)
     {
         strKey = ("Apron"+QString::number(_apronCnt));
         QStringList apronParam;

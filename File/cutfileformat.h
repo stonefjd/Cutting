@@ -4,6 +4,7 @@
 #include<QString>
 #include<QPointF>
 #include<QList>
+#define HEX_PER_MM 1000.0
 struct dotData_t
 {
     int dotId;
@@ -21,7 +22,6 @@ struct lineData_t
     float lineDeep;//当前线条刀深
     QPointF toolOffset;//刀偏置
     QList<QPointF> pointCluster;//当前线条的点集合
-
 };
 struct sampleData_t
 {
@@ -29,6 +29,7 @@ struct sampleData_t
     int lineCount;//当前窗中线条数量
     int punchDotCount;
     int drillDotCount;
+    QPointF focusInSample;
     QList<lineData_t> lineCluster;//当前窗线条数据集
     QList<dotData_t> punchCluster;
     QList<dotData_t> drillCluster;

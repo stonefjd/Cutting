@@ -423,4 +423,28 @@ void CutFileListOp::CutFileList_LoadCutData(int _fIdx)
     fileVector[fIdx].pageCount = wIdx;
 
     file.close();
+    for(int i=0;i<fileVector.count();i++)
+        for(int j=0;j<fileVector.at(i).pageCluster.count();j++)
+            for(int k=0;k<fileVector.at(i).pageCluster.at(j).sampleCluster.count();k++)
+            {
+                double area = 0;
+                QPointF center;
+                center.setX(0);
+                center.setY(0);
+                for(int l=0;l<fileVector.at(i).pageCluster.at(j).sampleCluster.at(k).lineCluster.count();l++)
+                {
+                    for(int m=0;m<fileVector.at(i).pageCluster.at(j).sampleCluster.at(k).lineCluster.at(l).pointCluster.count()-1;m++)
+                    {
+                        QPointF tempThis = fileVector.at(i).pageCluster.at(j).sampleCluster.at(k).lineCluster.at(l).pointCluster.at(m);
+                        QPointF tempNext = fileVector.at(i).pageCluster.at(j).sampleCluster.at(k).lineCluster.at(l).pointCluster.at(m+1);
+
+                        area +=     (tempThis.x()*tempNext.y() - tempNext.x()*tempThis.y())/2;
+                        center.setX(center.x() + (tempThis.x()*tempNext.y() - tempNext.x()*tempThis.y()) * (tempThis.x() + tempNext.x()));
+                        center.setY(center.y() + (tempThis.x()*tempNext.y() - tempNext.x()*tempThis.y()) * (tempThis.y() + tempNext.y()));
+                    }
+                }
+                center.setX(center.x() / (6*area));
+                center.setY(center.y() / (6*area));
+                fileVector[i].pageCluster[j].sampleCluster[k].focusInSample = center;
+            }
 }

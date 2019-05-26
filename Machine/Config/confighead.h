@@ -30,9 +30,9 @@ private:
     double feedSpd;     //送料速度(m/s)
     double feedAcc;     //送料加速度(m/s²)
 
-    double idleMoveSpeed;		//空走速度 (m/s)
+    double idleMoveSpd;		//空走速度 (m/s)
     double idleMoveAcc;     //空走加速度(G)
-    int apronCount;
+    QStringList apronIndexList;
 
 public:
     QPointF headOrg;//红色激光点
