@@ -80,7 +80,16 @@ void ConfigHead::GetHeadInfo(int _index)
     {
         headMaxLength.setY((*szBuf).toDouble());
     }
-
+    strKey = ("XScale");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        headCutScale.setX((*szBuf).toDouble());
+    }
+    strKey = ("YScale");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        headCutScale.setY((*szBuf).toDouble());
+    }
     //区域限位，人为设定尺寸
     strKey = ("HeadCutLimitX");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))

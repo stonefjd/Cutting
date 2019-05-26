@@ -84,6 +84,8 @@ private:
     QPointF *head0_PulsePerMillimeter;
 public:
     QPointF head0_Pos;
+    double  head0_MoveAngel;
+    QPointF head0_PosLast;
 public:
     void Mach_SetHead0Org(QPointF *_head0_Org);
     void Mach_SetHead0PulsePerMillimeter(QPointF *_head0_PulsePerMillimeter);

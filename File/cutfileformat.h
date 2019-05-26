@@ -5,6 +5,8 @@
 #include<QPointF>
 #include<QList>
 #define HEX_PER_MM 1000.0
+
+#define CODE_TEST 1
 struct dotData_t
 {
     int dotId;
@@ -21,7 +23,7 @@ struct lineData_t
     int dotCount;//当前线条的点数量
     float lineDeep;//当前线条刀深
     QPointF toolOffset;//刀偏置
-    QList<QPointF> pointCluster;//当前线条的点集合
+    QVector<QPointF> pointCluster;//当前线条的点集合
 };
 struct sampleData_t
 {
@@ -33,6 +35,7 @@ struct sampleData_t
     QList<lineData_t> lineCluster;//当前窗线条数据集
     QList<dotData_t> punchCluster;
     QList<dotData_t> drillCluster;
+    bool isFinished;
 };
 struct pageData_t
 {

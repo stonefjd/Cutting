@@ -26,6 +26,8 @@ WindowCutting::WindowCutting(QWidget *parent) :
     ui->dockWgtCutFile->setMaximumWidth(200);
     ui->tableWgtCutFile->setFocusPolicy(Qt::NoFocus);
     cutFileList.CutFileList_WidgetInit(ui->tableWgtCutFile);
+    cutFileList.CutFileList_SetPosLogicOrg(&wConfig->hConfig.at(0)->headOrg);
+    cutFileList.CutFileList_SetFactorCutScale(&wConfig->hConfig.at(0)->headCutScale);
 
 //----CutFileDraw
     ui->paintFrame->setMouseTracking(false);
@@ -37,7 +39,8 @@ WindowCutting::WindowCutting(QWidget *parent) :
     cutFlieDraw.CutFileDraw_SetRangeMax(&wConfig->hConfig.at(0)->headMaxLength);
     cutFlieDraw.CutFileDraw_SetPaintFactorPulsePerMillimeter(&wConfig->hConfig.at(0)->headPluseScale);
     cutFlieDraw.CutFileDraw_SetPaintLogicOrg(&wConfig->hConfig.at(0)->headOrg);
-    cutFlieDraw.CutFileDraw_SetPaintLogicRealTime(&mMachine->head0_Pos);
+    cutFlieDraw.CutFileDraw_SetFactorCutScale(&wConfig->hConfig.at(0)->headCutScale);
+    cutFlieDraw.CutFileDraw_SetPaintLogicRealTime(&mMachine->head0_Pos,&mMachine->head0_MoveAngel);
 //----Machine Init
     //mMachine.mFan_1.StateMachineInit(ui->actionWindIn,ui->actionWindOut);
     mMachine->Mach_SetHead0Org(&wConfig->hConfig.at(0)->headOrg);

@@ -41,8 +41,7 @@ public:
     QPointF headMaxPluse;//行走的最大脉冲数,取决于限位开关,目前等价于机械极限尺寸
     QPointF headMaxLength;//最大实际长度，毫米
     QPointF headLimit;  //区域限位，人为设定尺寸
-    QRectF  headCutRect;
-
+    QPointF headCutScale;
     QList<configApron*> aConfig;
 
 

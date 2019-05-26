@@ -218,6 +218,14 @@ QString CutFileListOp::CutFileList_GetListPath()
     return filePath;
 }
 
+void CutFileListOp::CutFileList_SetPosLogicOrg(QPointF *_org)
+{
+    this->posLogicOrg = _org;
+}
+void CutFileListOp::CutFileList_SetFactorCutScale(QPointF *_scale)
+{
+    this->factorCutScale = _scale;
+}
 
 //--槽函数
 //2019.03.01修改内容
@@ -423,6 +431,58 @@ void CutFileListOp::CutFileList_LoadCutData(int _fIdx)
     fileVector[fIdx].pageCount = wIdx;
 
     file.close();
+    //change to mm unit,change to scale and add org set
+    for(int i=0;i<fileVector.count();i++)
+        for(int j=0;j<fileVector.at(i).pageCluster.count();j++)
+            for(int k=0;k<fileVector.at(i).pageCluster.at(j).sampleCluster.count();k++)
+            {
+                for(int l=0;l<fileVector.at(i).pageCluster.at(j).sampleCluster.at(k).lineCluster.count();l++)
+                    for(int m=0;m<fileVector.at(i).pageCluster.at(j).sampleCluster.at(k).lineCluster.at(l).pointCluster.count();m++)
+                    {
+                        //step 01:set to mm unit
+                        fileVector[i].pageCluster[j].sampleCluster[k].lineCluster[l].pointCluster[m]/=HEX_PER_MM;
+                        //step 02:set to scale step
+                        fileVector[i].pageCluster[j].sampleCluster[k].lineCluster[l].pointCluster[m].setX(
+                                    fileVector[i].pageCluster[j].sampleCluster[k].lineCluster[l].pointCluster[m].x()*factorCutScale->x());
+                        fileVector[i].pageCluster[j].sampleCluster[k].lineCluster[l].pointCluster[m].setY(
+                                    fileVector[i].pageCluster[j].sampleCluster[k].lineCluster[l].pointCluster[m].y()*factorCutScale->y());
+                        //step 03:add org offset
+                        fileVector[i].pageCluster[j].sampleCluster[k].lineCluster[l].pointCluster[m].setX(
+                                    fileVector[i].pageCluster[j].sampleCluster[k].lineCluster[l].pointCluster[m].x() + posLogicOrg->x());
+                        fileVector[i].pageCluster[j].sampleCluster[k].lineCluster[l].pointCluster[m].setY(
+                                    fileVector[i].pageCluster[j].sampleCluster[k].lineCluster[l].pointCluster[m].y() + posLogicOrg->y());
+                    }
+                for(int l=0;l<fileVector.at(i).pageCluster.at(j).sampleCluster.at(k).punchCluster.count();l++)
+                {
+                    fileVector[i].pageCluster[j].sampleCluster[k].punchCluster[l].dot/=HEX_PER_MM;
+                    fileVector[i].pageCluster[j].sampleCluster[k].punchCluster[l].dot.setX(
+                                fileVector[i].pageCluster[j].sampleCluster[k].punchCluster[l].dot.x()*factorCutScale->x());
+                    fileVector[i].pageCluster[j].sampleCluster[k].punchCluster[l].dot.setY(
+                                fileVector[i].pageCluster[j].sampleCluster[k].punchCluster[l].dot.y()*factorCutScale->y());
+
+                    fileVector[i].pageCluster[j].sampleCluster[k].punchCluster[l].dot.setX(
+                                fileVector[i].pageCluster[j].sampleCluster[k].punchCluster[l].dot.x() + posLogicOrg->x());
+                    fileVector[i].pageCluster[j].sampleCluster[k].punchCluster[l].dot.setY(
+                                fileVector[i].pageCluster[j].sampleCluster[k].punchCluster[l].dot.y() + posLogicOrg->y());
+                }
+                for(int l=0;l<fileVector.at(i).pageCluster.at(j).sampleCluster.at(k).drillCluster.count();l++)
+                {
+                    fileVector[i].pageCluster[j].sampleCluster[k].drillCluster[l].dot/=HEX_PER_MM;
+                    fileVector[i].pageCluster[j].sampleCluster[k].drillCluster[l].dot.setX(
+                                fileVector[i].pageCluster[j].sampleCluster[k].drillCluster[l].dot.x()*factorCutScale->x());
+                    fileVector[i].pageCluster[j].sampleCluster[k].drillCluster[l].dot.setY(
+                                fileVector[i].pageCluster[j].sampleCluster[k].drillCluster[l].dot.y()*factorCutScale->y());
+
+
+                    fileVector[i].pageCluster[j].sampleCluster[k].drillCluster[l].dot.setX(
+                                fileVector[i].pageCluster[j].sampleCluster[k].drillCluster[l].dot.x() + posLogicOrg->x());
+                    fileVector[i].pageCluster[j].sampleCluster[k].drillCluster[l].dot.setY(
+                                fileVector[i].pageCluster[j].sampleCluster[k].drillCluster[l].dot.y() + posLogicOrg->y());
+                }
+            }
+
+
+    //set Sample Point
     for(int i=0;i<fileVector.count();i++)
         for(int j=0;j<fileVector.at(i).pageCluster.count();j++)
             for(int k=0;k<fileVector.at(i).pageCluster.at(j).sampleCluster.count();k++)
@@ -447,4 +507,11 @@ void CutFileListOp::CutFileList_LoadCutData(int _fIdx)
                 center.setY(center.y() / (6*area));
                 fileVector[i].pageCluster[j].sampleCluster[k].focusInSample = center;
             }
+#if CODE_TEST == 1
+    fileVector[0].pageCluster[0].sampleCluster[0].isFinished = true;
+    fileVector[0].pageCluster[0].sampleCluster[1].isFinished = true;
+    fileVector[0].pageCluster[0].sampleCluster[2].isFinished = true;
+    fileVector[0].pageCluster[0].sampleCluster[3].isFinished = true;
+#endif
+    //set scale Factor
 }

@@ -31,6 +31,8 @@ public:
     void CutFileList_ExportFileFromList(QTableWidget *_tableWidget);
 
     QString CutFileList_GetListPath();
+    void CutFileList_SetPosLogicOrg(QPointF *_org);
+    void CutFileList_SetFactorCutScale(QPointF *_scale);
 
     void CutFileList_WidgetInit(QTableWidget *_tableWidget);
     void CutFileList_DisplayList(QTableWidget *_tableWidget);
@@ -45,6 +47,8 @@ public:
 private:
     QString filePath;//特指列表文档的路径!
     QStringList filePathList;
+    QPointF *posLogicOrg;
+    QPointF *factorCutScale;
     QStringList CutFileList_ViewOpenFile(QString _name,QString _filter,enum QFileDialog::FileMode _fileMode);
     void CutFileList_PrintVector(QList<fileData_t> _fileVector);
     void CutFileList_LoadCutData(int _fIdx);

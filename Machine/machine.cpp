@@ -478,8 +478,15 @@ void Machine::GetRunningData()
     double xPos,yPos;
     ADP_GetAxisPrfPos(AXIS_X,&xPos);
     ADP_GetAxisPrfPos(AXIS_Y,&yPos);
-    head0_Pos.setX(static_cast<int>(xPos));
-    head0_Pos.setY(static_cast<int>(yPos));
+//    if((head0_Pos.x()!=xPos) && (head0_Pos.y()!=yPos))
+    {
+        head0_PosLast.setX(head0_Pos.x());
+        head0_PosLast.setY(head0_Pos.y());
+        head0_Pos.setX(static_cast<int>(xPos));
+        head0_Pos.setY(static_cast<int>(yPos));
+    }
+
+    head0_MoveAngel = QLineF(head0_PosLast,head0_Pos).angle();
     //----x,y running state
     long xSts,ySts;
     ADP_GetSts(AXIS_X,&xSts);
