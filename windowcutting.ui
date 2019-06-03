@@ -46,7 +46,7 @@
    <addaction name="actionEdgeScan"/>
    <addaction name="actionToolDeepCalibration"/>
    <addaction name="actionToolPositionCalibration"/>
-   <addaction name="actionSizeCalibration"/>
+   <addaction name="actionResize"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="dockWgtCutFile">
@@ -617,7 +617,7 @@
     <string>切割列表操作栏</string>
    </property>
   </action>
-  <action name="actionSizeCalibration">
+  <action name="actionResize">
    <property name="text">
     <string>尺寸校准</string>
    </property>

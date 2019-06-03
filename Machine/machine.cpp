@@ -1,5 +1,6 @@
 ﻿#include "machine.h"
 #include "PhysicalLayer/gts.h"
+#include <QThread>
 Machine::Machine(QObject *parent) : QObject(parent)
 {
 //    this->mFan_1.SetState_FanStop();
@@ -30,11 +31,13 @@ Machine::Machine(QObject *parent) : QObject(parent)
     machine_stSubState_Operate = stSubOperate_NotIn;
 //    machine_stSubState_Stop = stSubInitNotIn;
 //    machine_stSubState_Wait = stSubNotIn;
-//    machine_stSubState_Cut = stSubNotIn;
+    machine_stSubState_Cut = stSubCut_NotIn;
 //    machine_stSubState_Pause = stSubNotIn;
 //    machine_stSubState_Err = stSubNotIn;
     machine_ctSubState_Operate_Key = 0;
-
+    machine_ctSubState_Cut_SampleFinished = 0;
+    machine_ctSubState_Cut_WindowFinished = 0;
+    machine_ctSubState_Cut_FileFinished = 0;
     mTimer=new QTimer(this);
     connect(mTimer,SIGNAL(timeout()),this,SLOT(Task_10ms()));
     mTimer->start(10);
@@ -70,10 +73,12 @@ void Machine::MainStateRun()
         }
         case stMain_Cut:
         {
+            SubStateRunCut();
             break;
         }
         case stMain_Pause:
         {
+
             break;
         }
         case stMain_Err:
@@ -83,10 +88,6 @@ void Machine::MainStateRun()
     }
 }
 void Machine:: SubStateRunWait()
-{
-
-}
-void Machine::SubStateRunCut()
 {
 
 }
@@ -191,7 +192,6 @@ void Machine::SubStateRunInitial()
         }
     }
 }
-
 void Machine::SubStateRunOperate()
 {
     bool limitStateXNeg;
@@ -257,6 +257,161 @@ void Machine::SubStateRunOperate()
         machine_stMainState = stMain_Wait;
     }
 }
+void Machine::SubStateRunCut()
+{
+
+    switch (machine_stSubState_Cut)
+    {
+    case stSubCut_NotIn:
+        break;
+    case stSubCut_FirstIn:
+        {
+            //do load file
+
+            //jump to continue substate
+            machine_stSubState_Cut = stSubCut_Run;
+        }
+        break;
+    case stSubCut_Run:
+        {
+//            int sampleCnt = machine_ctSubState_Cut_SampleFinished;
+            if(!fileContent->isEmpty())
+            {
+
+                ADP_ClrSts(1,4);
+                ADP_SetCrdPrm(1, &crdPrm);
+                //获取当前运动状态;坐标系 1;插补运动状态 run;当前插补段数 segment; 查询的坐标系缓存区 0;
+                short run;  // 坐标系运动完成段查询变量
+                long segment;  // 坐标系的缓存区剩余空间查询变量
+                GT_CrdStatus(1, &run,&segment,0);
+//                qDebug()<<"run:"<<run<<" seg:"<<segment<<" sampleCnt"<<machine_ctSubState_Cut_SampleFinished;
+                if(run == 0)
+                {
+                    // 即将把数据存入坐标系1的FIFO0中，所以要首先清除此缓存区中的数据
+                    TCrdData crdData[500];
+                    GT_InitLookAhead(1, 0, 5, 1, 500, crdData);
+                    GT_CrdClear(1, 0);
+                    //当前window中的sample数量进行裁切
+                    if(machine_ctSubState_Cut_SampleFinished<fileContent->at(0).windowCluster.at(0).sampleCluster.count())
+                    {
+                        if(machine_ctSubState_Cut_SampleFinished>0)
+                        {
+                            fileContent->first().windowCluster[0].sampleCluster[machine_ctSubState_Cut_SampleFinished-1].isFinished = true;
+                        }
+                        for(int j=0;j<fileContent->at(0).windowCluster.at(0).sampleCluster.at(machine_ctSubState_Cut_SampleFinished).lineCluster.count();j++)
+                        {
+                            for(int i=0;i<fileContent->at(0).windowCluster.at(0).sampleCluster.at(machine_ctSubState_Cut_SampleFinished).lineCluster.at(j).pointCluster.count();i++)
+                            {
+                                GT_LnXY(    1,    // 该插补段的坐标系是坐标系1
+                                            static_cast<long>(fileContent->at(0).windowCluster.at(0).sampleCluster.at(machine_ctSubState_Cut_SampleFinished).lineCluster.at(j).pointCluster.at(i).x()*head0_PulsePerMillimeter->x()),
+                                            static_cast<long>(fileContent->at(0).windowCluster.at(0).sampleCluster.at(machine_ctSubState_Cut_SampleFinished).lineCluster.at(j).pointCluster.at(i).y()*head0_PulsePerMillimeter->y()),  // 该插补段的终点坐标(15000, 15000)
+                                            20,    // 该插补段的目标速度：100pulse/ms
+                                            0.05,    // 插补段的加速度：0.1pulse/ms^2
+                                            0,    // 终点速度为0
+                                            0);    // 向坐标系1的FIFO0缓存区传递该直线插补数据
+                            }
+                        }
+                        GT_CrdData(1, nullptr, 0);
+                        GT_CrdStart(1, 0);
+                        machine_ctSubState_Cut_SampleFinished++;
+                    }
+                    else if(machine_ctSubState_Cut_SampleFinished == fileContent->at(0).windowCluster.at(0).sampleCluster.count())
+                    {
+                        if(machine_ctSubState_Cut_SampleFinished>0)
+                        {
+                            fileContent->first().windowCluster[0].sampleCluster[machine_ctSubState_Cut_SampleFinished-1].isFinished = true;
+                        }
+//                    }
+//                    //sample计算完毕之后，归零
+//                    //need to change
+//                    else
+//                    {
+                        machine_ctSubState_Cut_SampleFinished = 0;
+                        machine_stSubState_Cut = stSubCut_Stop;
+                    }
+                }
+            }
+//            machine_ctSubState_Cut_SampleFinished = sampleCnt;
+        }
+        break;
+    case stSubCut_Pause:
+        {
+            GT_Stop(1<<8, 1<<8);
+        }
+        break;
+    case stSubCut_Continue:
+        {
+            short run;  // 坐标系运动完成段查询变量
+            long segment;  // 坐标系的缓存区剩余空间查询变量
+            GT_CrdStatus(1, &run,&segment,0);
+            if(run == 0)
+            {
+                machine_stSubState_Cut = stSubCut_Run;
+            }
+        }
+        break;
+    case stSubCut_Stop:
+        {
+            //do some thing
+            GT_Stop(1<<8, 1<<8);
+            QThread::msleep(20);
+            ADP_CrdClear(1, 0);
+            ADP_SetCrdPrm(1, &crdPrm);
+             // 该插补段的坐标系是坐标系1 //xy点// 该插补段的目标速度：3pulse/ms // 插补段的加速度：0.1pulse/ms^2// 终点速度为0 // 向坐标系1的FIFO0缓存区传递该直线插补数据
+            ADP_LnXY(1,static_cast<long>(head0_Org->x()*head0_PulsePerMillimeter->x()),static_cast<long>(head0_Org->y()*head0_PulsePerMillimeter->y()) ,20,0.2,0,0);
+            ADP_CrdStart(1, 0);
+            //jump to the last state
+            machine_stSubState_Cut = stSubCut_Finish;
+        }
+        break;
+    case stSubCut_Finish:
+        {
+            short run;  // 坐标系运动完成段查询变量
+            long segment;  // 坐标系的缓存区剩余空间查询变量
+            GT_CrdStatus(1, &run,&segment,0);
+            if(run == 0)
+            {
+                machine_stSubState_Cut = stSubCut_NotIn;
+                machine_stMainState = stMain_Wait;
+            }
+        }
+        break;
+    }
+}
+void Machine::SubStateCutRunOrPause(bool _pressed)
+{
+    if(_pressed)
+    {
+        if(machine_stMainState == stMain_Wait && machine_stSubState_Cut == stSubCut_NotIn)
+        {
+            qDebug()<<"cut first";
+            machine_stMainState = stMain_Cut;
+            machine_stSubState_Cut = stSubCut_FirstIn;
+        }
+        else if(machine_stMainState == stMain_Cut && machine_stSubState_Cut == stSubCut_Pause)
+        {
+            qDebug()<<"cut continue";
+            machine_stSubState_Cut = stSubCut_Continue;
+            GT_CrdStart(1, 0);
+        }
+    }
+    else
+    {
+        if(machine_stMainState == stMain_Cut && (machine_stSubState_Cut == stSubCut_Run || machine_stSubState_Cut == stSubCut_Continue))
+        {
+            qDebug()<<"cut pause";
+            machine_stSubState_Cut = stSubCut_Pause;
+        }
+    }
+}
+void Machine::SubStateCutStop()
+{
+    if(machine_stMainState == stMain_Cut)
+    {
+        qDebug()<<"cut stop";
+        machine_stSubState_Cut = stSubCut_Stop;
+    }
+}
 void Machine::SubStateOpBtnEdgeScan()
 {
     if(machine_stMainState == stMain_Wait && machine_stSubState_Operate == stSubOperate_NotIn)
@@ -277,7 +432,7 @@ void Machine::SubStateOpBtnEdgeScan()
         ADP_CrdStart(1, 0);
     }
 }
-void Machine::SubStateOpBtnSizeCalibration()
+void Machine::SubStateOpBtnReSize()
 {
     qDebug()<<"scane";
     if(machine_stMainState == stMain_Wait && machine_stSubState_Operate == stSubOperate_NotIn)
@@ -506,11 +661,19 @@ void Machine::Mach_SetHead0Limit(QPointF *_head0_Limit)
 {
     this->head0_Limit = _head0_Limit;
 }
-bool Machine::getStateMotorRunningX()
+void Machine::Mach_SetCutContent(QList<fileData_t> *_fileContent)
+{
+    this->fileContent = _fileContent;
+}
+uint8_t Machine::GetMachineMainState()
+{
+    return machine_stMainState;
+}
+bool Machine::GetStateMotorRunningX()
 {
     return mStateMotorRunningX;
 }
-bool Machine::getStateMotorRunningY()
+bool Machine::GetStateMotorRunningY()
 {
     return mStateMotorRunningY;
 }

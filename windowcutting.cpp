@@ -46,14 +46,18 @@ WindowCutting::WindowCutting(QWidget *parent) :
     mMachine->Mach_SetHead0Org(&wConfig->hConfig.at(0)->headOrg);
     mMachine->Mach_SetHead0PulsePerMillimeter(&wConfig->hConfig.at(0)->headPluseScale);
     mMachine->Mach_SetHead0Limit(&wConfig->hConfig.at(0)->headLimit);
+    mMachine->Mach_SetCutContent(&cutFileList.fileVector);
 
-    connect(this,SIGNAL(keyPressed(QKeyEvent)),mMachine,SLOT(SubStateOpKeyPress(QKeyEvent)));
+    connect(this,SIGNAL(keyPressed(QKeyEvent)), mMachine,SLOT(SubStateOpKeyPress(QKeyEvent)));
     connect(this,SIGNAL(keyReleased(QKeyEvent)),mMachine,SLOT(SubStateOpKeyRelease(QKeyEvent)));
-    connect(ui->btnDirGroup,SIGNAL(buttonPressed(int)),mMachine,SLOT(SubStateOpBtnPress(int)));
-    connect(ui->btnDirGroup,SIGNAL(buttonReleased(int)),mMachine,SLOT(SubStateOpBtnRelease(int)));
-    connect(ui->actionSizeCalibration,SIGNAL(triggered()),mMachine,SLOT(SubStateOpBtnSizeCalibration()));
-    connect(ui->actionEdgeScan,SIGNAL(triggered()),mMachine,SLOT(SubStateOpBtnEdgeScan()));
-    connect(mMachine,SIGNAL(UpdateMachineMaxPluse(double,double)),wConfig,SLOT(UpdateConfigMaxPluse(double,double)));
+    connect(ui->btnDirGroup,    SIGNAL(buttonPressed(int)), mMachine,SLOT(SubStateOpBtnPress(int)));
+    connect(ui->btnDirGroup,    SIGNAL(buttonReleased(int)),mMachine,SLOT(SubStateOpBtnRelease(int)));
+    connect(ui->actionRunPuase, SIGNAL(triggered(bool)),    mMachine,SLOT(SubStateCutRunOrPause(bool)));
+    connect(ui->actionStop,     SIGNAL(triggered()),        mMachine,SLOT(SubStateCutStop()));
+    connect(ui->actionResize,   SIGNAL(triggered()),        mMachine,SLOT(SubStateOpBtnReSize()));
+    connect(ui->actionEdgeScan, SIGNAL(triggered()),        mMachine,SLOT(SubStateOpBtnEdgeScan()));
+
+    connect(mMachine,           SIGNAL(UpdateMachineMaxPluse(double,double)),wConfig,SLOT(UpdateConfigMaxPluse(double,double)));
 
 //----UserLog
     user = nullptr;
@@ -219,13 +223,13 @@ void WindowCutting::on_pushButton_clicked()
     GT_InitLookAhead(1, 0, 5, 1, 500, crdData);
     sRtn = GT_CrdClear(1, 0);
     // 向缓存区写入第一段插补数据
-    if(cutFileList.fileVector[0].pageCluster[0].sampleCluster[0].lineCluster[0].dotCount!=0)
+    if(cutFileList.fileVector[0].windowCluster[0].sampleCluster[0].lineCluster[0].dotCount!=0)
     {
-        for(int i=0;i<cutFileList.fileVector[0].pageCluster[0].sampleCluster[0].lineCluster[0].dotCount;i++)
+        for(int i=0;i<cutFileList.fileVector[0].windowCluster[0].sampleCluster[0].lineCluster[0].dotCount;i++)
         {
             sRtn = GT_LnXY(    1,    // 该插补段的坐标系是坐标系1
-                               static_cast<long>(cutFileList.fileVector[0].pageCluster[0].sampleCluster[0].lineCluster[0].pointCluster[i].x()/20),
-                               static_cast<long>(cutFileList.fileVector[0].pageCluster[0].sampleCluster[0].lineCluster[0].pointCluster[i].y()/20),  // 该插补段的终点坐标(15000, 15000)
+                               static_cast<long>(cutFileList.fileVector[0].windowCluster[0].sampleCluster[0].lineCluster[0].pointCluster[i].x()*107),
+                               static_cast<long>(cutFileList.fileVector[0].windowCluster[0].sampleCluster[0].lineCluster[0].pointCluster[i].y()*107),  // 该插补段的终点坐标(15000, 15000)
                                20,    // 该插补段的目标速度：100pulse/ms
                                0.05,    // 插补段的加速度：0.1pulse/ms^2
                                0,    // 终点速度为0
@@ -240,6 +244,7 @@ void WindowCutting::on_pushButton_clicked()
                                  &run,  // 读取插补运动状态
                                  &segment, // 读取当前已经完成的插补段数
                                  0);   // 查询坐标系1的FIFO0缓存区
+        qDebug()<<"run:"<<run<<" seg:"<<segment;
     }while(run == 1);
 }
 void WindowCutting::on_pushButton_2_clicked()
@@ -333,34 +338,51 @@ void WindowCutting::on_actionLogOn_triggered()
     this->userLog_PermissionConfirm();
 }
 //--machine--fan
-void WindowCutting::on_actionWindIn_toggled(bool arg1)
+void WindowCutting::on_actionWindIn_triggered(bool arg1)
 {
     if(arg1 == true)
     {
-        //下面两句顺序不能反
-        ui->actionWindOut->setChecked(false);
+        //如果槽函数用toggled而不是triggered,则下面两句顺序不能反
+        if(ui->actionWindOut->isChecked())
+        {
+            ui->actionWindOut->setChecked(false);
+        }
         mMachine->mFan_1.Fan_SetNormalState(FanWindIn);
     }
     else
     {
+        qDebug()<<"fanStop";
         mMachine->mFan_1.Fan_SetNormalState(FanStop);
     }
     ui->testLable->setText(QString::number(mMachine->mFan_1.Fan_GetState()));
 }
 
-void WindowCutting::on_actionWindOut_toggled(bool arg1)
+void WindowCutting::on_actionWindOut_triggered(bool arg1)
 {
     if(arg1 == true)
     {
-        //下面两句顺序不能反
-        ui->actionWindIn->setChecked(false);
+        //trigger 代码触发后不会触发槽函数，toggle会
+        if(ui->actionWindIn->isChecked())
+        {
+            ui->actionWindIn->setChecked(false);
+        }
         mMachine->mFan_1.Fan_SetNormalState(FanWindOut);
     }
     else
     {
+        qDebug()<<"fanStop";
         mMachine->mFan_1.Fan_SetNormalState(FanStop);
     }
     ui->testLable->setText(QString::number(mMachine->mFan_1.Fan_GetState()));
+}
+//just for change the icon display
+void WindowCutting::on_actionStop_triggered()
+{
+    if(ui->actionRunPuase->isChecked())
+    {
+        //no actionRunPuase signal sent
+        ui->actionRunPuase->setChecked(false);
+    }
 }
 void WindowCutting::debugTask_100ms()
 {
@@ -372,11 +394,11 @@ void WindowCutting::debugTask_100ms()
     ADP_GetAxisPrfPos(AXIS_Y,&yPos);
     ui->lb_x->setText(QString::number(x));
     ui->lb_y->setText(QString::number(y));
-    ui->lb_st->setText(QString::number(mMachine->machine_ctSubState_Operate_Key));
+//    ui->lb_st->setText(QString::number(mMachine->machine_ctSubState_Operate_Key));
     ui->lb_xPos->setText("x "+QString::number(static_cast<int>(xPos)));
     ui->lb_yPos->setText("y "+QString::number(static_cast<int>(yPos)));
 
-    if(mMachine->machine_stMainState != stMain_Wait || mMachine->getStateMotorRunningX()||mMachine->getStateMotorRunningY())
+    if(mMachine->GetMachineMainState() != stMain_Wait || mMachine->GetStateMotorRunningX()||mMachine->GetStateMotorRunningY())
     {
         ui->paintFrame->update();
     }
@@ -389,3 +411,4 @@ void WindowCutting::debugTask_100ms()
 //    msgBox->exec();
 //    delete msgBox;
 //}
+

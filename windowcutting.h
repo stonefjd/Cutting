@@ -61,10 +61,12 @@ private slots:
     void on_actionImportCutFileList_triggered();
 
     void on_actionLogOn_triggered();
-    void on_actionWindIn_toggled(bool arg1);
-    void on_actionWindOut_toggled(bool arg1);
+    void on_actionWindIn_triggered(bool arg1);
+    void on_actionWindOut_triggered(bool arg1);
 
     void debugTask_100ms();
+
+    void on_actionStop_triggered();
 
 signals:
     void keyPressed(QKeyEvent);

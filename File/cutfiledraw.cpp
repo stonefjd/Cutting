@@ -132,66 +132,66 @@ void CutFileDraw::CutFileDraw_DisplayFileData()
         painter.setPen(pen);
         painter.setRenderHint(QPainter::Antialiasing,true);
 
-        for(int i= 0;i<fileContent->at(0).pageCluster.count();i++)
+        for(int i= 0;i<fileContent->at(0).windowCluster.count();i++)
         {
-            for(int j = 0;j<fileContent->at(0).pageCluster.at(i).sampleCluster.count();j++)
+            for(int j = 0;j<fileContent->at(0).windowCluster.at(i).sampleCluster.count();j++)
             {
                 //Draw sample
-                for(int k = 0;k<fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.count();k++)
+                for(int k = 0;k<fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).lineCluster.count();k++)
                 {
                     painter.save();
                     painter.setBrush(QColor(0,255,0,100));
                     painter.setPen(penCutLable);
-                    QPolygonF tempPolygon(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster);
+                    QPolygonF tempPolygon(fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster);
                     //just one line
-                    if(tempPolygon.first() != tempPolygon.last() || fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).isFinished == false)
+                    if(tempPolygon.first() != tempPolygon.last() || fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).isFinished == false)
                     {
-                        painter.drawPolyline(QPolygonF(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster));
+                        painter.drawPolyline(QPolygonF(fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster));
                     }
                     else
                     {
-                        painter.drawPolygon(QPolygonF(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster));
+                        painter.drawPolygon(QPolygonF(fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster));
                     }
 
-//                    if(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).isFinished == false)
+//                    if(fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).isFinished == false)
 //                    {
-//                        painter.drawPolyline(QPolygonF(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster));
+//                        painter.drawPolyline(QPolygonF(fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster));
 //                    }
 //                    else if(tempPolygon.first() == tempPolygon.last())
 //                    {
-//                        painter.drawPolygon(QPolygonF(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster));
+//                        painter.drawPolygon(QPolygonF(fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster));
 //                    }
 //                    else
 //                    {
-//                        painter.drawPolyline(QPolygonF(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster));
+//                        painter.drawPolyline(QPolygonF(fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster));
 //                    }
 
-//                    for(int l = 0;l<fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.count();l++)
+//                    for(int l = 0;l<fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.count();l++)
 //                    {
 //                        if(l >=1)
 //                        {
-//                            painter.drawLine(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l-1)/HEX_PER_MM+*posLogicOrg,
-//                                             fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l)  /HEX_PER_MM+*posLogicOrg);
+//                            painter.drawLine(fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l-1)/HEX_PER_MM+*posLogicOrg,
+//                                             fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l)  /HEX_PER_MM+*posLogicOrg);
 //                        }
 //                    }
                     painter.restore();
                 }
                 //尺寸与原点偏移补偿
                 painter.setFont(QFont("华文行楷", 10));
-                painter.drawText(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).focusInSample, QString::number(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).sampleId));
+                painter.drawText(fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).focusInSample, QString::number(fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).sampleId));
                 //Vcut
-                for(int punchCnt = 0;punchCnt<fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).punchDotCount;punchCnt++)
+                for(int punchCnt = 0;punchCnt<fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).punchDotCount;punchCnt++)
                 {
-                    QPointF center = fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).punchCluster.at(punchCnt).dot;
+                    QPointF center = fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).punchCluster.at(punchCnt).dot;
                     QLineF line;
                     line.setPoints(center,QPointF(center.x()+5*(factorCutScale->x()),center.y()));
-                    line.setAngle(-static_cast<qreal>(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).punchCluster.at(punchCnt).dotAngle));
+                    line.setAngle(-static_cast<qreal>(fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).punchCluster.at(punchCnt).dotAngle));
                     painter.drawLine(line);
                 }
                 //Drill
-                for(int drillCnt = 0;drillCnt<fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).punchDotCount;drillCnt++)
+                for(int drillCnt = 0;drillCnt<fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).punchDotCount;drillCnt++)
                 {
-                    QPointF center = fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).punchCluster.at(drillCnt).dot;
+                    QPointF center = fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).punchCluster.at(drillCnt).dot;
                     painter.drawEllipse(center,3*factorCutScale->x(),3*factorCutScale->y());
                 }
             }
@@ -201,9 +201,9 @@ void CutFileDraw::CutFileDraw_DisplayFileData()
 //void CutFileDraw::CutFileDraw_DrawLine(QPointF q1,QPointF q2,QPointF fact,QPointF offset)
 //{
 //    painter.drawLine(static_cast<int>(q1.x()/HEX_PER_MM*fact->x()+offset->x()),
-//                     static_cast<int>(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l-1).y()/HEX_PER_MM*factorPulsePerMillimeter->y()+posLogicOrg->y()),
-//                     static_cast<int>(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l).x()  /HEX_PER_MM*factorPulsePerMillimeter->x()+posLogicOrg->x()),
-//                     static_cast<int>(fileContent->at(0).pageCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l).y()  /HEX_PER_MM*factorPulsePerMillimeter->y()+posLogicOrg->y()));
+//                     static_cast<int>(fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l-1).y()/HEX_PER_MM*factorPulsePerMillimeter->y()+posLogicOrg->y()),
+//                     static_cast<int>(fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l).x()  /HEX_PER_MM*factorPulsePerMillimeter->x()+posLogicOrg->x()),
+//                     static_cast<int>(fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).lineCluster.at(k).pointCluster.at(l).y()  /HEX_PER_MM*factorPulsePerMillimeter->y()+posLogicOrg->y()));
 
 //}
 

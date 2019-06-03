@@ -3,12 +3,13 @@
 
 #include <QObject>
 #include <QKeyEvent>
+#include <QThread>
 #include "Fan/fan.h"
 #include "PhysicalLayer/hardwareadaptor.h"
 //#include "Machine/Knife/sdknifeconfig.h"
 #include "Machine/Config/configmachine.h"
 #include "Machine/Config/confighead.h"
-
+#include "File/cutfileformat.h"
 
 
 #define stMain_Stop         0
@@ -40,6 +41,13 @@
 #define stSubOperate_SizeCalibration_step3   14
 #define stSubOperate_EdgeScane_step1   15
 
+#define stSubCut_NotIn      0
+#define stSubCut_FirstIn    1
+#define stSubCut_Run        2
+#define stSubCut_Pause      3
+#define stSubCut_Continue   4
+#define stSubCut_Stop       5
+#define stSubCut_Finish     6
 //#define stSubNotIn      0
 //#define stSubData       1
 //#define stSubMotorRun   2
@@ -55,10 +63,12 @@ private:
     bool mStateMotorRunningX;
     bool mStateMotorRunningY;
 public:
-    bool getStateMotorRunningX();
-    bool getStateMotorRunningY();
+    bool GetStateMotorRunningX();
+    bool GetStateMotorRunningY();
+    uint8_t GetMachineMainState();
 private:
     QTimer *mTimer;
+    uint8_t machine_stMainState;
 
     uint8_t machine_stSubState_Stop;
     uint8_t machine_stSubState_Init;
@@ -68,20 +78,23 @@ private:
     uint8_t machine_stSubState_Pause;
     uint8_t machine_stSubState_Err;
 
+    uint8_t machine_ctSubState_Operate_Key;
+    int     machine_ctSubState_Cut_SampleFinished;
+    int     machine_ctSubState_Cut_WindowFinished;
+    int     machine_ctSubState_Cut_FileFinished;
 private:
     TJogPrm Jog;
     TCrdPrm crdPrm;
 public:
     explicit Machine(QObject *parent = nullptr);
 public: // sub class obj
-    uint8_t machine_stMainState;
-    uint8_t machine_ctSubState_Operate_Key;
     Fan mFan_1;
 //    SDKnifeConfig sdKnifeConfigLib;
 private:
     QPointF *head0_Org;
     QPointF *head0_Limit;
     QPointF *head0_PulsePerMillimeter;
+    QList<fileData_t> *fileContent;
 public:
     QPointF head0_Pos;
     double  head0_MoveAngel;
@@ -90,7 +103,7 @@ public:
     void Mach_SetHead0Org(QPointF *_head0_Org);
     void Mach_SetHead0PulsePerMillimeter(QPointF *_head0_PulsePerMillimeter);
     void Mach_SetHead0Limit(QPointF *_head0_Limit);
-
+    void Mach_SetCutContent(QList<fileData_t> *_fileContent);
 public:
     void MInit();
     void MainStateRun();
@@ -108,9 +121,10 @@ public slots:
     void SubStateOpBtnRelease(int id);
     void SubStateOpKeyPress(QKeyEvent event);
     void SubStateOpKeyRelease(QKeyEvent event);
-    void SubStateOpBtnSizeCalibration();
+    void SubStateOpBtnReSize();
     void SubStateOpBtnEdgeScan();
-
+    void SubStateCutRunOrPause(bool _pressed);
+    void SubStateCutStop();
 };
 
 #endif // MACHINE_H
