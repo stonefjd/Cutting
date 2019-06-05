@@ -14,6 +14,7 @@ WindowCutting::WindowCutting(QWidget *parent) :
     ui->menuViewItem->setDisabled(true);
     ui->menuHelpItem->setDisabled(true);
 
+//----set btn id for ui
     ui->btnDirGroup->setId(ui->btnOpLeft,BTN_ID_L);
     ui->btnDirGroup->setId(ui->btnOpRight,BTN_ID_R);
     ui->btnDirGroup->setId(ui->btnOpUp,BTN_ID_U);
@@ -63,9 +64,10 @@ WindowCutting::WindowCutting(QWidget *parent) :
 
 //----UserLog
     user = nullptr;
+    //disable all the operate item
     this->userLog_PermissionConfirm();
-//    user.exec();
 
+//----Start debug timer
     debugTimer=new QTimer(this);
     connect(debugTimer,SIGNAL(timeout()),this,SLOT(debugTask_100ms()));
     debugTimer->start(20);
@@ -137,8 +139,8 @@ void WindowCutting::userLog_PermissionConfirm()
     QList<QWidget*> actionList;
     actionList.append(ui->mainToolBar->findChildren<QWidget*>());
     actionList.append(ui->menuBar->findChildren<QWidget*>());
-//    actionList.append(ui->dockWgtOperate->findChildren<QWidget*>());
-//    actionList.append(ui->dockWgtCutFile->findChildren<QWidget*>());
+    actionList.append(ui->dockWgtOperate->findChildren<QWidget*>());
+    actionList.append(ui->dockWgtCutFile->findChildren<QWidget*>());
 
     if(user == nullptr)
     {
@@ -306,14 +308,23 @@ void WindowCutting::on_actionImportCutFileList_triggered()
     cutFileList.CutFileList_DisplayList(ui->tableWgtCutFile);
 }
 //--userLog
+void WindowCutting::on_actionLogManager_triggered()
+{
+    qDebug()<<"triggered";
+}
+
 void WindowCutting::on_actionLogOn_triggered()
 {
     if(user == nullptr)
     {
-        user = new UserLog;
-        if(user->userIsChecked())
+        user = new User;
+        if(user->UserIsChecked())
         {
+            //add user manager action
+            ui->menuUser->addAction(ui->actionLogManager);
+            //change the user manager action
             ui->actionLogOn->setText(tr("退出"));
+
         }
         else
         {
@@ -326,7 +337,6 @@ void WindowCutting::on_actionLogOn_triggered()
         QMessageBox msgBox;
         msgBox.setText(tr("是否确认退出"));
         QPushButton *btnYes = msgBox.addButton(tr("确认"), QMessageBox::YesRole);
-//        QPushButton *btnNo = msgBox.addButton(tr("取消"), QMessageBox::NoRole);
         msgBox.addButton(tr("取消"), QMessageBox::NoRole);
 
         msgBox.exec();
@@ -334,6 +344,7 @@ void WindowCutting::on_actionLogOn_triggered()
         {
             delete user;
             user = nullptr;
+            ui->menuUser->removeAction(ui->actionLogManager);
             ui->actionLogOn->setText(tr("登录"));
         }
     }
@@ -413,4 +424,5 @@ void WindowCutting::debugTask_100ms()
 //    msgBox->exec();
 //    delete msgBox;
 //}
+
 

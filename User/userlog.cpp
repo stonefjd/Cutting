@@ -10,66 +10,17 @@ UserLog::UserLog(QWidget *parent) :
     ui(new Ui::UserLog)
 {
     ui->setupUi(this);
+    //limit the ID only for 0-99999
     QValidator* validator = new QIntValidator(0,99999,this);
     ui->lineEditSN->setValidator(validator);
-
-    this->userIsIdentified = false;
-
-    this->setModal(true);
-    int ret = this->exec();
-
-    if(ret)
-    {
-        this->userSN = ui->lineEditSN->text().toInt();
-        this->userPSW_org = ui->lineEditPsw->text();
-        this->userPSW_md5 = QCryptographicHash::hash(this->userPSW_org.toLatin1(),
-                                                 QCryptographicHash::Md5).toHex();
-        qDebug()<<"ORG:"+ this->userPSW_org;
-        qDebug()<<"MD5:"+ this->userPSW_md5;
-        if(userCheckCollection(this->userSN,this->userPSW_md5))
-        {
-            this->userIsIdentified = true;
-        }
-        else
-        {
-            this->userIsIdentified = false;
-        }
-    }
 }
-bool UserLog::userIsChecked()
+QString UserLog::GetLineEditSN(void)
 {
-    return this->userIsIdentified;
+    return ui->lineEditSN->text();
 }
-bool UserLog::userCheckCollection(int _sn,QString _pswd)
+QString UserLog::GetLineEditPSW(void)
 {
-    bool ret = false;
-
-    db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setHostName("PGM");
-    db.setDatabaseName("MyDataBase.db");
-    db.setUserName("STONE");
-    db.setPassword("12345678");
-    db.open();
-    qDebug()<<db.tables();
-
-    QSqlQuery query;
-    query.prepare( "SELECT * FROM userTable WHERE userSN = " + QString::number(_sn));
-    if(!query.exec())
-        qDebug() << query.lastError();
-    else
-    {
-        query.first();
-        qDebug()<<query.value(USER_PSW_C).toString();
-        if(query.value(USER_PSW_C).toString() == _pswd)
-        {
-            ret = true;
-            qDebug()<<"identified";
-        }
-        else
-            qDebug()<<"passwordWrong";
-    }
-    db.close();
-    return ret;
+    return  ui->lineEditPsw->text();
 }
 
 UserLog::~UserLog()

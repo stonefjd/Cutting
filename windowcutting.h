@@ -18,7 +18,8 @@
 #include "File/IniOp/iniop.h"
 #include "File/cutfiledraw.h"
 #include "PhysicalLayer/gts.h"
-#include "User/userlog.h"
+#include "User/user.h"
+#include "User/usermanager.h"
 #include "Machine/machine.h"
 #include "Machine/Config/configwhole.h"
 #define BTN_ID_L 0
@@ -68,6 +69,8 @@ private slots:
 
     void on_actionStop_triggered();
 
+    void on_actionLogManager_triggered();
+
 signals:
     void keyPressed(QKeyEvent);
     void keyReleased(QKeyEvent);
@@ -80,7 +83,7 @@ private:
     Ui::WindowCutting   *ui;
     Machine         *mMachine = new Machine;
     ConfigWhole     *wConfig = new ConfigWhole;
-    UserLog         *user;
+    User            *user;
 //  Settings        settings;
 //  IniOp           iniOp;
     CutFileDraw     cutFlieDraw;

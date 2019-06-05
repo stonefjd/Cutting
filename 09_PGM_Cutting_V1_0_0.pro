@@ -45,7 +45,9 @@ SOURCES += \
     Machine/Config/configknifelib.cpp \
     Machine/Config/configapron.cpp \
     File/cutfiledraw.cpp \
-    Machine/Config/configwhole.cpp
+    Machine/Config/configwhole.cpp \
+    User/usermanager.cpp \
+    User/user.cpp
 
 HEADERS += \
     windowcutting.h \
@@ -71,13 +73,16 @@ HEADERS += \
     Machine/Config/configinfo.h \
     File/cutfiledraw.h \
     File/cutfileformat.h \
-    Machine/Config/configwhole.h
+    Machine/Config/configwhole.h \
+    User/usermanager.h \
+    User/user.h
 
 FORMS += \
         windowcutting.ui \
     File/Settings/settings.ui \
     File/IniOp/iniop.ui \
-    User/userlog.ui
+    User/userlog.ui \
+    User/usermanager.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

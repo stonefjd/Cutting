@@ -622,6 +622,11 @@
     <string>尺寸校准</string>
    </property>
   </action>
+  <action name="actionLogManager">
+   <property name="text">
+    <string>管理</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
