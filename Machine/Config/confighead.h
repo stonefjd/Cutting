@@ -30,8 +30,7 @@ private:
     double feedSpd;     //送料速度(m/s)
     double feedAcc;     //送料加速度(m/s²)
 
-    double idleMoveSpd;		//空走速度 (m/s)
-    double idleMoveAcc;     //空走加速度(G)
+
     QStringList apronIndexList;
 
 public:
@@ -43,7 +42,8 @@ public:
     QPointF headLimit;  //区域限位，人为设定尺寸
     QPointF headCutScale;
     QList<configApron*> aConfig;
-
+    double idleMoveSpd;		//空走速度 (m/s)
+    double idleMoveAcc;     //空走加速度(G)
 
 public slots:
 };

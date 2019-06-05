@@ -46,6 +46,8 @@ WindowCutting::WindowCutting(QWidget *parent) :
     mMachine->Mach_SetHead0Org(&wConfig->hConfig.at(0)->headOrg);
     mMachine->Mach_SetHead0PulsePerMillimeter(&wConfig->hConfig.at(0)->headPluseScale);
     mMachine->Mach_SetHead0Limit(&wConfig->hConfig.at(0)->headLimit);
+    mMachine->Mach_SetHead0IdleMoveSpd(&wConfig->hConfig.at(0)->idleMoveSpd);
+    mMachine->Mach_SetHead0IdleMoveAcc(&wConfig->hConfig.at(0)->idleMoveAcc);
     mMachine->Mach_SetCutContent(&cutFileList.fileVector);
 
     connect(this,SIGNAL(keyPressed(QKeyEvent)), mMachine,SLOT(SubStateOpKeyPress(QKeyEvent)));

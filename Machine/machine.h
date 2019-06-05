@@ -10,51 +10,53 @@
 #include "Machine/Config/configmachine.h"
 #include "Machine/Config/confighead.h"
 #include "File/cutfileformat.h"
+enum MainState
+{
+    stMain_Stop,
+    stMain_Init,
+    stMain_Wait,
+    stMain_Operate,
+    stMain_Cut,
+    stMain_Err,
+};
+enum SubState_Init
+{
+    stSubInit_NotIn,
+    stSubInit_In,
+    stSubInit_MOrg,
+    stSubInit_LOrg,
+    stSubInit_Finish,
+    stSubInit_Fail,
+};
 
+enum SubState_Operate
+{
+    stSubOperate_NotIn,
+    stSubOperate_Key,
+    stSubOperate_BtnL,
+    stSubOperate_BtnR,
+    stSubOperate_BtnU,
+    stSubOperate_BtnD,
+    stSubOperate_BtnO,
+    stSubOperate_Finish,
+    stSubOperate_Fail,
+    stSubOperate_SizeCalibration_step1,
+    stSubOperate_SizeCalibration_step2,
+    stSubOperate_SizeCalibration_step3,
+    stSubOperate_EdgeScane_step1,
+};
 
-#define stMain_Stop         0
-#define stMain_Init         1
-#define stMain_Wait         2
-#define stMain_Operate      3
-#define stMain_Cut          4
-#define stMain_Pause        5
-#define stMain_Err          6
+enum SubState_Cut
+{
+    stSubCut_NotIn,
+    stSubCut_FirstIn,
+    stSubCut_Run,
+    stSubCut_Pause,
+    stSubCut_Continue,
+    stSubCut_Stop,
+    stSubCut_Finish,
+};
 
-#define stSubInit_NotIn  0
-#define stSubInit_In     1
-#define stSubInit_MOrg   2
-#define stSubInit_LOrg   3
-#define stSubInit_Finish 4
-#define stSubInit_Fail   5
-
-#define stSubOperate_NotIn  0
-#define stSubOperate_Key   1
-#define stSubOperate_BtnL   5
-#define stSubOperate_BtnR   6
-#define stSubOperate_BtnU   7
-#define stSubOperate_BtnD   8
-#define stSubOperate_BtnO   9
-#define stSubOperate_Finish 10
-#define stSubOperate_Fail   11
-#define stSubOperate_SizeCalibration_step1   12
-#define stSubOperate_SizeCalibration_step2   13
-#define stSubOperate_SizeCalibration_step3   14
-#define stSubOperate_EdgeScane_step1   15
-
-#define stSubCut_NotIn      0
-#define stSubCut_FirstIn    1
-#define stSubCut_Run        2
-#define stSubCut_Pause      3
-#define stSubCut_Continue   4
-#define stSubCut_Stop       5
-#define stSubCut_Finish     6
-//#define stSubNotIn      0
-//#define stSubData       1
-//#define stSubMotorRun   2
-//#define stSubTimeDelay  3
-//#define stSubWait       4
-//#define stSubFinish     5
-//#define stSubFail       6
 class Machine : public QObject
 {
     Q_OBJECT
@@ -68,13 +70,14 @@ public:
     uint8_t GetMachineMainState();
 private:
     QTimer *mTimer;
-    uint8_t machine_stMainState;
+    MainState machine_stMainState;
+
+    SubState_Init       machine_stSubState_Init;
+    SubState_Operate    machine_stSubState_Operate;
+    SubState_Cut        machine_stSubState_Cut;
 
     uint8_t machine_stSubState_Stop;
-    uint8_t machine_stSubState_Init;
     uint8_t machine_stSubState_Wait;
-    uint8_t machine_stSubState_Operate;
-    uint8_t machine_stSubState_Cut;
     uint8_t machine_stSubState_Pause;
     uint8_t machine_stSubState_Err;
 
@@ -95,6 +98,8 @@ private:
     QPointF *head0_Limit;
     QPointF *head0_PulsePerMillimeter;
     QList<fileData_t> *fileContent;
+    double  *head0_IdleMoveSpd;
+    double  *head0_IdleMoveAcc;
 public:
     QPointF head0_Pos;
     double  head0_MoveAngel;
@@ -104,6 +109,9 @@ public:
     void Mach_SetHead0PulsePerMillimeter(QPointF *_head0_PulsePerMillimeter);
     void Mach_SetHead0Limit(QPointF *_head0_Limit);
     void Mach_SetCutContent(QList<fileData_t> *_fileContent);
+    void Mach_SetHead0IdleMoveSpd(double *_movSpd);
+    void Mach_SetHead0IdleMoveAcc(double *_movAcc);
+
 public:
     void MInit();
     void MainStateRun();

@@ -1,14 +1,17 @@
 ﻿#include "machine.h"
 #include "PhysicalLayer/gts.h"
-#include <QThread>
+static const double puntchLimitSpd = 8;
+static const double puntchLimitAcc = 0.1;
+static const double puntchLimitSmooth = 0.5;
+static const double velRatio=2;
 Machine::Machine(QObject *parent) : QObject(parent)
 {
 //    this->mFan_1.SetState_FanStop();
 
     //--------DATA structure settings--------//
-    Jog.acc = 0.05;
-    Jog.dec = 0.05;
-    Jog.smooth = 0.5;
+    Jog.acc = puntchLimitAcc;
+    Jog.dec = puntchLimitAcc;
+    Jog.smooth = puntchLimitSmooth;
 
     memset(&crdPrm, 0, sizeof(crdPrm));
     crdPrm.dimension=2;   // 坐标系为二维坐标系
@@ -27,17 +30,19 @@ Machine::Machine(QObject *parent) : QObject(parent)
 
     //--------StateMachine Setting--------//
     machine_stMainState = stMain_Init;
-    machine_stSubState_Init = stSubInit_NotIn;
-    machine_stSubState_Operate = stSubOperate_NotIn;
+    machine_stSubState_Init     = stSubInit_NotIn;
+    machine_stSubState_Operate  = stSubOperate_NotIn;
+    machine_stSubState_Cut      = stSubCut_NotIn;
 //    machine_stSubState_Stop = stSubInitNotIn;
 //    machine_stSubState_Wait = stSubNotIn;
-    machine_stSubState_Cut = stSubCut_NotIn;
 //    machine_stSubState_Pause = stSubNotIn;
 //    machine_stSubState_Err = stSubNotIn;
     machine_ctSubState_Operate_Key = 0;
     machine_ctSubState_Cut_SampleFinished = 0;
     machine_ctSubState_Cut_WindowFinished = 0;
     machine_ctSubState_Cut_FileFinished = 0;
+
+    //start the timer for the main state machine
     mTimer=new QTimer(this);
     connect(mTimer,SIGNAL(timeout()),this,SLOT(Task_10ms()));
     mTimer->start(10);
@@ -76,11 +81,6 @@ void Machine::MainStateRun()
             SubStateRunCut();
             break;
         }
-        case stMain_Pause:
-        {
-
-            break;
-        }
         case stMain_Err:
         {
             break;
@@ -102,6 +102,7 @@ void Machine::SubStateRunInitial()
         }
         case stSubInit_In:
         {
+            ADP_Disconnect();
             ADP_Connect();
             ADP_Reset();
             ADP_LoadCfgFile("E:\\01.repository\\07.QT\\GTS800.cfg");
@@ -109,7 +110,7 @@ void Machine::SubStateRunInitial()
             //----check is the knife changed
             {}
 
-            //----set the axis mode
+            //----set the axis on and clear axis position
             ADP_AxisOn(AXIS_X);
             ADP_AxisOn(AXIS_Y);
             ADP_ZeroPos(AXIS_X);
@@ -121,8 +122,8 @@ void Machine::SubStateRunInitial()
 
             ADP_SetJogPrm (AXIS_X,&Jog);
             ADP_SetJogPrm (AXIS_Y,&Jog);
-            ADP_SetVel(AXIS_X, -10);
-            ADP_SetVel(AXIS_Y, -10);
+            ADP_SetVel(AXIS_X, -(puntchLimitSpd));
+            ADP_SetVel(AXIS_Y, -(puntchLimitSpd));
             machine_stSubState_Init = stSubInit_MOrg;
             break;
         }
@@ -162,7 +163,7 @@ void Machine::SubStateRunInitial()
                 ADP_SetCrdPrm(1, &crdPrm);
                 ADP_CrdClear(1, 0);
                  // 该插补段的坐标系是坐标系1 //xy点// 该插补段的目标速度：3pulse/ms // 插补段的加速度：0.1pulse/ms^2// 终点速度为0 // 向坐标系1的FIFO0缓存区传递该直线插补数据
-                ADP_LnXY(1,static_cast<long>(head0_Org->x()*head0_PulsePerMillimeter->x()),static_cast<long>(head0_Org->y()*head0_PulsePerMillimeter->y()) ,20,0.05,0,0);
+                ADP_LnXY(1,static_cast<long>(head0_Org->x()*head0_PulsePerMillimeter->x()),static_cast<long>(head0_Org->y()*head0_PulsePerMillimeter->y()) ,*head0_IdleMoveSpd,*head0_IdleMoveAcc,0,0);
                 machine_stSubState_Init = stSubInit_LOrg;
                 ADP_CrdStart(1, 0);
                 break;
@@ -203,6 +204,15 @@ void Machine::SubStateRunOperate()
 
     switch(machine_stSubState_Operate)
     {
+    case stSubOperate_NotIn:
+    case stSubOperate_Key:
+    case stSubOperate_BtnL:
+    case stSubOperate_BtnR:
+    case stSubOperate_BtnU:
+    case stSubOperate_BtnD:
+    case stSubOperate_Fail:
+        break;
+
     case stSubOperate_SizeCalibration_step1:
         ADP_GetLimitState(AXIS_X,false,&limitStateXNeg);
         ADP_GetLimitState(AXIS_Y,false,&limitStateYNeg);
@@ -214,8 +224,8 @@ void Machine::SubStateRunOperate()
             ADP_SetPrfPos(AXIS_X, 0);
             ADP_SetPrfPos(AXIS_Y, 0);
             ADP_ClrSts(1,4);
-            ADP_SetVel(AXIS_X, 8);
-            ADP_SetVel(AXIS_Y, 8);
+            ADP_SetVel(AXIS_X, puntchLimitSpd);
+            ADP_SetVel(AXIS_Y, puntchLimitSpd);
             ADP_Update(AXIS_X);
             ADP_Update(AXIS_Y);
         }
@@ -236,7 +246,7 @@ void Machine::SubStateRunOperate()
             ADP_SetCrdPrm(1, &crdPrm);
             ADP_CrdClear(1, 0);
              // 该插补段的坐标系是坐标系1 //xy点// 该插补段的目标速度：3pulse/ms // 插补段的加速度：0.05pulse/ms^2// 终点速度为0 // 向坐标系1的FIFO0缓存区传递该直线插补数据
-            ADP_LnXY(1,static_cast<long>(head0_Org->x()*head0_PulsePerMillimeter->x()),static_cast<long>(head0_Org->y()*head0_PulsePerMillimeter->y()),20,0.2,0,0);
+            ADP_LnXY(1,static_cast<long>(head0_Org->x()*head0_PulsePerMillimeter->x()),static_cast<long>(head0_Org->y()*head0_PulsePerMillimeter->y()),*head0_IdleMoveSpd,*head0_IdleMoveAcc,0,0);
             ADP_CrdStart(1, 0);
         }
         break;
@@ -302,7 +312,7 @@ void Machine::SubStateRunCut()
                         {
                             for(int i=0;i<fileContent->at(0).windowCluster.at(0).sampleCluster.at(machine_ctSubState_Cut_SampleFinished).lineCluster.at(j).pointCluster.count();i++)
                             {
-                                GT_LnXY(    1,    // 该插补段的坐标系是坐标系1
+                                ADP_LnXY(    1,    // 该插补段的坐标系是坐标系1
                                             static_cast<long>(fileContent->at(0).windowCluster.at(0).sampleCluster.at(machine_ctSubState_Cut_SampleFinished).lineCluster.at(j).pointCluster.at(i).x()*head0_PulsePerMillimeter->x()),
                                             static_cast<long>(fileContent->at(0).windowCluster.at(0).sampleCluster.at(machine_ctSubState_Cut_SampleFinished).lineCluster.at(j).pointCluster.at(i).y()*head0_PulsePerMillimeter->y()),  // 该插补段的终点坐标(15000, 15000)
                                             20,    // 该插补段的目标速度：100pulse/ms
@@ -358,7 +368,7 @@ void Machine::SubStateRunCut()
             ADP_CrdClear(1, 0);
             ADP_SetCrdPrm(1, &crdPrm);
              // 该插补段的坐标系是坐标系1 //xy点// 该插补段的目标速度：3pulse/ms // 插补段的加速度：0.1pulse/ms^2// 终点速度为0 // 向坐标系1的FIFO0缓存区传递该直线插补数据
-            ADP_LnXY(1,static_cast<long>(head0_Org->x()*head0_PulsePerMillimeter->x()),static_cast<long>(head0_Org->y()*head0_PulsePerMillimeter->y()) ,20,0.2,0,0);
+            ADP_LnXY(1,static_cast<long>(head0_Org->x()*head0_PulsePerMillimeter->x()),static_cast<long>(head0_Org->y()*head0_PulsePerMillimeter->y()) ,*head0_IdleMoveSpd,*head0_IdleMoveAcc,0,0);
             ADP_CrdStart(1, 0);
             //jump to the last state
             machine_stSubState_Cut = stSubCut_Finish;
@@ -424,11 +434,11 @@ void Machine::SubStateOpBtnEdgeScan()
         ADP_SetCrdPrm(1, &crdPrm);
         ADP_CrdClear(1, 0);
         // 该插补段的坐标系是坐标系1 //xy点// 该插补段的目标速度：3pulse/ms // 插补段的加速度：0.05pulse/ms^2// 终点速度为0 // 向坐标系1的FIFO0缓存区传递该直线插补数据
-        ADP_LnXY(1,static_cast<long>(head0_Org->x()*head0_PulsePerMillimeter->x()),static_cast<long>(head0_Org->y()*head0_PulsePerMillimeter->y()),40,0.1,0,0);
-        ADP_LnXY(1,static_cast<long>(head0_Org->x()*head0_PulsePerMillimeter->x()),static_cast<long>(head0_Limit->y()*head0_PulsePerMillimeter->y()),40,0.1,0,0);
-        ADP_LnXY(1,static_cast<long>(head0_Limit->x()*head0_PulsePerMillimeter->x()),static_cast<long>(head0_Limit->y()*head0_PulsePerMillimeter->y()),40,0.1,0,0);
-        ADP_LnXY(1,static_cast<long>(head0_Limit->x()*head0_PulsePerMillimeter->x()),static_cast<long>(head0_Org->y()*head0_PulsePerMillimeter->y()),40,0.1,0,0);
-        ADP_LnXY(1,static_cast<long>(head0_Org->x()*head0_PulsePerMillimeter->x()),static_cast<long>(head0_Org->y()*head0_PulsePerMillimeter->y()),40,0.1,0,0);
+        ADP_LnXY(1,static_cast<long>(head0_Org->x()*head0_PulsePerMillimeter->x()),static_cast<long>(head0_Org->y()*head0_PulsePerMillimeter->y()),*head0_IdleMoveSpd,*head0_IdleMoveAcc,0,0);
+        ADP_LnXY(1,static_cast<long>(head0_Org->x()*head0_PulsePerMillimeter->x()),static_cast<long>(head0_Limit->y()*head0_PulsePerMillimeter->y()),*head0_IdleMoveSpd,*head0_IdleMoveAcc,0,0);
+        ADP_LnXY(1,static_cast<long>(head0_Limit->x()*head0_PulsePerMillimeter->x()),static_cast<long>(head0_Limit->y()*head0_PulsePerMillimeter->y()),*head0_IdleMoveSpd,*head0_IdleMoveAcc,0,0);
+        ADP_LnXY(1,static_cast<long>(head0_Limit->x()*head0_PulsePerMillimeter->x()),static_cast<long>(head0_Org->y()*head0_PulsePerMillimeter->y()),*head0_IdleMoveSpd,*head0_IdleMoveAcc,0,0);
+        ADP_LnXY(1,static_cast<long>(head0_Org->x()*head0_PulsePerMillimeter->x()),static_cast<long>(head0_Org->y()*head0_PulsePerMillimeter->y()),*head0_IdleMoveSpd,*head0_IdleMoveAcc,0,0);
         ADP_CrdStart(1, 0);
     }
 }
@@ -445,8 +455,8 @@ void Machine::SubStateOpBtnReSize()
         ADP_PrfJog(AXIS_Y);
         ADP_SetJogPrm (AXIS_X,&Jog);
         ADP_SetJogPrm (AXIS_Y,&Jog);
-        ADP_SetVel(AXIS_X, -8);
-        ADP_SetVel(AXIS_Y, -8);
+        ADP_SetVel(AXIS_X, -puntchLimitSpd);
+        ADP_SetVel(AXIS_Y, -puntchLimitSpd);
         ADP_Update(AXIS_X);
         ADP_Update(AXIS_Y);
     }
@@ -467,28 +477,28 @@ void Machine::SubStateOpBtnPress(int id)
             machine_stSubState_Operate = stSubOperate_BtnL;
             ADP_PrfJog(AXIS_X);
             ADP_SetJogPrm (AXIS_X,&Jog);
-            ADP_SetVel(AXIS_X, -5);
+            ADP_SetVel(AXIS_X, -puntchLimitSpd*velRatio);
             ADP_Update(AXIS_X);
             break;
         case 1:
             machine_stSubState_Operate = stSubOperate_BtnR;
             ADP_PrfJog(AXIS_X);
             ADP_SetJogPrm (AXIS_X,&Jog);
-            ADP_SetVel(AXIS_X, 5);
+            ADP_SetVel(AXIS_X, puntchLimitSpd*velRatio);
             ADP_Update(AXIS_X);
             break;
         case 2:
             machine_stSubState_Operate = stSubOperate_BtnU;
             ADP_PrfJog(AXIS_Y);
             ADP_SetJogPrm (AXIS_Y,&Jog);
-            ADP_SetVel(AXIS_Y, 5);
+            ADP_SetVel(AXIS_Y, puntchLimitSpd*velRatio);
             ADP_Update(AXIS_Y);
             break;
         case 3:
             machine_stSubState_Operate = stSubOperate_BtnD;
             ADP_PrfJog(AXIS_Y);
             ADP_SetJogPrm (AXIS_Y,&Jog);
-            ADP_SetVel(AXIS_Y, -5);
+            ADP_SetVel(AXIS_Y, -puntchLimitSpd*velRatio);
             ADP_Update(AXIS_Y);
             break;
         case 4:
@@ -496,7 +506,7 @@ void Machine::SubStateOpBtnPress(int id)
             ADP_SetCrdPrm(1, &crdPrm);
             ADP_CrdClear(1, 0);
              // 该插补段的坐标系是坐标系1 //xy点// 该插补段的目标速度：3pulse/ms // 插补段的加速度：0.1pulse/ms^2// 终点速度为0 // 向坐标系1的FIFO0缓存区传递该直线插补数据
-            ADP_LnXY(1,static_cast<long>(head0_Org->x()*head0_PulsePerMillimeter->x()),static_cast<long>(head0_Org->y()*head0_PulsePerMillimeter->y()) ,20,0.2,0,0);
+            ADP_LnXY(1,static_cast<long>(head0_Org->x()*head0_PulsePerMillimeter->x()),static_cast<long>(head0_Org->y()*head0_PulsePerMillimeter->y()) ,*head0_IdleMoveSpd,*head0_IdleMoveAcc,0,0);
             ADP_CrdStart(1, 0);
             break;
         }
@@ -549,35 +559,31 @@ void Machine::SubStateOpKeyPress(QKeyEvent event)
                 Jog.dec = 0.05;
                 Jog.smooth = 0.5;
                 ADP_ClrSts(1,4);
-                double velRatio=1;
-                if(event.modifiers() == Qt::ShiftModifier)
-                {
-                    velRatio=2;
-                }
+
                 switch(event.key())
                 {
                 case Qt::Key_A:
                     ADP_PrfJog(AXIS_X);
                     ADP_SetJogPrm (AXIS_X,&Jog);
-                    ADP_SetVel(AXIS_X, -5*velRatio);
+                    ADP_SetVel(AXIS_X, -puntchLimitSpd*velRatio);
                     ADP_Update(AXIS_X);
                     break;
                 case Qt::Key_D:
                     ADP_PrfJog(AXIS_X);
                     ADP_SetJogPrm (AXIS_X,&Jog);
-                    ADP_SetVel(AXIS_X, 5*velRatio);
+                    ADP_SetVel(AXIS_X, puntchLimitSpd*velRatio);
                     ADP_Update(AXIS_X);
                     break;
                 case Qt::Key_W:
                     ADP_PrfJog(AXIS_Y);
                     ADP_SetJogPrm (AXIS_Y,&Jog);
-                    ADP_SetVel(AXIS_Y, 5*velRatio);
+                    ADP_SetVel(AXIS_Y, puntchLimitSpd*velRatio);
                     ADP_Update(AXIS_Y);
                     break;
                 case Qt::Key_S:
                     ADP_PrfJog(AXIS_Y);
                     ADP_SetJogPrm (AXIS_Y,&Jog);
-                    ADP_SetVel(AXIS_Y, -5*velRatio);
+                    ADP_SetVel(AXIS_Y, -puntchLimitSpd*velRatio);
                     ADP_Update(AXIS_Y);
                     break;
                 }
@@ -664,6 +670,14 @@ void Machine::Mach_SetHead0Limit(QPointF *_head0_Limit)
 void Machine::Mach_SetCutContent(QList<fileData_t> *_fileContent)
 {
     this->fileContent = _fileContent;
+}
+void Machine::Mach_SetHead0IdleMoveSpd(double *_movSpd)
+{
+    this->head0_IdleMoveSpd = _movSpd;
+}
+void Machine::Mach_SetHead0IdleMoveAcc(double *_movAcc)
+{
+    this->head0_IdleMoveAcc = _movAcc;
 }
 uint8_t Machine::GetMachineMainState()
 {

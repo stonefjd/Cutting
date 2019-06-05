@@ -105,31 +105,31 @@ void ConfigHead::GetHeadInfo(int _index)
     strKey = ("FeedLen");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        feedLen = (*szBuf).toInt();
+        feedLen = (*szBuf).toDouble();
     }
     //送料速度(m/s)
     strKey = ("FeedSpd");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        feedSpd = (*szBuf).toInt();
+        feedSpd = (*szBuf).toDouble();
     }
     //送料加速度(m/s²)
     strKey = ("FeedAcc");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        feedAcc = (*szBuf).toInt();
+        feedAcc = (*szBuf).toDouble();
     }
     //空走速度 (m/s)
     strKey = ("IdleMoveSpd");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        idleMoveSpd = (*szBuf).toInt();
+        idleMoveSpd = (*szBuf).toDouble();
     }
     //空走加速度(G)
     strKey = ("IdleMoveAcc");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        idleMoveAcc = (*szBuf).toInt();
+        idleMoveAcc = (*szBuf).toDouble();
     }
     //获取机座列表
     strKey = ("Aprons");
