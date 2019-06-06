@@ -14,16 +14,20 @@ UserLog::UserLog(QWidget *parent) :
     QValidator* validator = new QIntValidator(0,99999,this);
     ui->lineEditSN->setValidator(validator);
 }
-QString UserLog::GetLineEditSN(void)
+
+void UserLog::SetUser(User *_user)
 {
-    return ui->lineEditSN->text();
-}
-QString UserLog::GetLineEditPSW(void)
-{
-    return  ui->lineEditPsw->text();
+    this->user = _user;
 }
 
 UserLog::~UserLog()
 {
     delete ui;
+}
+
+void UserLog::on_buttonBox_accepted()
+{
+    user->SetUserSN(ui->lineEditSN->text().toInt());
+    user->SetUserPSW(ui->lineEditPsw->text());
+    user->CheckUserMatching();
 }

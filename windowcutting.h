@@ -18,8 +18,7 @@
 #include "File/IniOp/iniop.h"
 #include "File/cutfiledraw.h"
 #include "PhysicalLayer/gts.h"
-#include "User/user.h"
-#include "User/usermanager.h"
+#include "User/userhandle.h"
 #include "Machine/machine.h"
 #include "Machine/Config/configwhole.h"
 #define BTN_ID_L 0
@@ -83,7 +82,7 @@ private:
     Ui::WindowCutting   *ui;
     Machine         *mMachine = new Machine;
     ConfigWhole     *wConfig = new ConfigWhole;
-    User            *user;
+    UserHandle      *user;
 //  Settings        settings;
 //  IniOp           iniOp;
     CutFileDraw     cutFlieDraw;

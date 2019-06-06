@@ -47,7 +47,8 @@ SOURCES += \
     File/cutfiledraw.cpp \
     Machine/Config/configwhole.cpp \
     User/usermanager.cpp \
-    User/user.cpp
+    User/user.cpp \
+    User/userhandle.cpp
 
 HEADERS += \
     windowcutting.h \
@@ -75,7 +76,8 @@ HEADERS += \
     File/cutfileformat.h \
     Machine/Config/configwhole.h \
     User/usermanager.h \
-    User/user.h
+    User/user.h \
+    User/userhandle.h
 
 FORMS += \
         windowcutting.ui \

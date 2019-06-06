@@ -311,14 +311,15 @@ void WindowCutting::on_actionImportCutFileList_triggered()
 void WindowCutting::on_actionLogManager_triggered()
 {
     qDebug()<<"triggered";
+    user->ShowManagerMent();
 }
 
 void WindowCutting::on_actionLogOn_triggered()
 {
     if(user == nullptr)
     {
-        user = new User;
-        if(user->UserIsChecked())
+        user = new UserHandle;
+        if(user->GetUserChecked())
         {
             //add user manager action
             ui->menuUser->addAction(ui->actionLogManager);
