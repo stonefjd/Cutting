@@ -34,6 +34,11 @@ private:
     QString userPSW_org;
     QString userPSW_md5;
     int     userLevel;
+    bool    userPrimWrite;
+    bool    userPrimRead;
+    bool    userPrimAdd;
+    bool    userPrimDelete;
+
     int     userPrimAct;//允许动作
     int     userPrimItem;//可查看栏目
     int     userPrimLevel;//可查看对象
@@ -42,11 +47,15 @@ private:
     QString userPrimItemStr;
 private:
     bool    PasswordMaching(int _sn,QString _pswd);
+    QString QueryItemInTableByKey(QString _item,QString _table,QString _key,QString _value);
+
 public:
     bool    GetUserIsChecked();
     void    SetUserIsChecked(bool _checked);
     void    SetUserSN(int _sn);
+    int     GetUserSN(void);
     void    SetUserPSW(QString _psw);
+    int     GetUserLevel();
     QString GetUserPrimItemStr();
     QString GetUserPrimLevelStr();
     void    SetHistoryUser(int _sn);

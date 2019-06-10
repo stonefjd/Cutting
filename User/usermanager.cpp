@@ -6,7 +6,7 @@ UserManager::UserManager(QWidget *parent) :
     ui(new Ui::UserManager)
 {
     ui->setupUi(this);
-
+    ui->lineEdit_search->setPlaceholderText(tr("请输入姓名或者工号查找"));
 
 
 }
@@ -27,10 +27,11 @@ void UserManager::InitialModel()
     QSqlQueryModel *plainModel = new QSqlQueryModel;
     QSqlQuery query;
 
-    if(strItem != nullptr && strLevel != nullptr)
+//    if(strItem != nullptr && strLevel != nullptr)
     {
-        qDebug()<<"SELECT "+strItem+" FROM userTable " +strLevel;
-        query.prepare("SELECT "+strItem+" FROM userTable " +strLevel);
+        qDebug()<<"SELECT * FROM userTable WHERE userSN="+QString::number(user->GetUserSN()) +" OR userLevel >"+QString::number(user->GetUserLevel());
+        query.prepare("SELECT * FROM userTable WHERE userSN="+QString::number(user->GetUserSN()) +" OR userLevel >"+QString::number(user->GetUserLevel()));
+//        query.prepare("SELECT "+strItem+" FROM userTable " +strLevel);
     }
     if(!query.exec())
     {
@@ -41,9 +42,6 @@ void UserManager::InitialModel()
     {
         qDebug() << plainModel->lastError();
     }
-//    plainModel->setHeaderData(0, Qt::Horizontal, QObject::tr("工号"));
-//    plainModel->setHeaderData(1, Qt::Horizontal, QObject::tr("姓名"));
-//    plainModel->setHeaderData(2, Qt::Horizontal, QObject::tr("级别"));
 
     ui->tableView->setModel(plainModel);
     ui->tableView->setWindowTitle("title");

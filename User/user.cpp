@@ -29,10 +29,19 @@ void User::SetUserSN(int _sn)
 {
     this->userSN = _sn;
 }
+int User::GetUserSN()
+{
+    return this->userSN;
+}
 void User::SetUserPSW(QString _psw)
 {
     this->userPSW_org = _psw;
 }
+int User::GetUserLevel()
+{
+    return this->userLevel;
+}
+
 QString User::GetUserPrimItemStr()
 {
     QString temp = nullptr;
@@ -122,8 +131,33 @@ QStringList User::GetHistoryUser(QString _arg)//get history from query match
 bool User::PasswordMaching(int _sn,QString _pswd)
 {
     bool ret = false;
+    QString _value;
+    _value = QueryItemInTableByKey("userPasswordMD5","userTable","userSN",QString::number(_sn));
+    if(_value == _pswd)
+    {
+        ret = true;
+        qDebug()<<"identified";
+        this->userLevel     = QueryItemInTableByKey("userLevel",        "userTable","userSN",QString::number(_sn)).toInt();
+        this->userPrimWrite = QueryItemInTableByKey("rolePrim_write",   "roleDefTable","roleLevel",QString::number(this->userLevel)).toInt();
+        this->userPrimRead  = QueryItemInTableByKey("rolePrim_read",    "roleDefTable","roleLevel",QString::number(this->userLevel)).toInt();
+        this->userPrimAdd   = QueryItemInTableByKey("rolePrim_add",     "roleDefTable","roleLevel",QString::number(this->userLevel)).toInt();
+        this->userPrimDelete= QueryItemInTableByKey("rolePrim_delete",  "roleDefTable","roleLevel",QString::number(this->userLevel)).toInt();
+
+//        this->userPrimAct   = query.value(USER_PACT).toInt();
+//        this->userPrimItem  = query.value(USER_PITEM).toInt();
+//        this->userPrimLevel = query.value(USER_PLEVEL).toInt();
+    }
+    else
+    {
+        qDebug()<<"passwordWrong";
+    }
+    return ret;
+}
+QString User::QueryItemInTableByKey(QString _item,QString _table,QString _key,QString _value)
+{
+    QString _itemValue;
     QSqlQuery query;
-    query.prepare( "SELECT * FROM userTable WHERE userSN = '" + QString::number(_sn)+"'");
+    query.prepare("SELECT "+_item+" FROM "+_table+" WHERE "+_key+" = '" +_value+"'");
     if(!query.exec())
     {
         qDebug() << query.lastError();
@@ -131,18 +165,7 @@ bool User::PasswordMaching(int _sn,QString _pswd)
     else
     {
         query.first();
-        qDebug()<<query.value(USER_PSW).toString();
-        if(query.value(USER_PSW).toString() == _pswd)
-        {
-            ret = true;
-            qDebug()<<"identified";
-            this->userLevel     = query.value(USER_LV).toInt();
-            this->userPrimAct   = query.value(USER_PACT).toInt();
-            this->userPrimItem  = query.value(USER_PITEM).toInt();
-            this->userPrimLevel = query.value(USER_PLEVEL).toInt();
-        }
-        else
-            qDebug()<<"passwordWrong";
+        _itemValue = query.value(0).toString();
     }
-    return ret;
+    return _itemValue;
 }
