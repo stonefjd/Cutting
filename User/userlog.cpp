@@ -4,7 +4,7 @@
 #include <QIntValidator>
 #include <QDebug>
 #include <QCryptographicHash>
-
+#include <QCompleter>
 UserLog::UserLog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::UserLog)
@@ -17,7 +17,12 @@ UserLog::UserLog(QWidget *parent) :
 
 void UserLog::SetUser(User *_user)
 {
+    //create user
     this->user = _user;
+    //query the history user list
+    QStringList strList = user->GetHistoryUser("");
+    completer = new QCompleter(strList, this);
+    ui->lineEditSN->setCompleter(completer);
 }
 
 UserLog::~UserLog()
@@ -31,3 +36,22 @@ void UserLog::on_buttonBox_accepted()
     user->SetUserPSW(ui->lineEditPsw->text());
     user->CheckUserMatching();
 }
+
+void UserLog::on_lineEditSN_textEdited(const QString &arg1)
+{
+//    QStringList userList;
+//    if(arg1.isEmpty())
+//    {
+//        qDebug()<<"y";
+//    }
+//    else
+//        userList = user->GetHistoryUser(arg1);
+//    DisplayHistoryUser(userList);
+}
+void UserLog::DisplayHistoryUser(QStringList _userList)
+{
+//    QCompleter *completer = new QCompleter(wordList, this);
+//    completer->setCaseSensitivity(Qt::CaseInsensitive);
+//    lineEdit->setCompleter(completer);
+}
+

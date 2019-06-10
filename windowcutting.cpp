@@ -132,6 +132,7 @@ bool WindowCutting::eventFilter(QObject *watched, QEvent *e)
 WindowCutting::~WindowCutting()
 {
     delete ui;
+    qDebug()<<"deleted";
 }
 //----protected function
 void WindowCutting::userLog_PermissionConfirm()

@@ -41,7 +41,7 @@ private:
     QSqlDatabase db;
     QString userPrimItemStr;
 private:
-    bool    UserMaching(int _sn,QString _pswd);
+    bool    PasswordMaching(int _sn,QString _pswd);
 public:
     bool    GetUserIsChecked();
     void    SetUserIsChecked(bool _checked);
@@ -50,7 +50,7 @@ public:
     QString GetUserPrimItemStr();
     QString GetUserPrimLevelStr();
     void    SetHistoryUser(int _sn);
-    int     GetHistoryUser();
+    QStringList GetHistoryUser(QString _arg);
 public:
     void    CheckUserMatching();
 };
