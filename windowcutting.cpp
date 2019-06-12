@@ -311,7 +311,6 @@ void WindowCutting::on_actionImportCutFileList_triggered()
 //--userLog
 void WindowCutting::on_actionLogManager_triggered()
 {
-    qDebug()<<"triggered";
     user->ShowManagerMent();
 }
 

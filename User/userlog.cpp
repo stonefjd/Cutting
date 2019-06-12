@@ -20,13 +20,14 @@ void UserLog::SetUser(User *_user)
     //create user
     this->user = _user;
     //query the history user list
-    QStringList strList = user->GetHistoryUser("");
+    QStringList strList = user->GetHistoryUserList("");
     completer = new QCompleter(strList, this);
     ui->lineEditSN->setCompleter(completer);
 }
 
 UserLog::~UserLog()
 {
+    qDebug()<<"userLog deleted";
     delete ui;
 }
 
@@ -45,7 +46,7 @@ void UserLog::on_lineEditSN_textEdited(const QString &arg1)
 //        qDebug()<<"y";
 //    }
 //    else
-//        userList = user->GetHistoryUser(arg1);
+//        userList = user->GetHistoryUserList(arg1);
 //    DisplayHistoryUser(userList);
 }
 void UserLog::DisplayHistoryUser(QStringList _userList)
