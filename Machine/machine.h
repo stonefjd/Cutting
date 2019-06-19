@@ -7,8 +7,8 @@
 #include "Fan/fan.h"
 #include "PhysicalLayer/hardwareadaptor.h"
 //#include "Machine/Knife/sdknifeconfig.h"
-#include "Machine/Config/configmachine.h"
-#include "Machine/Config/confighead.h"
+#include "Machine/Config/cfgmach.h"
+#include "Machine/Config/cfghead.h"
 #include "File/cutfileformat.h"
 enum MainState
 {

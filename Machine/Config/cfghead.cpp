@@ -1,11 +1,11 @@
-﻿#include "confighead.h"
+﻿#include "cfghead.h"
 #include "configinfo.h"
-ConfigHead::ConfigHead(QWidget *parent) : QWidget(parent)
+CfgHead::CfgHead(QWidget *parent) : QWidget(parent)
 {
     headCfgPath = SETTING_PATH;
 }
 
-void ConfigHead::GetHeadInfo(int _index)
+void CfgHead::GetHeadInfo(int _index)
 {
     QString strConfigPath = headCfgPath;
 
@@ -143,11 +143,11 @@ void ConfigHead::GetHeadInfo(int _index)
         aConfig.append(apron);
     }
 }
-QString ConfigHead::GetHeadCfgPath()
+QString CfgHead::GetHeadCfgPath()
 {
     return headCfgPath;
 }
-void ConfigHead::UpdateHeadMaxPluse(int _xPluse,int _yPluse,int _hIndex)
+void CfgHead::UpdateHeadMaxPluse(int _xPluse,int _yPluse,int _hIndex)
 {
     headMaxPluse.setX(_xPluse);
     headMaxPluse.setY(_yPluse);
@@ -168,7 +168,7 @@ void ConfigHead::UpdateHeadMaxPluse(int _xPluse,int _yPluse,int _hIndex)
         WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadCutLimitY",QString::number(_yPluse),headCfgPath);
     }
 }
-void ConfigHead::UpdateHeadCutLimit(int _xPluse,int _yPluse,int _hIndex)
+void CfgHead::UpdateHeadCutLimit(int _xPluse,int _yPluse,int _hIndex)
 {
     if(_xPluse <= headMaxPluse.x())
     {
@@ -182,7 +182,7 @@ void ConfigHead::UpdateHeadCutLimit(int _xPluse,int _yPluse,int _hIndex)
     WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadCutLimitY",QString::number(_yPluse),headCfgPath);
 }
 
-bool ConfigHead::WritePrivateProfileString(QString strSect,QString strKey,QString strText,QString strConfigPath)
+bool CfgHead::WritePrivateProfileString(QString strSect,QString strKey,QString strText,QString strConfigPath)
 {
     QFile file(strConfigPath);
     if(!file.exists())
@@ -200,7 +200,7 @@ bool ConfigHead::WritePrivateProfileString(QString strSect,QString strKey,QStrin
     }
     return true;
 }
-bool ConfigHead::GetPrivateProfileString(QString strSect,QString strKey,QString *szBuf,QString strConfigPath)
+bool CfgHead::GetPrivateProfileString(QString strSect,QString strKey,QString *szBuf,QString strConfigPath)
 {
     QFile file(strConfigPath);
     if(!file.exists())

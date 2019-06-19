@@ -2,29 +2,30 @@
 #define CFGMACHSETTINGS_H
 
 #include <QDialog>
-#include "configmachine.h"
-#include "confighead.h"
+#include "cfgmach.h"
+#include "cfghead.h"
 namespace Ui {
-class cfgMachSettings;
+class CfgMachSettings;
 }
 
-class cfgMachSettings : public QDialog
+class CfgMachSettings : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit cfgMachSettings(QWidget *parent = nullptr);
-    ~cfgMachSettings();
+    explicit CfgMachSettings(QWidget *parent = nullptr);
+    ~CfgMachSettings();
 
 private:
-    Ui::cfgMachSettings *ui;
+    Ui::CfgMachSettings *ui;
 
 private:
-    ConfigMachine   *cMach;
-    ConfigHead      *cHead;
+    CfgMach *cMach;
+    CfgHead *cHead;
 public:
-    void SetCfgMach(ConfigMachine *_cMach);
-    void SetCfgHead(ConfigHead  *_cHead);
+    void SetCfgMach(CfgMach *_cMach);
+    void SetCfgHead(CfgHead *_cHead);
+    void LoadData();
 };
 
 #endif // CFGMACHSETTINGS_H

@@ -13,9 +13,7 @@
 #include <QFrame>
 #include <QPainter>
 #include <QCloseEvent>
-//#include "File/Settings/settings.h"
 #include "File/CutFileListOp/cutfilelistop.h"
-#include "File/IniOp/iniop.h"
 #include "File/cutfiledraw.h"
 #include "PhysicalLayer/gts.h"
 #include "User/userhandle.h"
@@ -74,6 +72,8 @@ private slots:
 
     void on_actionViewCutList_triggered(bool checked);
 
+    void on_actionMachSetting_triggered();
+
 signals:
     void keyPressed(QKeyEvent);
     void keyReleased(QKeyEvent);
@@ -84,11 +84,9 @@ private:
 
 private:
     Ui::WindowCutting   *ui;
-    Machine                 *mMachine = new Machine;
-    CfgMachHandle     *wConfig = new CfgMachHandle;
-    UserHandle              *user;
-//  Settings        settings;
-//  IniOp           iniOp;
+    Machine             *mMachine = new Machine;
+    CfgMachHandle       *cfgMachHandle = new CfgMachHandle;
+    UserHandle          *userHandle;
     CutFileDraw     cutFlieDraw;
     CutFileListOp   cutFileList;
     QTimer          *debugTimer;

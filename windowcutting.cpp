@@ -10,9 +10,9 @@ WindowCutting::WindowCutting(QWidget *parent) :
 //----Initial the private variable
     this->setFocus();
 //----disable the ui
-    ui->menuSettings->setDisabled(true);
-    ui->menuViewItem->setDisabled(true);
-    ui->menuHelpItem->setDisabled(true);
+    //ui->menuSettings->setDisabled(true);
+    //ui->menuViewItem->setDisabled(true);
+    //ui->menuHelpItem->setDisabled(true);
 
 //----set btn id for ui
     ui->btnDirGroup->setId(ui->btnOpLeft,BTN_ID_L);
@@ -28,8 +28,8 @@ WindowCutting::WindowCutting(QWidget *parent) :
     ui->dockWgtCutFile->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
     ui->tableWgtCutFile->setFocusPolicy(Qt::NoFocus);
     cutFileList.CutFileList_WidgetInit(ui->tableWgtCutFile);
-    cutFileList.CutFileList_SetPosLogicOrg(&wConfig->hConfig.headOrg);
-    cutFileList.CutFileList_SetFactorCutScale(&wConfig->hConfig.headCutScale);
+    cutFileList.CutFileList_SetPosLogicOrg(&cfgMachHandle->hConfig.headOrg);
+    cutFileList.CutFileList_SetFactorCutScale(&cfgMachHandle->hConfig.headCutScale);
 
 //----CutFileDraw
     ui->paintFrame->setMouseTracking(false);
@@ -37,19 +37,19 @@ WindowCutting::WindowCutting(QWidget *parent) :
     ui->paintFrame->setFocusPolicy(Qt::StrongFocus);
     cutFlieDraw.CutFileDraw_SetPaintFrame(ui->paintFrame);
     cutFlieDraw.CutFileDraw_SetPaintContent(&cutFileList.fileVector);
-    cutFlieDraw.CutFileDraw_SetRangePage(&wConfig->hConfig.headLimit);
-    cutFlieDraw.CutFileDraw_SetRangeMax(&wConfig->hConfig.headMaxLength);
-    cutFlieDraw.CutFileDraw_SetPaintFactorPulsePerMillimeter(&wConfig->hConfig.headPluseScale);
-    cutFlieDraw.CutFileDraw_SetPaintLogicOrg(&wConfig->hConfig.headOrg);
-    cutFlieDraw.CutFileDraw_SetFactorCutScale(&wConfig->hConfig.headCutScale);
+    cutFlieDraw.CutFileDraw_SetRangePage(&cfgMachHandle->hConfig.headLimit);
+    cutFlieDraw.CutFileDraw_SetRangeMax(&cfgMachHandle->hConfig.headMaxLength);
+    cutFlieDraw.CutFileDraw_SetPaintFactorPulsePerMillimeter(&cfgMachHandle->hConfig.headPluseScale);
+    cutFlieDraw.CutFileDraw_SetPaintLogicOrg(&cfgMachHandle->hConfig.headOrg);
+    cutFlieDraw.CutFileDraw_SetFactorCutScale(&cfgMachHandle->hConfig.headCutScale);
     cutFlieDraw.CutFileDraw_SetPaintLogicRealTime(&mMachine->head0_Pos,&mMachine->head0_MoveAngel);
 //----Machine Init
     //mMachine.mFan_1.StateMachineInit(ui->actionWindIn,ui->actionWindOut);
-    mMachine->Mach_SetHead0Org(&wConfig->hConfig.headOrg);
-    mMachine->Mach_SetHead0PulsePerMillimeter(&wConfig->hConfig.headPluseScale);
-    mMachine->Mach_SetHead0Limit(&wConfig->hConfig.headLimit);
-    mMachine->Mach_SetHead0IdleMoveSpd(&wConfig->hConfig.idleMoveSpd);
-    mMachine->Mach_SetHead0IdleMoveAcc(&wConfig->hConfig.idleMoveAcc);
+    mMachine->Mach_SetHead0Org(&cfgMachHandle->hConfig.headOrg);
+    mMachine->Mach_SetHead0PulsePerMillimeter(&cfgMachHandle->hConfig.headPluseScale);
+    mMachine->Mach_SetHead0Limit(&cfgMachHandle->hConfig.headLimit);
+    mMachine->Mach_SetHead0IdleMoveSpd(&cfgMachHandle->hConfig.idleMoveSpd);
+    mMachine->Mach_SetHead0IdleMoveAcc(&cfgMachHandle->hConfig.idleMoveAcc);
     mMachine->Mach_SetCutContent(&cutFileList.fileVector);
 
     connect(this,SIGNAL(keyPressed(QKeyEvent)), mMachine,SLOT(SubStateOpKeyPress(QKeyEvent)));
@@ -61,10 +61,10 @@ WindowCutting::WindowCutting(QWidget *parent) :
     connect(ui->actionResize,   SIGNAL(triggered()),        mMachine,SLOT(SubStateOpBtnReSize()));
     connect(ui->actionEdgeScan, SIGNAL(triggered()),        mMachine,SLOT(SubStateOpBtnEdgeScan()));
 
-    connect(mMachine,           SIGNAL(UpdateMachineMaxPluse(double,double)),wConfig,SLOT(UpdateConfigMaxPluse(double,double)));
+    connect(mMachine,           SIGNAL(UpdateMachineMaxPluse(double,double)),cfgMachHandle,SLOT(UpdateConfigMaxPluse(double,double)));
 
 //----UserLog
-    user = nullptr;
+    userHandle = nullptr;
     //disable all the operate item
     this->userLog_PermissionConfirm();
 
@@ -129,11 +129,11 @@ void WindowCutting::userLog_PermissionConfirm()
 {
     QList<QWidget*> actionList;
     actionList.append(ui->mainToolBar->findChildren<QWidget*>());
-    actionList.append(ui->menuBar->findChildren<QWidget*>());
+    //actionList.append(ui->menuBar->findChildren<QWidget*>());
     actionList.append(ui->dockWgtOperate->findChildren<QWidget*>());
     actionList.append(ui->dockWgtCutFile->findChildren<QWidget*>());
 
-    if(user == nullptr)
+    if(userHandle == nullptr)
     {
         for(int i = 0; i < actionList.size(); i++)
         {
@@ -301,15 +301,15 @@ void WindowCutting::on_actionImportCutFileList_triggered()
 //--userLog
 void WindowCutting::on_actionLogManager_triggered()
 {
-    user->ShowManagerMent();
+    userHandle->ShowManagerMent();
 }
 
 void WindowCutting::on_actionLogOn_triggered()
 {
-    if(user == nullptr)
+    if(userHandle == nullptr)
     {
-        user = new UserHandle;
-        if(user->GetUserChecked())
+        userHandle = new UserHandle;
+        if(userHandle->GetUserChecked())
         {
             //add user manager action
             ui->menuUser->addAction(ui->actionLogManager);
@@ -319,11 +319,11 @@ void WindowCutting::on_actionLogOn_triggered()
         }
         else
         {
-            delete user;
-            user = nullptr;
+            delete userHandle;
+            userHandle = nullptr;
         }
     }
-    else if(user != nullptr)
+    else if(userHandle != nullptr)
     {
         QMessageBox msgBox;
         msgBox.setText(tr("是否确认退出"));
@@ -333,8 +333,8 @@ void WindowCutting::on_actionLogOn_triggered()
         msgBox.exec();
         if(msgBox.clickedButton()== btnYes)
         {
-            delete user;
-            user = nullptr;
+            delete userHandle;
+            userHandle = nullptr;
             ui->menuUser->removeAction(ui->actionLogManager);
             ui->actionLogOn->setText(tr("登录"));
         }
@@ -426,4 +426,9 @@ void WindowCutting::on_dockWgtCutFile_visibilityChanged(bool visible)
 void WindowCutting::on_actionViewCutList_triggered(bool checked)
 {
     ui->dockWgtCutFile->setVisible(checked);
+}
+
+void WindowCutting::on_actionMachSetting_triggered()
+{
+    cfgMachHandle->ShowSettings();
 }

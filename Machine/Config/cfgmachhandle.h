@@ -2,17 +2,21 @@
 #define CFGMACHHANDLE_H
 
 #include <QObject>
-#include "configmachine.h"
-#include "confighead.h"
-
+#include "cfgmach.h"
+#include "cfghead.h"
+#include "cfgmachsettings.h"
 class CfgMachHandle : public QObject
 {
     Q_OBJECT
 public:
     explicit CfgMachHandle(QObject *parent = nullptr);
 
-    ConfigMachine   mConfig;
-    ConfigHead      hConfig;
+    CfgMach mConfig;
+    CfgHead hConfig;
+    CfgMachSettings *UI_cfgMachSetting;
+
+public:
+    void ShowSettings();
 signals:
 
 public slots:

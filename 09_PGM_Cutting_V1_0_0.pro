@@ -31,7 +31,6 @@ SOURCES += \
     Machine/machine.cpp \
     Machine/Fan/fan.cpp \
     File/CutFileListOp/cutfilelistop.cpp \
-    File/IniOp/iniop.cpp \
     User/userlog.cpp \
     Machine/Knife/sdknife.cpp \
     Machine/Knife/sdknifeconfig.cpp \
@@ -39,9 +38,7 @@ SOURCES += \
     Machine/Knife/sdmachinehead.cpp \
     Machine/Knife/sdmachine.cpp \
     Machine/Knife/sdcuttoollib.cpp \
-    Machine/Config/confighead.cpp \
     Machine/Config/configknife.cpp \
-    Machine/Config/configmachine.cpp \
     Machine/Config/configknifelib.cpp \
     Machine/Config/configapron.cpp \
     File/cutfiledraw.cpp \
@@ -49,7 +46,9 @@ SOURCES += \
     User/user.cpp \
     User/userhandle.cpp \
     Machine/Config/cfgmachsettings.cpp \
-    Machine/Config/cfgmachhandle.cpp
+    Machine/Config/cfgmachhandle.cpp \
+    Machine/Config/cfgmach.cpp \
+    Machine/Config/cfghead.cpp
 
 HEADERS += \
     windowcutting.h \
@@ -58,7 +57,6 @@ HEADERS += \
     Machine/machine.h \
     Machine/Fan/fan.h \
     File/CutFileListOp/cutfilelistop.h \
-    File/IniOp/iniop.h \
     User/userlog.h \
     Machine/Knife/Symbol.h \
     Machine/Knife/sdknife.h \
@@ -67,9 +65,7 @@ HEADERS += \
     Machine/Knife/sdmachinehead.h \
     Machine/Knife/sdmachine.h \
     Machine/Knife/sdcuttoollib.h \
-    Machine/Config/confighead.h \
     Machine/Config/configknife.h \
-    Machine/Config/configmachine.h \
     Machine/Config/configknifelib.h \
     Machine/Config/configapron.h \
     Machine/Config/configinfo.h \
@@ -79,12 +75,13 @@ HEADERS += \
     User/user.h \
     User/userhandle.h \
     Machine/Config/cfgmachsettings.h \
-    Machine/Config/cfgmachhandle.h
+    Machine/Config/cfgmachhandle.h \
+    Machine/Config/cfgmach.h \
+    Machine/Config/cfghead.h
 
 FORMS += \
         windowcutting.ui \
     File/Settings/settings.ui \
-    File/IniOp/iniop.ui \
     User/userlog.ui \
     User/usermanager.ui \
     Machine/Config/cfgmachsettings.ui

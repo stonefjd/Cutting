@@ -320,7 +320,7 @@
     <property name="title">
      <string>设置</string>
     </property>
-    <addaction name="actionSettingsParameter"/>
+    <addaction name="actionMachSetting"/>
     <addaction name="actionReset"/>
     <addaction name="actionlanguage"/>
    </widget>
@@ -557,9 +557,9 @@
     <string>售后服务</string>
    </property>
   </action>
-  <action name="actionSettingsParameter">
+  <action name="actionMachSetting">
    <property name="text">
-    <string>参数设置</string>
+    <string>机械参数设置</string>
    </property>
   </action>
   <action name="actionOutport">

@@ -1,42 +1,58 @@
-﻿#include "configmachine.h"
+﻿#include "cfgmach.h"
 
 
-ConfigMachine::ConfigMachine(QWidget *parent) : QWidget(parent)
+CfgMach::CfgMach(QWidget *parent) : QWidget(parent)
 {
     machCfgPath = SETTING_PATH;
 }
-QString ConfigMachine::GetMachCfgPath()
+QString CfgMach::GetMachCfgPath()
 {
     return machCfgPath;
 }
-//void ConfigMachine::SetMachRunMax(int _axis,double _pos)
-//{
-//    machRunMax[_axis-1] = _pos;
-//}
-//double ConfigMachine::GetMachRunMax(int _axis)
-//{
-//    return machRunMax[_axis-1];
-//}
-int ConfigMachine::GetMachHeadCount()
+int CfgMach::GetMachHeadCount()
 {
     return machHeadCount;
 }
-//void ConfigMachine::UpdateMachRunMax(int _xPos,int _yPos)
+QString CfgMach::GetVersionHw()
+{
+    return versionHw;
+}
+QString CfgMach::GetVersionSw()
+{
+    return versionSw;
+}
+double  CfgMach::GetType()
+{
+    return machType;
+}
+double  CfgMach::GetSizeX()
+{
+    return sizeX;
+}
+double  CfgMach::GetSizeY()
+{
+    return sizeY;
+}
+double  CfgMach::GetFeltThick()
+{
+    return feltThick;
+}
+//void CfgMach::UpdateMachRunMax(int _xPos,int _yPos)
 //{
 //    machRunMax[0] = static_cast<double>(_xPos)/machPulsePerMillimeter[0];
 //    machRunMax[1] = static_cast<double>(_yPos)/machPulsePerMillimeter[1];
 //    WritePrivateProfileString("MachInfo","MachRunMax",QString::number(machRunMax[0])+','+ QString::number(machRunMax[1]),machCfgPath);
 //}
 
-//void    ConfigMachine::SetMachPulsePerMillimeter(int _axis,double _pos)
+//void    CfgMach::SetMachPulsePerMillimeter(int _axis,double _pos)
 //{
 //    machPulsePerMillimeter[_axis-1] = _pos;
 //}
-//double  ConfigMachine::GetMachPulsePerMillimeter(int _axis)
+//double  CfgMach::GetMachPulsePerMillimeter(int _axis)
 //{
 //    return machPulsePerMillimeter[_axis-1];
 //}
-void ConfigMachine::GetMachineBaseInfo()
+void CfgMach::GetMachineBaseInfo()
 {
     QString strConfigPath = machCfgPath;
 
@@ -171,7 +187,7 @@ void ConfigMachine::GetMachineBaseInfo()
   //----------------------对刀
 
 }
-bool ConfigMachine::WritePrivateProfileString(QString strSect,QString strKey,QString strText,QString strConfigPath)
+bool CfgMach::WritePrivateProfileString(QString strSect,QString strKey,QString strText,QString strConfigPath)
 {
     QFile file(strConfigPath);
     if(!file.exists())
@@ -189,7 +205,7 @@ bool ConfigMachine::WritePrivateProfileString(QString strSect,QString strKey,QSt
     }
     return true;
 }
-bool ConfigMachine::GetPrivateProfileString(QString strSect,QString strKey,QString *szBuf,QString strConfigPath)
+bool CfgMach::GetPrivateProfileString(QString strSect,QString strKey,QString *szBuf,QString strConfigPath)
 {
     QFile file(strConfigPath);
     if(!file.exists())

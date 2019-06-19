@@ -1,16 +1,16 @@
-﻿#ifndef CONFIGHEAD_H
-#define CONFIGHEAD_H
+﻿#ifndef CFGHEAD_H
+#define CFGHEAD_H
 
 #include <QWidget>
 #include <QSettings>
 #include <QFile>
 #include <QMessageBox>
 #include "configapron.h"
-class ConfigHead : public QWidget
+class CfgHead : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ConfigHead(QWidget *parent = nullptr);
+    explicit CfgHead(QWidget *parent = nullptr);
 
 signals:
 public:
@@ -48,4 +48,4 @@ public:
 public slots:
 };
 
-#endif // CONFIGHEAD_H
+#endif // CFGHEAD_H

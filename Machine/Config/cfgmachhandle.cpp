@@ -4,6 +4,28 @@ CfgMachHandle::CfgMachHandle(QObject *parent) : QObject(parent)
 {
     mConfig.GetMachineBaseInfo();
     hConfig.GetHeadInfo(0);
+
+
+}
+
+void CfgMachHandle::ShowSettings()
+{
+    //new UI
+    UI_cfgMachSetting = new CfgMachSettings;
+    UI_cfgMachSetting->SetCfgMach(&mConfig);
+    UI_cfgMachSetting->SetCfgHead(&hConfig);
+
+    //load data
+    UI_cfgMachSetting->LoadData();
+
+    //settings
+    UI_cfgMachSetting->setModal(true);
+    UI_cfgMachSetting->exec();
+
+    //update data
+
+    //delete UI
+    delete UI_cfgMachSetting;
 }
 void CfgMachHandle::UpdateConfigMaxPluse(double _xPos, double _yPos)
 {
