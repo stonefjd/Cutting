@@ -25,10 +25,11 @@ WindowCutting::WindowCutting(QWidget *parent) :
 //----CutFileOperator
     ui->dockWgtCutFile->setWindowTitle(tr("任务列表"));
     ui->dockWgtCutFile->setMaximumWidth(200);
+    ui->dockWgtCutFile->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
     ui->tableWgtCutFile->setFocusPolicy(Qt::NoFocus);
     cutFileList.CutFileList_WidgetInit(ui->tableWgtCutFile);
-    cutFileList.CutFileList_SetPosLogicOrg(&wConfig->hConfig.at(0)->headOrg);
-    cutFileList.CutFileList_SetFactorCutScale(&wConfig->hConfig.at(0)->headCutScale);
+    cutFileList.CutFileList_SetPosLogicOrg(&wConfig->hConfig.headOrg);
+    cutFileList.CutFileList_SetFactorCutScale(&wConfig->hConfig.headCutScale);
 
 //----CutFileDraw
     ui->paintFrame->setMouseTracking(false);
@@ -36,19 +37,19 @@ WindowCutting::WindowCutting(QWidget *parent) :
     ui->paintFrame->setFocusPolicy(Qt::StrongFocus);
     cutFlieDraw.CutFileDraw_SetPaintFrame(ui->paintFrame);
     cutFlieDraw.CutFileDraw_SetPaintContent(&cutFileList.fileVector);
-    cutFlieDraw.CutFileDraw_SetRangePage(&wConfig->hConfig.at(0)->headLimit);
-    cutFlieDraw.CutFileDraw_SetRangeMax(&wConfig->hConfig.at(0)->headMaxLength);
-    cutFlieDraw.CutFileDraw_SetPaintFactorPulsePerMillimeter(&wConfig->hConfig.at(0)->headPluseScale);
-    cutFlieDraw.CutFileDraw_SetPaintLogicOrg(&wConfig->hConfig.at(0)->headOrg);
-    cutFlieDraw.CutFileDraw_SetFactorCutScale(&wConfig->hConfig.at(0)->headCutScale);
+    cutFlieDraw.CutFileDraw_SetRangePage(&wConfig->hConfig.headLimit);
+    cutFlieDraw.CutFileDraw_SetRangeMax(&wConfig->hConfig.headMaxLength);
+    cutFlieDraw.CutFileDraw_SetPaintFactorPulsePerMillimeter(&wConfig->hConfig.headPluseScale);
+    cutFlieDraw.CutFileDraw_SetPaintLogicOrg(&wConfig->hConfig.headOrg);
+    cutFlieDraw.CutFileDraw_SetFactorCutScale(&wConfig->hConfig.headCutScale);
     cutFlieDraw.CutFileDraw_SetPaintLogicRealTime(&mMachine->head0_Pos,&mMachine->head0_MoveAngel);
 //----Machine Init
     //mMachine.mFan_1.StateMachineInit(ui->actionWindIn,ui->actionWindOut);
-    mMachine->Mach_SetHead0Org(&wConfig->hConfig.at(0)->headOrg);
-    mMachine->Mach_SetHead0PulsePerMillimeter(&wConfig->hConfig.at(0)->headPluseScale);
-    mMachine->Mach_SetHead0Limit(&wConfig->hConfig.at(0)->headLimit);
-    mMachine->Mach_SetHead0IdleMoveSpd(&wConfig->hConfig.at(0)->idleMoveSpd);
-    mMachine->Mach_SetHead0IdleMoveAcc(&wConfig->hConfig.at(0)->idleMoveAcc);
+    mMachine->Mach_SetHead0Org(&wConfig->hConfig.headOrg);
+    mMachine->Mach_SetHead0PulsePerMillimeter(&wConfig->hConfig.headPluseScale);
+    mMachine->Mach_SetHead0Limit(&wConfig->hConfig.headLimit);
+    mMachine->Mach_SetHead0IdleMoveSpd(&wConfig->hConfig.idleMoveSpd);
+    mMachine->Mach_SetHead0IdleMoveAcc(&wConfig->hConfig.idleMoveAcc);
     mMachine->Mach_SetCutContent(&cutFileList.fileVector);
 
     connect(this,SIGNAL(keyPressed(QKeyEvent)), mMachine,SLOT(SubStateOpKeyPress(QKeyEvent)));
@@ -111,21 +112,10 @@ bool WindowCutting::eventFilter(QObject *watched, QEvent *e)
         }
         if(e->type() == QEvent::MouseButtonDblClick)
         {
-//            QMouseEvent *eventMouse = static_cast<QMouseEvent*>(e);
             cutFlieDraw.CutFileDraw_SetSizeFixed();
             ui->paintFrame->repaint();
         }
     }
-//    if(e->type() == QEvent::KeyPress)
-//    {
-//        QKeyEvent *eventKey = static_cast<QKeyEvent*>(e);
-//        emit keyPressed(*eventKey);
-//    }
-//    if(e->type() == QEvent::KeyRelease)
-//    {
-//        QKeyEvent *eventKey = static_cast<QKeyEvent*>(e);
-//        emit keyReleased(*eventKey);
-//    }
     return QMainWindow::eventFilter(watched,e);
 }
 
@@ -427,3 +417,13 @@ void WindowCutting::debugTask_100ms()
 //}
 
 
+
+void WindowCutting::on_dockWgtCutFile_visibilityChanged(bool visible)
+{
+    ui->actionViewCutList->setChecked(visible);
+}
+
+void WindowCutting::on_actionViewCutList_triggered(bool checked)
+{
+    ui->dockWgtCutFile->setVisible(checked);
+}

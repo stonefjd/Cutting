@@ -84,7 +84,7 @@ void IniOp::IniOp_ReadFromIniFile(InitItem_T *_obj,QSettings *settings)
     settings->beginGroup("MachSet");
     _obj->machSet.CutLength = settings->value("CutLength").toDouble();
     _obj->machSet.FeedLength = settings->value("FeedLength").toDouble();
-    _obj->machSet.FeltThickness = settings->value("FeltThickness").toDouble();
+    _obj->machSet.feltThick = settings->value("feltThick").toDouble();
     settings->endGroup();
 
     settings->beginGroup("FanSet");

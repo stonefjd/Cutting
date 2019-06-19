@@ -34,7 +34,7 @@ struct MachSet_T
 {
     double CutLength;
     double FeedLength;
-    double FeltThickness;
+    double feltThick;
 };
 struct FanSet_T
 {

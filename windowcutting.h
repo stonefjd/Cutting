@@ -12,7 +12,7 @@
 #include <QFile>
 #include <QFrame>
 #include <QPainter>
-
+#include <QCloseEvent>
 //#include "File/Settings/settings.h"
 #include "File/CutFileListOp/cutfilelistop.h"
 #include "File/IniOp/iniop.h"
@@ -20,7 +20,7 @@
 #include "PhysicalLayer/gts.h"
 #include "User/userhandle.h"
 #include "Machine/machine.h"
-#include "Machine/Config/configwhole.h"
+#include "Machine/Config/configmachinehandle.h"
 #define BTN_ID_L 0
 #define BTN_ID_R 1
 #define BTN_ID_U 2
@@ -70,6 +70,10 @@ private slots:
 
     void on_actionLogManager_triggered();
 
+    void on_dockWgtCutFile_visibilityChanged(bool visible);
+
+    void on_actionViewCutList_triggered(bool checked);
+
 signals:
     void keyPressed(QKeyEvent);
     void keyReleased(QKeyEvent);
@@ -80,9 +84,9 @@ private:
 
 private:
     Ui::WindowCutting   *ui;
-    Machine         *mMachine = new Machine;
-    ConfigWhole     *wConfig = new ConfigWhole;
-    UserHandle      *user;
+    Machine                 *mMachine = new Machine;
+    ConfigMachineHandle     *wConfig = new ConfigMachineHandle;
+    UserHandle              *user;
 //  Settings        settings;
 //  IniOp           iniOp;
     CutFileDraw     cutFlieDraw;

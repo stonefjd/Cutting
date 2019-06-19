@@ -10,6 +10,7 @@ UserLog::UserLog(QWidget *parent) :
     ui(new Ui::UserLog)
 {
     ui->setupUi(this);
+    this->setWindowTitle(tr("请输入员工工号密码"));
     //limit the ID only for 0-99999
     QValidator* validator = new QIntValidator(0,99999,this);
     ui->lineEditSN->setValidator(validator);

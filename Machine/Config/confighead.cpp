@@ -19,88 +19,78 @@ void ConfigHead::GetHeadInfo(int _index)
 
     //机头个数
     strSect = ("MachHead"+QString::number(_index));
-    strKey = ("MachHeadIndex");
+    strKey = ("HeadIndex");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
         headIndex = (*szBuf).toInt();
     }
-
     //原点偏移
-    strKey = ("MachHeadXOrigon");
+    strKey = ("PosOrigonX");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
         headOrg.setX((*szBuf).toDouble());
     }
-    strKey = ("MachHeadYOrigon");
+    strKey = ("PosOrigonY");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
         headOrg.setY((*szBuf).toDouble());
     }
-    //机头当前位置
-//    strKey = ("MachHeadXPos");
-//    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
-//    {
-//        headPos.setX((*szBuf).toInt());
-//    }
-//    strKey = ("MachHeadYPos");
-//    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
-//    {
-//        headPos.setY((*szBuf).toInt());
-//    }
-    //X方向最大行走脉冲数
-    strKey = ("HeadMaxPluseX");
-    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
-    {
-        headMaxPluse.setX((*szBuf).toDouble());
-    }
-    strKey = ("HeadMaxPluseY");
-    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
-    {
-        headMaxPluse.setY((*szBuf).toDouble());
-    }
-    //比例因子：脉冲每毫米
-    strKey = ("HeadPluseScaleX");
-    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
-    {
-        headPluseScale.setX((*szBuf).toDouble());
-    }
-    strKey = ("HeadPluseScaleY");
-    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
-    {
-        headPluseScale.setY((*szBuf).toDouble());
-    }
-    //最大长度：毫米
-    strKey = ("HeadMaxLengthX");
-    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
-    {
-        headMaxLength.setX((*szBuf).toDouble());
-    }
-    strKey = ("HeadMaxLengthY");
-    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
-    {
-        headMaxLength.setY((*szBuf).toDouble());
-    }
-    strKey = ("XScale");
-    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
-    {
-        headCutScale.setX((*szBuf).toDouble());
-    }
-    strKey = ("YScale");
-    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
-    {
-        headCutScale.setY((*szBuf).toDouble());
-    }
     //区域限位，人为设定尺寸
-    strKey = ("HeadCutLimitX");
+    strKey = ("PosLimitX");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
         headLimit.setX((*szBuf).toDouble());
     }
-    strKey = ("HeadCutLimitY");
+    strKey = ("PosLimitX");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
         headLimit.setY((*szBuf).toDouble());
     }
+    //最大长度：毫米
+    strKey = ("PosMaxX");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        headMaxLength.setX((*szBuf).toDouble());
+    }
+    strKey = ("PosMaxY");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        headMaxLength.setY((*szBuf).toDouble());
+    }
+    //比例因子：脉冲每毫米
+    strKey = ("PosToPulseScaleX");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        headPluseScale.setX((*szBuf).toDouble());
+    }
+    strKey = ("PosToPulseScaleY");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        headPluseScale.setY((*szBuf).toDouble());
+    }
+    //X方向最大行走脉冲数
+    strKey = ("PulseMaxX");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        headMaxPluse.setX((*szBuf).toDouble());
+    }
+    strKey = ("PulseMaxY");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        headMaxPluse.setY((*szBuf).toDouble());
+    }
+    //比例因子：设计尺寸到切割尺寸
+    strKey = ("RealToCutScaleX");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        headCutScale.setX((*szBuf).toDouble());
+    }
+    strKey = ("RealToCutScaleY");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        headCutScale.setY((*szBuf).toDouble());
+    }
+
     //送料长度
     strKey = ("FeedLen");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))

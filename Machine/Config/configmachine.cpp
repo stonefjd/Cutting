@@ -47,105 +47,128 @@ void ConfigMachine::GetMachineBaseInfo()
     QString sInfo = "";
 
     QString *szBuf = new QString;
-
+//------------------机械信息
     //硬件版本号
-    strSect = ("HwInfo");
-    strKey = ("Version");
+    strSect = ("MachInfo");
+    strKey = ("HwVersion");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
         versionHw = *szBuf;
     }
-
     //软版本号
-    strSect = ("SwInfo");
-    strKey = ("Version");
+    strKey = ("SwVersion");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
         versionSw = *szBuf;
     }
-
-    //毛毡厚度
-    strSect = ("DesktopSet");
-    strKey = ("FeltThickness");
-    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
-    {
-        feltThickness = (*szBuf).toDouble();
-    }
-
     //机器类型
-    strSect = ("MachInfo");
-    strKey = ("MachType");
+    strKey = ("Type");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
         machType = (*szBuf).toInt();
     }
-
-    //机器子类型
-    strKey = ("MachTypeSub");
-    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
-    {
-        machTypeSub = (*szBuf).toInt();
-    }
-
     //机器长宽度
-    strKey = ("MachPhysical");
+    strKey = ("SizeX");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        for(int i=0;i<2;i++)
-            machPhysical[i] = (*szBuf).split(',').at(i).toDouble();
+        sizeX = (*szBuf).toDouble();
     }
-
-//    //机器实际行走长宽度
-//    strKey = ("MachRunMax");
-//    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
-//    {
-//        for(int i=0;i<AXIS_SUM;i++)
-//            machRunMax[i] = (*szBuf).split(',').at(i).toDouble();
-//    }
-
-//    //脉冲个数每毫秒X,Y
-//    strKey = ("MachPulsePerMillimeter");
-//    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
-//    {
-//        for(int i=0;i<AXIS_SUM;i++)
-//            machPulsePerMillimeter[i] = (*szBuf).split(',').at(i).toDouble();
-//    }
-    //压料时间(s)
-    strKey = ("MachTimeSwage");
+    strKey = ("SizeY");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        machTimeSwage = (*szBuf).toInt();
+        sizeY = (*szBuf).toDouble();
     }
-    //吹气时间(s)
-    strKey = ("MachTimeBlow");
+    //毛毡厚度
+    strKey = ("FeltThick");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        machTimeBlow = (*szBuf).toInt();
+        feltThick = (*szBuf).toDouble();
     }
-    //放料开始提前时间(s)
-    strKey = ("MachTimeLoadBefore");
-    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
-    {
-        machTimeLoadBefore = (*szBuf).toInt();
-    }
-    //放料结束提前时间(s)
-    strKey = ("MachTimeLoadAfter");
-    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
-    {
-        machTimeLoadAfter = (*szBuf).toInt();
-    }
-    //吸气延迟时间(ms)
-    strKey = ("MachTimeInhaleDelay");
-    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
-    {
-        machTimeInhaleDelay = (*szBuf).toInt();
-    }
+//--------------------------机械配置
     //机头个数
-    strKey = ("MachHeadCount");
+    strSect = ("MachSet");
+    strKey = ("HeadCount");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
         machHeadCount = (*szBuf).toInt();
     }
+    strKey = ("EffctLvLimit");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        effctLvLimit = (*szBuf).toInt();
+    }
+    strKey = ("EffctLvSwage");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        effctLvSwage = (*szBuf).toInt();
+    }
+    strKey = ("EffctLvPuase");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        effctLvPuase = (*szBuf).toInt();
+    }
+    strKey = ("EffctLvPump");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        effctLvPump = (*szBuf).toInt();
+    }
+    strKey = ("EnFanZone");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        enFanZone = (*szBuf).toInt();
+    }
+    strKey = ("EnInhale");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        enInhal = (*szBuf).toInt();
+    }
+    strKey = ("EnBlow");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        enBlow = (*szBuf).toInt();
+    }
+    strKey = ("FreqInhale");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        freqInhale = (*szBuf).toInt();
+    }
+    strKey = ("FreqBlow");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        freqBlow = (*szBuf).toInt();
+    }
+  //----------------------风机
+    //压料时间
+    strKey = ("TimeSwage");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        timeSwage = (*szBuf).toInt();
+    }
+    //吹气时间(s)
+    strKey = ("TimeBlow");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        timeBlow = (*szBuf).toInt();
+    }
+    //放料开始提前时间(s)
+    strKey = ("TimeLoadBefore");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        timeLoadBefore = (*szBuf).toInt();
+    }
+    //放料结束提前时间(s)
+    strKey = ("TimeLoadAfter");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        timeLoadAfter = (*szBuf).toInt();
+    }
+    //吸气延迟时间(ms)
+    strKey = ("TimeInhaleDelay");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        timeInhaleDelay = (*szBuf).toInt();
+    }
+  //----------------------对刀
 
 }
 bool ConfigMachine::WritePrivateProfileString(QString strSect,QString strKey,QString strText,QString strConfigPath)

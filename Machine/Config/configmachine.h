@@ -6,7 +6,6 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QDebug>
-#include "confighead.h"
 #include "configinfo.h"
 
 class ConfigMachine : public QWidget
@@ -17,17 +16,28 @@ private:
 
     QString versionHw;
     QString versionSw;
-    double  feltThickness;
     double  machType;
-    double  machTypeSub;
-    double  machPhysical[2];
-//    double  machRunMax[AXIS_SUM];
-//    double  machPulsePerMillimeter[AXIS_SUM];
-    int     machTimeSwage;			//压料时间(s)
-    int     machTimeBlow;            //吹气时间(s)
-    int     machTimeLoadBefore;		//放料开始提前时间(s)
-    int     machTimeLoadAfter;		//放料结束提前时间(s)
-    int     machTimeInhaleDelay;		//吸气延迟时间(ms)
+//    double  machTypeSub;
+    double  sizeX;
+    double  sizeY;
+    double  feltThick;
+
+    bool effctLvLimit;
+    bool effctLvSwage;
+    bool effctLvPuase;
+    bool effctLvPump;
+
+    bool enFanZone;
+    bool enInhal;
+    bool enBlow;
+    int freqInhale;
+    int freqBlow;
+
+    int     timeSwage;			//压料时间(s)
+    int     timeBlow;            //吹气时间(s)
+    int     timeLoadBefore;		//放料开始提前时间(s)
+    int     timeLoadAfter;		//放料结束提前时间(s)
+    int     timeInhaleDelay;		//吸气延迟时间(ms)
 
     int     machHeadCount;
 public:
