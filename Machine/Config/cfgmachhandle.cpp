@@ -1,11 +1,11 @@
-#include "configmachinehandle.h"
+#include "cfgmachhandle.h"
 
-ConfigMachineHandle::ConfigMachineHandle(QObject *parent) : QObject(parent)
+CfgMachHandle::CfgMachHandle(QObject *parent) : QObject(parent)
 {
     mConfig.GetMachineBaseInfo();
     hConfig.GetHeadInfo(0);
 }
-void ConfigMachineHandle::UpdateConfigMaxPluse(double _xPos, double _yPos)
+void CfgMachHandle::UpdateConfigMaxPluse(double _xPos, double _yPos)
 {
 //    mConfig.UpdateMachRunMax(static_cast<int>(_xPos),static_cast<int>(_yPos));
     hConfig.UpdateHeadMaxPluse(static_cast<int>(_xPos),static_cast<int>(_yPos),0);

@@ -48,8 +48,8 @@ SOURCES += \
     User/usermanager.cpp \
     User/user.cpp \
     User/userhandle.cpp \
-    Machine/Config/configmachinehandle.cpp \
-    Machine/Config/cfgmachsettings.cpp
+    Machine/Config/cfgmachsettings.cpp \
+    Machine/Config/cfgmachhandle.cpp
 
 HEADERS += \
     windowcutting.h \
@@ -78,8 +78,8 @@ HEADERS += \
     User/usermanager.h \
     User/user.h \
     User/userhandle.h \
-    Machine/Config/configmachinehandle.h \
-    Machine/Config/cfgmachsettings.h
+    Machine/Config/cfgmachsettings.h \
+    Machine/Config/cfgmachhandle.h
 
 FORMS += \
         windowcutting.ui \

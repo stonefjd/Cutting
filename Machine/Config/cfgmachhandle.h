@@ -1,15 +1,15 @@
-#ifndef CONFIGMACHINEHANDLE_H
-#define CONFIGMACHINEHANDLE_H
+#ifndef CFGMACHHANDLE_H
+#define CFGMACHHANDLE_H
 
 #include <QObject>
 #include "configmachine.h"
 #include "confighead.h"
 
-class ConfigMachineHandle : public QObject
+class CfgMachHandle : public QObject
 {
     Q_OBJECT
 public:
-    explicit ConfigMachineHandle(QObject *parent = nullptr);
+    explicit CfgMachHandle(QObject *parent = nullptr);
 
     ConfigMachine   mConfig;
     ConfigHead      hConfig;
@@ -20,4 +20,4 @@ public slots:
 
 };
 
-#endif // CONFIGMACHINEHANDLE_H
+#endif // CFGMACHHANDLE_H

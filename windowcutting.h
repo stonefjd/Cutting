@@ -20,7 +20,7 @@
 #include "PhysicalLayer/gts.h"
 #include "User/userhandle.h"
 #include "Machine/machine.h"
-#include "Machine/Config/configmachinehandle.h"
+#include "Machine/Config/cfgmachhandle.h"
 #define BTN_ID_L 0
 #define BTN_ID_R 1
 #define BTN_ID_U 2
@@ -85,7 +85,7 @@ private:
 private:
     Ui::WindowCutting   *ui;
     Machine                 *mMachine = new Machine;
-    ConfigMachineHandle     *wConfig = new ConfigMachineHandle;
+    CfgMachHandle     *wConfig = new CfgMachHandle;
     UserHandle              *user;
 //  Settings        settings;
 //  IniOp           iniOp;
