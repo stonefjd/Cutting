@@ -8,7 +8,7 @@ CfgMachSettings::CfgMachSettings(QWidget *parent) :
     ui->setupUi(this);
 //    db = QSqlDatabase::addDatabase("QSQLITE");
 //    db.setHostName("PGM");
-//    db.setDatabaseName("MyDataBase.db");
+//    db.setDatabaseName("Settings\\MyDataBase.db");
 //    db.setUserName("STONE");
 //    db.setPassword("12345678");
 //    db.open();

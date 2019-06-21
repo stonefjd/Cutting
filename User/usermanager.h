@@ -27,7 +27,7 @@ private:
     Ui::UserManager *ui;
     User *user;
     QSqlTableModel *plainModel;
-
+    QSqlDatabase db;
 //    QList<QLabel*> m_infoLabelList;
 //    QList<QWidget*> m_infoEditList;
     OperatorType m_operator= NOOP;
@@ -47,7 +47,6 @@ private slots:
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
     void on_tableView_clicked(const QModelIndex &index);
-    void on_buttonBox_clicked(QAbstractButton *button);
 };
 
 #endif // USERMANAGER_H

@@ -6,6 +6,17 @@ UserManager::UserManager(QWidget *parent) :
     ui(new Ui::UserManager)
 {
     ui->setupUi(this);
+    //---open database
+    if(QSqlDatabase::contains("qt_sql_default_connection"))
+        db = QSqlDatabase::database("qt_sql_default_connection");
+    else
+        db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setHostName("PGM");
+    db.setDatabaseName("Settings\\MyDataBase.db");
+    db.setUserName("STONE");
+    db.setPassword("12345678");
+    db.open();
+
     ui->lineEdit_search->setPlaceholderText(tr("查询请输入姓名或者工号"));
     ui->label_operator->setText(tr(""));
     plainModel = nullptr;
@@ -35,7 +46,7 @@ void UserManager::InitialModel()
         ui->lineEdit_search->setEnabled(false);
 
     //set model
-    plainModel = new QSqlTableModel(this,user->db);
+    plainModel = new QSqlTableModel(this,db);
     plainModel->setTable("userTable");
     plainModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
     plainModel->setFilter("userSN="+QString::number(user->GetUserSN()) +" OR userLevel >"+QString::number(user->GetUserLevel()));
@@ -248,11 +259,3 @@ void UserManager::on_tableView_clicked(const QModelIndex &index)
 
 }
 
-
-
-void UserManager::on_buttonBox_clicked(QAbstractButton *button)
-{
-//    if(button == QDialogButtonBox::Ok)
-//    button(QDialogButtonBox::Ok);
-//    button-> == QDialogButtonBox::Ok
-}

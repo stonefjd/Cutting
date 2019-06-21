@@ -41,34 +41,43 @@ private:
     bool    userPrimAdd;
     bool    userPrimDelete;
     QString userRoleName;
-    QMap<QString, int> userPrimRoleMap;
 //    int     userPrimAct;//允许动作
 //    int     userPrimItem;//可查看栏目
 //    int     userPrimLevel;//可查看对象
 //    QString userPrimItemStr;
 private:
-    bool    PasswordMaching(int _sn,QString _pswd);
     QString QueryItemInTableByKey(QString _item,QString _table,QString _key,QString _value);
 
 public:
-    QSqlDatabase db;
+    QMap<QString, int> userPrimRoleMap;
+
     bool    GetUserIsChecked();
     void    SetUserIsChecked(bool _checked);
-    void    SetUserSN(int _sn);
     int     GetUserSN(void);
+    void    SetUserSN(int _sn);
     QString GetUserName();
-    void    SetUserPSW(QString _psw);
+    void    SetUserName(QString _name);
+    QString GetUserPSW_org();
+    void    SetUserPSW_org(QString _psw);
+    QString GetUserPSW_MD5();
+    void    SetUserPSW_MD5(QString _psw);
     int     GetUserLevel();
+    void    SetUserLevel(int _level);
     QString GetUserRoleName();
     bool    GetUserPrimWrite();
     bool    GetUserPrimRead();
     bool    GetUserPrimAdd();
     bool    GetUserPrimDelete();
+
+    void    SetUserRoleName(QString _name);
+    void    SetUserPrimWrite(bool _prim);
+    void    SetUserPrimRead(bool _prim);
+    void    SetUserPrimAdd(bool _prim);
+    void    SetUserPrimDelete(bool _prim);
+
     QMap<QString, int> GetUserPrimRoleMap();
 //    QString GetUserPrimItemStr();
 //    QString GetUserPrimLevelStr();
-    void    SetHistoryUser();
-    QStringList GetHistoryUserList(QString _arg);
 public:
     void    CheckUserMatching();
 };
