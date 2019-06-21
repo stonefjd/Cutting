@@ -17,22 +17,29 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
        <string>机械参数</string>
       </attribute>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
          <x>10</x>
          <y>10</y>
          <width>171</width>
-         <height>152</height>
+         <height>178</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout">
+        <item row="2" column="0">
+         <widget class="QLabel" name="lbType">
+          <property name="text">
+           <string>裁床型号</string>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="0">
          <widget class="QLabel" name="lbHwVersion">
           <property name="text">
@@ -61,10 +68,17 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="lbType">
+        <item row="5" column="0">
+         <widget class="QLabel" name="lbFeltThick">
           <property name="text">
-           <string>裁床型号</string>
+           <string>毛毡厚度/mm</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLineEdit" name="lEdtSizeX">
+          <property name="readOnly">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -78,28 +92,14 @@
         <item row="3" column="0">
          <widget class="QLabel" name="lbSizeX">
           <property name="text">
-           <string>长度</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QLineEdit" name="lEdtSizeX">
-          <property name="readOnly">
-           <bool>true</bool>
+           <string>长度/mm</string>
           </property>
          </widget>
         </item>
         <item row="4" column="0">
          <widget class="QLabel" name="lbSizeY">
           <property name="text">
-           <string>宽度</string>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="0">
-         <widget class="QLabel" name="lbFeltThick">
-          <property name="text">
-           <string>毛毡厚度</string>
+           <string>宽度/mm</string>
           </property>
          </widget>
         </item>
@@ -117,6 +117,16 @@
           </property>
          </widget>
         </item>
+        <item row="6" column="0">
+         <widget class="QLabel" name="lbHeadCount">
+          <property name="text">
+           <string>机头数量</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+         <widget class="QLineEdit" name="lEdtHeadCount"/>
+        </item>
        </layout>
       </widget>
      </widget>
@@ -124,11 +134,529 @@
       <attribute name="title">
        <string>机器配置</string>
       </attribute>
+      <widget class="QWidget" name="layoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>220</x>
+         <y>20</y>
+         <width>201</width>
+         <height>126</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="0" column="0">
+         <widget class="QLabel" name="lbTimeSwage">
+          <property name="text">
+           <string>压料时间/s</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="lEdtTimeSwage"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="lbTimeBlow">
+          <property name="text">
+           <string>吹风时间/s</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="lEdtTimeBlow"/>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="lbTimeLoadBefore">
+          <property name="text">
+           <string>上料前吹风/s</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="lEdtTimeLoadBefore"/>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="lbTimeLoadAfter">
+          <property name="text">
+           <string>上料后吹风/s</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLineEdit" name="lEdtTimeLoadAfter"/>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="lbTimeInhaleDelay">
+          <property name="text">
+           <string>反吹风延时/s</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QLineEdit" name="lEdtTimeInhaleDelay"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="layoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>220</x>
+         <y>170</y>
+         <width>195</width>
+         <height>126</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_5">
+        <item row="0" column="0">
+         <widget class="QLabel" name="lbAlignEn">
+          <property name="text">
+           <string>对刀</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="lbAlignMaxZ">
+          <property name="text">
+           <string>最大深度</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="lEdtAlignMaxZ"/>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="lbAlignStartZ">
+          <property name="text">
+           <string>起始深度</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="lEdtAlignStartZ"/>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="lbAlignAbsX">
+          <property name="text">
+           <string>对刀位置X</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLineEdit" name="lEdtAlignAbsX"/>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="lbAlignAbsY">
+          <property name="text">
+           <string>对刀位置Y</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QLineEdit" name="lEdtAlignAbsY"/>
+        </item>
+        <item row="0" column="1">
+         <widget class="QComboBox" name="cbAlignEn">
+          <item>
+           <property name="text">
+            <string>允许运行</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>禁止运行</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QGroupBox" name="groupBox">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>171</width>
+         <height>131</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>开关电平</string>
+       </property>
+       <widget class="QWidget" name="layoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>20</y>
+          <width>125</width>
+          <height>100</height>
+         </rect>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="0" column="0">
+          <widget class="QLabel" name="lbEffctLvLimit">
+           <property name="text">
+            <string>限位开关</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QComboBox" name="cbEffctLvLimit">
+           <item>
+            <property name="text">
+             <string>高有效</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>低有效</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="lbEffctLvSwage">
+           <property name="text">
+            <string>压料开关</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QComboBox" name="cbEffctLvSwage">
+           <item>
+            <property name="text">
+             <string>高有效</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>低有效</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="lbEffctLvPuase">
+           <property name="text">
+            <string>暂停开关</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QComboBox" name="cbEffctLvPuase">
+           <item>
+            <property name="text">
+             <string>高有效</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>低有效</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="lbEffctLvPump">
+           <property name="text">
+            <string>气泵开关</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QComboBox" name="cbEffctLvPump">
+           <item>
+            <property name="text">
+             <string>高有效</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>低有效</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+      <widget class="QGroupBox" name="groupBox_2">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>150</y>
+         <width>171</width>
+         <height>161</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>风机</string>
+       </property>
+       <widget class="QWidget" name="layoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>20</y>
+          <width>142</width>
+          <height>126</height>
+         </rect>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_3">
+         <item row="3" column="0">
+          <widget class="QLabel" name="lbFreqBlow">
+           <property name="text">
+            <string>吸风频率</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="lbEnFanZone">
+           <property name="text">
+            <string>区域吸风</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QComboBox" name="cbEnFanZone">
+           <item>
+            <property name="text">
+             <string>允许运行</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>禁止运行</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="lbEnInhale">
+           <property name="text">
+            <string>反吹风</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QComboBox" name="cbEnBlow">
+           <item>
+            <property name="text">
+             <string>允许运行</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>禁止运行</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QComboBox" name="cbEnInhale">
+           <item>
+            <property name="text">
+             <string>允许运行</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>禁止运行</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="lbEnBlow">
+           <property name="text">
+            <string>吸风运行</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLineEdit" name="lEdtFreqBlow"/>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="lbFreqInhale">
+           <property name="text">
+            <string>反吹风频率</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QLineEdit" name="lEdtFreqInhale"/>
+         </item>
+        </layout>
+       </widget>
+      </widget>
      </widget>
      <widget class="QWidget" name="tab_3">
       <attribute name="title">
        <string>机头设置</string>
       </attribute>
+      <widget class="QWidget" name="layoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>221</width>
+         <height>170</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_6">
+        <item row="0" column="1">
+         <widget class="QLabel" name="lbTitleX">
+          <property name="text">
+           <string>X</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QLabel" name="lbTitleY">
+          <property name="text">
+           <string>Y</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="lbPosOrg">
+          <property name="text">
+           <string>原点位置/mm</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="lEdtPosOrgX"/>
+        </item>
+        <item row="1" column="2">
+         <widget class="QLineEdit" name="lEdtPosOrgY"/>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="lbPosLimit">
+          <property name="text">
+           <string>尺寸限位/mm</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="lEdtPosLimitX"/>
+        </item>
+        <item row="2" column="2">
+         <widget class="QLineEdit" name="lEdtPosLimitY"/>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="lbPosMax">
+          <property name="text">
+           <string>最大尺寸/mm</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLineEdit" name="lEdtPosMaxX"/>
+        </item>
+        <item row="3" column="2">
+         <widget class="QLineEdit" name="lEdtPosMaxY"/>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="lbPosToPulseScale">
+          <property name="text">
+           <string>脉冲尺寸比</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QLineEdit" name="lEdtPosToPulseScaleX"/>
+        </item>
+        <item row="4" column="2">
+         <widget class="QLineEdit" name="lEdtPosToPulseScaleY"/>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="lbPulseMax">
+          <property name="text">
+           <string>最大脉冲</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QLineEdit" name="lEdtPulseMaxX"/>
+        </item>
+        <item row="5" column="2">
+         <widget class="QLineEdit" name="lEdtPulseMaxY"/>
+        </item>
+        <item row="6" column="0">
+         <widget class="QLabel" name="lbRealToCutScale">
+          <property name="text">
+           <string>切割缩放比</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+         <widget class="QLineEdit" name="lEdtRealToCutScaleX"/>
+        </item>
+        <item row="6" column="2">
+         <widget class="QLineEdit" name="lEdtRealToCutScaleY"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="layoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>270</x>
+         <y>30</y>
+         <width>151</width>
+         <height>126</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_7">
+        <item row="0" column="0">
+         <widget class="QLabel" name="lbFeedLen">
+          <property name="text">
+           <string>送料长度</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="lEdtFeedLen"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="lbFeedSpd">
+          <property name="text">
+           <string>送料速度</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="lEdtFeedSpd"/>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="lbFeedAcc">
+          <property name="text">
+           <string>送料加速度</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="lEdtFeedAcc"/>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="lbIdleMoveSpd">
+          <property name="text">
+           <string>空走速度</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLineEdit" name="lEdtIdleMoveSpd"/>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="lbIdleMoveAcc">
+          <property name="text">
+           <string>空走加速度</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QLineEdit" name="lEdtIdleMoveAcc"/>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </widget>
    </item>

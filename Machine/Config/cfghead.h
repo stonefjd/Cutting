@@ -29,21 +29,42 @@ private:
     double feedLen;     //送料长度
     double feedSpd;     //送料速度(m/s)
     double feedAcc;     //送料加速度(m/s²)
-
-
     QStringList apronIndexList;
 
 public:
-    QPointF headOrg;//红色激光点
-    QPointF headPos;//当前位置
-    QPointF headPluseScale;//脉冲每毫米
-    QPointF headMaxPluse;//行走的最大脉冲数,取决于限位开关,目前等价于机械极限尺寸
-    QPointF headMaxLength;//最大实际长度，毫米
-    QPointF headLimit;  //区域限位，人为设定尺寸
-    QPointF headCutScale;
+    QPointF posOrg;//红色激光点
+    QPointF posLimit;  //区域限位，人为设定尺寸
+    QPointF posMax;//最大实际长度，毫米
+    QPointF posToPulseScale;//脉冲每毫米
+    QPointF pulseMax;//行走的最大脉冲数,取决于限位开关,目前等价于机械极限尺寸
+    QPointF realToCutScale;
     QList<configApron*> aConfig;
     double idleMoveSpd;		//空走速度 (m/s)
     double idleMoveAcc;     //空走加速度(G)
+public:
+    QPointF GetPosOrg();
+    QPointF GetPosLimit();
+    QPointF GetPosMax();
+    QPointF GetPosToPulseScale();
+    QPointF GetPulseMax();
+    QPointF GetRealToCutScale();
+    double  GetIdleMoveSpd();
+    double  GetIdleMoveAcc();
+    double  GetFeedLen();
+    double  GetFeedSpd();
+    double  GetFeedAcc();
+
+    void SetPosOrg(QPointF);
+    void SetPosLimit(QPointF);
+    void SetPosMax(QPointF);
+    void SetPosToPulseScale(QPointF);
+    void SetPulseMax(QPointF);
+    void SetRealToCutScale(QPointF);
+    void SetIdleMoveSpd(double);
+    void SetIdleMoveAcc(double);
+    void SetFeedLen(double);
+    void SetFeedSpd(double);
+    void SetFeedAcc(double);
 
 public slots:
 };

@@ -15,7 +15,7 @@ void CfgMachHandle::ShowSettings()
     UI_cfgMachSetting->SetCfgMach(&mConfig);
     UI_cfgMachSetting->SetCfgHead(&hConfig);
 
-    //load data
+    //load data from param
     UI_cfgMachSetting->LoadData();
 
     //settings

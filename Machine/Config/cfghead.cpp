@@ -25,70 +25,70 @@ void CfgHead::GetHeadInfo(int _index)
         headIndex = (*szBuf).toInt();
     }
     //原点偏移
-    strKey = ("PosOrigonX");
+    strKey = ("PosOrgX");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        headOrg.setX((*szBuf).toDouble());
+        posOrg.setX((*szBuf).toDouble());
     }
-    strKey = ("PosOrigonY");
+    strKey = ("PosOrgY");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        headOrg.setY((*szBuf).toDouble());
+        posOrg.setY((*szBuf).toDouble());
     }
     //区域限位，人为设定尺寸
     strKey = ("PosLimitX");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        headLimit.setX((*szBuf).toDouble());
+        posLimit.setX((*szBuf).toDouble());
     }
-    strKey = ("PosLimitX");
+    strKey = ("PosLimitY");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        headLimit.setY((*szBuf).toDouble());
+        posLimit.setY((*szBuf).toDouble());
     }
     //最大长度：毫米
     strKey = ("PosMaxX");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        headMaxLength.setX((*szBuf).toDouble());
+        posMax.setX((*szBuf).toDouble());
     }
     strKey = ("PosMaxY");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        headMaxLength.setY((*szBuf).toDouble());
+        posMax.setY((*szBuf).toDouble());
     }
     //比例因子：脉冲每毫米
     strKey = ("PosToPulseScaleX");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        headPluseScale.setX((*szBuf).toDouble());
+        posToPulseScale.setX((*szBuf).toDouble());
     }
     strKey = ("PosToPulseScaleY");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        headPluseScale.setY((*szBuf).toDouble());
+        posToPulseScale.setY((*szBuf).toDouble());
     }
     //X方向最大行走脉冲数
     strKey = ("PulseMaxX");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        headMaxPluse.setX((*szBuf).toDouble());
+        pulseMax.setX((*szBuf).toDouble());
     }
     strKey = ("PulseMaxY");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        headMaxPluse.setY((*szBuf).toDouble());
+        pulseMax.setY((*szBuf).toDouble());
     }
     //比例因子：设计尺寸到切割尺寸
     strKey = ("RealToCutScaleX");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        headCutScale.setX((*szBuf).toDouble());
+        realToCutScale.setX((*szBuf).toDouble());
     }
     strKey = ("RealToCutScaleY");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        headCutScale.setY((*szBuf).toDouble());
+        realToCutScale.setY((*szBuf).toDouble());
     }
 
     //送料长度
@@ -143,40 +143,85 @@ void CfgHead::GetHeadInfo(int _index)
         aConfig.append(apron);
     }
 }
+QPointF CfgHead::GetPosOrg()
+{
+    return posOrg;
+}
+QPointF CfgHead::GetPosLimit()
+{
+    return posLimit;
+}
+QPointF CfgHead::GetPosMax()
+{
+    return posMax;
+}
+QPointF CfgHead::GetPosToPulseScale()
+{
+    return posToPulseScale;
+}
+QPointF CfgHead::GetPulseMax()
+{
+    return pulseMax;
+}
+QPointF CfgHead::GetRealToCutScale()
+{
+    return realToCutScale;
+}
+double  CfgHead::GetIdleMoveSpd()
+{
+    return idleMoveSpd;
+}
+double  CfgHead::GetIdleMoveAcc()
+{
+    return idleMoveAcc;
+}
+double  CfgHead::GetFeedLen()
+{
+    return feedLen;
+}
+double  CfgHead::GetFeedSpd()
+{
+    return feedSpd;
+}
+double  CfgHead::GetFeedAcc()
+{
+    return feedAcc;
+}
+
 QString CfgHead::GetHeadCfgPath()
 {
     return headCfgPath;
 }
 void CfgHead::UpdateHeadMaxPluse(int _xPluse,int _yPluse,int _hIndex)
 {
-    headMaxPluse.setX(_xPluse);
-    headMaxPluse.setY(_yPluse);
-    headMaxLength.setX(_xPluse/headPluseScale.x());
-    headMaxLength.setY(_yPluse/headPluseScale.y());
-    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadMaxPluseX",QString::number(_xPluse),headCfgPath);
-    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadMaxPluseY",QString::number(_yPluse),headCfgPath);
-    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadMaxLengthX",QString::number(_xPluse/headPluseScale.x()),headCfgPath);
-    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadMaxLengthY",QString::number(_yPluse/headPluseScale.y()),headCfgPath);
-    if(_xPluse <= headLimit.x())
+    pulseMax.setX(_xPluse);
+    pulseMax.setY(_yPluse);
+    posMax.setX(_xPluse/posToPulseScale.x());
+    posMax.setY(_yPluse/posToPulseScale.y());
+    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PulseMaxX",QString::number(_xPluse),headCfgPath);
+    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PulseMaxY",QString::number(_yPluse),headCfgPath);
+    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PosMaxX",QString::number(_xPluse/posToPulseScale.x()),headCfgPath);
+    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PosMaxY",QString::number(_yPluse/posToPulseScale.y()),headCfgPath);
+    if(_xPluse <= posLimit.x())
     {
-        headLimit.setX(_xPluse);
+        posLimit.setX(_xPluse);
         WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadCutLimitX",QString::number(_xPluse),headCfgPath);
     }
-    if(_yPluse <= headLimit.y())
+    if(_yPluse <= posLimit.y())
     {
-        headLimit.setX(_xPluse);
+        posLimit.setX(_xPluse);
         WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadCutLimitY",QString::number(_yPluse),headCfgPath);
     }
 }
 void CfgHead::UpdateHeadCutLimit(int _xPluse,int _yPluse,int _hIndex)
 {
-    if(_xPluse <= headMaxPluse.x())
+    if(_xPluse <= pulseMax.x())
     {
-        headLimit.setX(_xPluse);
+        posLimit.setX(_xPluse);
     }
-    if(_yPluse <= headMaxPluse.y())
+    if(_yPluse <= pulseMax.y())
     {
-        headLimit.setY(_yPluse);
+        posLimit.setY(_yPluse);
     }
     WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadCutLimitX",QString::number(_xPluse),headCfgPath);
     WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadCutLimitY",QString::number(_yPluse),headCfgPath);

@@ -53,7 +53,6 @@ private slots:
     void on_pushButton_4_clicked();
 
     void on_actionReset_triggered();
-    void on_actionSettingsParameter_triggered();
 
     void on_actionImportCutFile_triggered();
     void on_actionImportCutFileList_triggered();

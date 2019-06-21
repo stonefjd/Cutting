@@ -2,6 +2,7 @@
 #define CFGMACHSETTINGS_H
 
 #include <QDialog>
+#include <QFont>
 #include "cfgmach.h"
 #include "cfghead.h"
 namespace Ui {
@@ -26,6 +27,8 @@ public:
     void SetCfgMach(CfgMach *_cMach);
     void SetCfgHead(CfgHead *_cHead);
     void LoadData();
+private slots:
+    void on_lEdtFeedLen_editingFinished();
 };
 
 #endif // CFGMACHSETTINGS_H

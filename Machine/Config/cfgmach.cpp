@@ -9,9 +9,9 @@ QString CfgMach::GetMachCfgPath()
 {
     return machCfgPath;
 }
-int CfgMach::GetMachHeadCount()
+int CfgMach::GetHeadCount()
 {
-    return machHeadCount;
+    return headCount;
 }
 QString CfgMach::GetVersionHw()
 {
@@ -37,21 +37,82 @@ double  CfgMach::GetFeltThick()
 {
     return feltThick;
 }
-//void CfgMach::UpdateMachRunMax(int _xPos,int _yPos)
-//{
-//    machRunMax[0] = static_cast<double>(_xPos)/machPulsePerMillimeter[0];
-//    machRunMax[1] = static_cast<double>(_yPos)/machPulsePerMillimeter[1];
-//    WritePrivateProfileString("MachInfo","MachRunMax",QString::number(machRunMax[0])+','+ QString::number(machRunMax[1]),machCfgPath);
-//}
-
-//void    CfgMach::SetMachPulsePerMillimeter(int _axis,double _pos)
-//{
-//    machPulsePerMillimeter[_axis-1] = _pos;
-//}
-//double  CfgMach::GetMachPulsePerMillimeter(int _axis)
-//{
-//    return machPulsePerMillimeter[_axis-1];
-//}
+bool CfgMach::GetEffctLvLimit()
+{
+    return effctLvLimit;
+}
+bool CfgMach::GetEffctLvSwage()
+{
+    return effctLvSwage;
+}
+bool CfgMach::GetEffctLvPuase()
+{
+    return effctLvPuase;
+}
+bool CfgMach::GetEffctLvPump()
+{
+    return effctLvPump;
+}
+bool CfgMach::GetEnFanZone()
+{
+    return enFanZone;
+}
+bool CfgMach::GetEnInhal()
+{
+    return enInhal;
+}
+bool CfgMach::GetEnBlow()
+{
+    return enBlow;
+}
+int CfgMach::GetFreqInhale()
+{
+    return freqInhale;
+}
+int CfgMach::GetFreqBlow()
+{
+    return freqBlow;
+}
+int CfgMach::GetTimeSwage()
+{
+    return timeSwage;
+}
+int CfgMach::GetTimeBlow()
+{
+    return timeBlow;
+}
+int CfgMach::GetTimeLoadBefore()
+{
+    return timeLoadBefore;
+}
+int CfgMach::GetTimeLoadAfter()
+{
+    return timeLoadAfter;
+}
+int CfgMach::GetTimeInhaleDelay()
+{
+    return timeInhaleDelay;
+}
+bool CfgMach::GetAlignEn()
+{
+    return alignEn;
+}
+double CfgMach::GetAlignMaxZ()
+{
+    return alignMaxZ;
+}
+double CfgMach::GetAlignStartZ()
+{
+    return alignStartZ;
+}
+double CfgMach::GetAlignAbsX()
+{
+    return alignAbsX;
+}
+double CfgMach::GetAlignAbsY()
+{
+    return alignAbsY;
+}
 void CfgMach::GetMachineBaseInfo()
 {
     QString strConfigPath = machCfgPath;
@@ -106,7 +167,7 @@ void CfgMach::GetMachineBaseInfo()
     strKey = ("HeadCount");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        machHeadCount = (*szBuf).toInt();
+        headCount = (*szBuf).toInt();
     }
     strKey = ("EffctLvLimit");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
@@ -185,7 +246,31 @@ void CfgMach::GetMachineBaseInfo()
         timeInhaleDelay = (*szBuf).toInt();
     }
   //----------------------对刀
-
+    strKey = ("AlignEn");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        alignEn = (*szBuf).toInt();
+    }
+    strKey = ("AlignMaxZ");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        alignMaxZ = (*szBuf).toDouble();
+    }
+    strKey = ("AlignStartZ");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        alignStartZ = (*szBuf).toDouble();
+    }
+    strKey = ("AlignAbsX");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        alignAbsX = (*szBuf).toDouble();
+    }
+    strKey = ("AlignAbsY");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        alignAbsY = (*szBuf).toDouble();
+    }
 }
 bool CfgMach::WritePrivateProfileString(QString strSect,QString strKey,QString strText,QString strConfigPath)
 {

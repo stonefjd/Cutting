@@ -39,7 +39,13 @@ private:
     int timeLoadAfter;		//放料结束提前时间(s)
     int timeInhaleDelay;		//吸气延迟时间(ms)
 
-    int machHeadCount;
+    bool   alignEn;
+    double alignMaxZ;
+    double alignStartZ;
+    double alignAbsX;
+    double alignAbsY;
+
+    int headCount;
 public:
 
 private:
@@ -48,8 +54,8 @@ public:
     void GetMachineBaseInfo();
 
     QString GetMachCfgPath();
-    int     GetMachHeadCount();
-
+    int     GetHeadCount();
+//--------mach parm
     QString GetVersionHw();
     QString GetVersionSw();
     double  GetType();
@@ -63,8 +69,49 @@ public:
     void SetSizeX(double);
     void SetSizeY(double);
     void SetFeltThick(double);
+//--------mach settings param
+    bool GetEffctLvLimit();
+    bool GetEffctLvSwage();
+    bool GetEffctLvPuase();
+    bool GetEffctLvPump();
+    bool GetEnFanZone();
+    bool GetEnInhal();
+    bool GetEnBlow();
+    int GetFreqInhale();
+    int GetFreqBlow();
+    int GetTimeSwage();
+    int GetTimeBlow();
+    int GetTimeLoadBefore();
+    int GetTimeLoadAfter();
+    int GetTimeInhaleDelay();
 
+    void SetEffctLvLimit(bool);
+    void SetEffctLvSwage(bool);
+    void SetEffctLvPuase(bool);
+    void SetEffctLvPump(bool);
+    void SetEnFanZone(bool);
+    void SetEnInhal(bool);
+    void SetEnBlow(bool);
+    void SetFreqInhale(int);
+    void SetFreqBlow(int);
+    void SetTimeSwage(int);
+    void SetTimeBlow(int);
+    void SetTimeLoadBefore(int);
+    void SetTimeLoadAfter(int);
+    void SetTimeInhaleDelay(int);
+//----align
+    bool   GetAlignEn();
+    double GetAlignMaxZ();
+    double GetAlignStartZ();
+    double GetAlignAbsX();
+    double GetAlignAbsY();
 
+    void SetAlignEn(bool);
+    void SetAlignMaxZ(double);
+    void SetAlignStartZ(double);
+    void SetAlignAbsX(double);
+    void SetAlignAbsY(double);
+//--------W/R from .ini file
     bool GetPrivateProfileString(QString strSect,QString strKey,QString *szBuf,QString strConfigPath);
     bool WritePrivateProfileString(QString strSect,QString strKey,QString strText,QString strConfigPath);
 

@@ -28,8 +28,8 @@ WindowCutting::WindowCutting(QWidget *parent) :
     ui->dockWgtCutFile->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
     ui->tableWgtCutFile->setFocusPolicy(Qt::NoFocus);
     cutFileList.CutFileList_WidgetInit(ui->tableWgtCutFile);
-    cutFileList.CutFileList_SetPosLogicOrg(&cfgMachHandle->hConfig.headOrg);
-    cutFileList.CutFileList_SetFactorCutScale(&cfgMachHandle->hConfig.headCutScale);
+    cutFileList.CutFileList_SetPosLogicOrg(&cfgMachHandle->hConfig.posOrg);
+    cutFileList.CutFileList_SetFactorCutScale(&cfgMachHandle->hConfig.realToCutScale);
 
 //----CutFileDraw
     ui->paintFrame->setMouseTracking(false);
@@ -37,17 +37,17 @@ WindowCutting::WindowCutting(QWidget *parent) :
     ui->paintFrame->setFocusPolicy(Qt::StrongFocus);
     cutFlieDraw.CutFileDraw_SetPaintFrame(ui->paintFrame);
     cutFlieDraw.CutFileDraw_SetPaintContent(&cutFileList.fileVector);
-    cutFlieDraw.CutFileDraw_SetRangePage(&cfgMachHandle->hConfig.headLimit);
-    cutFlieDraw.CutFileDraw_SetRangeMax(&cfgMachHandle->hConfig.headMaxLength);
-    cutFlieDraw.CutFileDraw_SetPaintFactorPulsePerMillimeter(&cfgMachHandle->hConfig.headPluseScale);
-    cutFlieDraw.CutFileDraw_SetPaintLogicOrg(&cfgMachHandle->hConfig.headOrg);
-    cutFlieDraw.CutFileDraw_SetFactorCutScale(&cfgMachHandle->hConfig.headCutScale);
+    cutFlieDraw.CutFileDraw_SetRangePage(&cfgMachHandle->hConfig.posLimit);
+    cutFlieDraw.CutFileDraw_SetRangeMax(&cfgMachHandle->hConfig.posMax);
+    cutFlieDraw.CutFileDraw_SetPaintFactorPulsePerMillimeter(&cfgMachHandle->hConfig.posToPulseScale);
+    cutFlieDraw.CutFileDraw_SetPaintLogicOrg(&cfgMachHandle->hConfig.posOrg);
+    cutFlieDraw.CutFileDraw_SetFactorCutScale(&cfgMachHandle->hConfig.realToCutScale);
     cutFlieDraw.CutFileDraw_SetPaintLogicRealTime(&mMachine->head0_Pos,&mMachine->head0_MoveAngel);
 //----Machine Init
     //mMachine.mFan_1.StateMachineInit(ui->actionWindIn,ui->actionWindOut);
-    mMachine->Mach_SetHead0Org(&cfgMachHandle->hConfig.headOrg);
-    mMachine->Mach_SetHead0PulsePerMillimeter(&cfgMachHandle->hConfig.headPluseScale);
-    mMachine->Mach_SetHead0Limit(&cfgMachHandle->hConfig.headLimit);
+    mMachine->Mach_SetHead0Org(&cfgMachHandle->hConfig.posOrg);
+    mMachine->Mach_SetHead0PulsePerMillimeter(&cfgMachHandle->hConfig.posToPulseScale);
+    mMachine->Mach_SetHead0Limit(&cfgMachHandle->hConfig.posLimit);
     mMachine->Mach_SetHead0IdleMoveSpd(&cfgMachHandle->hConfig.idleMoveSpd);
     mMachine->Mach_SetHead0IdleMoveAcc(&cfgMachHandle->hConfig.idleMoveAcc);
     mMachine->Mach_SetCutContent(&cutFileList.fileVector);
@@ -160,11 +160,6 @@ void WindowCutting::keyReleaseEvent(QKeyEvent *event)
     emit keyReleased(*event);
 }
 //-------------------signals and slots--------------------------
-void WindowCutting::on_actionSettingsParameter_triggered()
-{
-//    this->settings.exec();
-}
-
 void WindowCutting::on_actionReset_triggered()
 {
     QMessageBox msgBox;
