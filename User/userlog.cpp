@@ -16,10 +16,10 @@ UserLog::UserLog(QWidget *parent) :
         db = QSqlDatabase::database("qt_sql_default_connection");
     else
         db = QSqlDatabase::addDatabase("QSQLITE");
-//    db.setHostName("PGM");
+    db.setHostName("PGM");
     db.setDatabaseName("Settings\\MyDataBase.db");
-//    db.setUserName("STONE");
-//    db.setPassword("12345678");
+    db.setUserName("STONE");
+    db.setPassword("12345678");
     db.open();
 
     this->setWindowTitle(tr("请输入员工工号密码"));

@@ -16,7 +16,7 @@ public:
     CfgMachSettings *UI_cfgMachSetting;
 
 public:
-    void ShowSettings();
+    void ShowSettings(UserHandle *_userHandle);
 signals:
 
 public slots:

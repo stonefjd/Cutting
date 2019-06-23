@@ -425,5 +425,5 @@ void WindowCutting::on_actionViewCutList_triggered(bool checked)
 
 void WindowCutting::on_actionMachSetting_triggered()
 {
-    cfgMachHandle->ShowSettings();
+    cfgMachHandle->ShowSettings(userHandle);
 }

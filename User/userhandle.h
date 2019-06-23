@@ -24,6 +24,7 @@ public:
 public:
     bool GetUserChecked();
     void ShowManagerMent();
+    User* GetUser();
 };
 
 #endif // USERHANDLE_H

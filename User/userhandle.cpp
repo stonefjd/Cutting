@@ -21,3 +21,7 @@ void UserHandle::ShowManagerMent()
     UI_userManager->exec();
     delete UI_userManager;
 }
+User* UserHandle::GetUser()
+{
+    return &user;
+}

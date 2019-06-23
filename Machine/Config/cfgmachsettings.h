@@ -3,8 +3,11 @@
 
 #include <QDialog>
 #include <QFont>
+#include <QtSql>
+#include <QFormLayout>
 #include "cfgmach.h"
 #include "cfghead.h"
+#include "User/userhandle.h"
 namespace Ui {
 class CfgMachSettings;
 }
@@ -23,12 +26,23 @@ private:
 private:
     CfgMach *cMach;
     CfgHead *cHead;
+    QString cPath;
+    QSqlDatabase db;
+    UserHandle *userHandle;
+    bool WritePrivateProfileString(QString strSect,QString strKey,QString strText,QString strConfigPath);
+    bool GetPrivateProfileString(QString strSect,QString strKey,QString *szBuf,QString strConfigPath);
+
 public:
     void SetCfgMach(CfgMach *_cMach);
     void SetCfgHead(CfgHead *_cHead);
+    void SetMachUser(UserHandle *_userHandle);
     void LoadData();
 private slots:
-    void on_lEdtFeedLen_editingFinished();
+    void SlotLineEditTextChanged(const QString &text);
+    void SlotComboBoxCurrentIndexChanged(int index);
+    void on_pBtnOK_clicked();
+    void on_pBtnCancle_clicked();
+    void on_pBtnApply_clicked();
 };
 
 #endif // CFGMACHSETTINGS_H

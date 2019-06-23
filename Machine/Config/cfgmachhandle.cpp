@@ -8,13 +8,13 @@ CfgMachHandle::CfgMachHandle(QObject *parent) : QObject(parent)
 
 }
 
-void CfgMachHandle::ShowSettings()
+void CfgMachHandle::ShowSettings(UserHandle *_userHandle)
 {
     //new UI
     UI_cfgMachSetting = new CfgMachSettings;
     UI_cfgMachSetting->SetCfgMach(&mConfig);
     UI_cfgMachSetting->SetCfgHead(&hConfig);
-
+    UI_cfgMachSetting->SetMachUser(_userHandle);
     //load data from param
     UI_cfgMachSetting->LoadData();
 
