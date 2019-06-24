@@ -37,89 +37,134 @@ void CfgMachSettings::SetMachUser(UserHandle *_userHandle)
 }
 void CfgMachSettings::LoadData()
 {
-    QSqlQuery query;
-    query.prepare("SELECT * FROM parameterTable");
-    if(!query.exec())
+    QSqlQuery queryGroup;
+    //[BEGIN]---query group from the parameterTable
+    QStringList groupList;
+    QTabWidget *tabWidget = new QTabWidget(this);
+//    tabWidget->setGeometry(QRect(510, 90, 441, 351));
+    queryGroup.prepare("SELECT * FROM groupTable");
+    if(!queryGroup.exec())
     {
-        qDebug() << query.lastError();
+        qDebug() << queryGroup.lastError();
     }
-    QHBoxLayout *TotalHBoxLayout = new QHBoxLayout();
-    QFormLayout *UserSelectFormLayout = new QFormLayout();
-    while(query.next())
+    while(queryGroup.next())
     {
-        //get query value from table
-        QString key         = query.value("key").toString();
-        QString group       = query.value("group").toString();
-        QString widgetName  = query.value("widgetName").toString();
-        QString range       = query.value("range").toString();
-        QString editableLevel = query.value("editableLevel").toString();
-        QString lableName  = query.value("lableName").toString();
-
-        //get setting value from .ini file
-        QString *value = new QString;
-        this->GetPrivateProfileString(group,key,value,cPath);
-
-        //set lable widget
-        QLabel *lable = new QLabel(this);
-        QByteArray qByteArray = lableName.toUtf8();
+        //get group name
+        QString groupName   = queryGroup.value("groupName").toString();
+        QString text    = queryGroup.value("text").toString();
+        QString comment = queryGroup.value("comment").toString();
+        QByteArray qByteArray = text.toUtf8();
         const char* cStr = qByteArray.data();
-        lable->setText(tr(cStr));
+        //new sub tab
+        QWidget *tab = new QWidget();
+        tab->setProperty("groupName",groupName);
+        tabWidget->addTab(tab,QString(tr(cStr)));
+//        tabWidget->setCurrentWidget(tab);
 
-        //----set content widget
-        QWidget *widget = new QWidget;
-        if(widgetName == "QLineEdit")
+        //[BEGIN]---query parameter from the parameterTable
+        QSqlQuery queryParam;
+        queryParam.prepare("SELECT * FROM parameterTable WHERE groupName = \'" +groupName+"\'");
+        if(!queryParam.exec())
         {
-            //new widget
-            QLineEdit *lineEdit = new QLineEdit(this);
-            //set value
-            lineEdit->setText(*value);
-            //set layout
-            UserSelectFormLayout->addRow(lable,lineEdit);
-            //connect slot
-            connect(lineEdit,SIGNAL(textChanged(const QString )),this,SLOT(SlotLineEditTextChanged(const QString)));
-            //return widget
-            widget = lineEdit;
+            qDebug() << queryParam.lastError();
         }
-        else if(widgetName == "QComboBox")
+        QFormLayout *buffLayout = new QFormLayout(tab);
+        QHBoxLayout *hrzlLayout = new QHBoxLayout(tab);
+        while(queryParam.next())
         {
-            //new widget
-            QComboBox *comboBox = new QComboBox(this);
-            //set value and index
-            QStringList indexTextList = range.split(',');
-            for(int i=0;i<indexTextList.count();i++)
+            //get query value from table
+            QString key         = queryParam.value("key").toString();
+            QString groupName   = queryParam.value("groupName").toString();
+            QString widgetAble  = queryParam.value("widgetAble").toString();
+            QString widgetName  = queryParam.value("widgetName").toString();
+            QString range       = queryParam.value("range").toString();
+            QString editLevel   = queryParam.value("editLevel").toString();
+            QString text        = queryParam.value("text").toString();
+            //get setting value from .ini file
+            QString *value = new QString;
+            this->GetPrivateProfileString(groupName,key,value,cPath);
+
+            //set lable widget
+            if(widgetAble !="N")
             {
-                QByteArray qByteArray = indexTextList.at(i).toUtf8();
+                QLabel *lable = new QLabel(tab);
+                QByteArray qByteArray = text.toUtf8();
                 const char* cStr = qByteArray.data();
-                comboBox->addItem(cStr);
-            }
-            comboBox->setCurrentIndex((*value).toInt()?1:0);
-            //set layout
-            UserSelectFormLayout->addRow(lable,comboBox);
-            //connect slot
-            connect(comboBox,SIGNAL(currentIndexChanged(int)),this,SLOT(SlotComboBoxCurrentIndexChanged(int)));
-            //return widget
-            widget = comboBox;
-        }
+                lable->setText(tr(cStr));
 
-        //----bind lable and content widget
-        lable->setBuddy(widget);
-        widget->setProperty("key",key);
-        widget->setProperty("group",group);
-        widget->setProperty("widgetName",widgetName);
-        widget->setProperty("changed","0");
-        //----set widget proprety
-        if(userHandle == nullptr ||userHandle->GetUser()->GetUserLevel()>editableLevel.toInt())
-        {
-            lable->buddy()->setDisabled(true);
+                //----set content widget
+                QWidget *widget = new QWidget;
+                if(widgetName == "QLineEdit")
+                {
+                    //new widget
+                    QLineEdit *lineEdit = new QLineEdit(tab);
+                    //set value
+                    lineEdit->setText(*value);
+                    //connect slot
+                    connect(lineEdit,SIGNAL(textChanged(const QString )),this,SLOT(SlotLineEditTextChanged(const QString)));
+                    //return widget
+                    widget = lineEdit;
+                }
+                else if(widgetName == "QComboBox")
+                {
+                    //new widget
+                    QComboBox *comboBox = new QComboBox(tab);
+                    //set value and index
+                    QStringList indexTextList = range.split(',');
+                    for(int i=0;i<indexTextList.count();i++)
+                    {
+                        QByteArray qByteArray = indexTextList.at(i).toUtf8();
+                        const char* cStr = qByteArray.data();
+                        comboBox->addItem(cStr);
+                    }
+                    comboBox->setCurrentIndex((*value).toInt()?1:0);
+                    //connect slot
+                    connect(comboBox,SIGNAL(currentIndexChanged(int)),this,SLOT(SlotComboBoxCurrentIndexChanged(int)));
+                    //return widget
+                    widget = comboBox;
+                }
+                //----bind lable and content widget
+                lable->setBuddy(widget);
+                buffLayout->addRow(lable,lable->buddy());
+                buffLayout->setSizeConstraint(QLayout::SetFixedSize);
+                widget->setProperty("key",key);
+                widget->setProperty("groupName",groupName);
+                widget->setProperty("widgetName",widgetName);
+                widget->setProperty("changed","0");
+                //----set widget proprety
+                if(userHandle == nullptr ||userHandle->GetUser()->GetUserLevel()>editLevel.toInt())
+                {
+                    lable->buddy()->setDisabled(true);
+                }
+                else
+                {
+                    lable->buddy()->setDisabled(false);
+                }
+            }
         }
-        else
-            lable->buddy()->setDisabled(false);
+        hrzlLayout->addLayout(buffLayout);
+        hrzlLayout->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
+        tab->setLayout(hrzlLayout);
+    }
+    //[END]---query group from the parameterTable
+
+
+
+    //setting the whole layout
+    //set lineEdit value
+    QList<QLabel*> lbList;
+    QLabel *lb;
+    lbList.append(this->findChildren<QLabel*>());
+    foreach (lb, lbList)
+    {
+
     }
 
-    //setting the layout
-    TotalHBoxLayout->addLayout(UserSelectFormLayout);
-    TotalHBoxLayout->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
-    UserSelectFormLayout->setSizeConstraint(QLayout::SetFixedSize);
+
+    QHBoxLayout *TotalHBoxLayout = new QHBoxLayout(this);
+    TotalHBoxLayout->addWidget(tabWidget);
+//    TotalHBoxLayout->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
+    //buffLayout->setSizeConstraint(QLayout::SetFixedSize);
 
     setLayout(TotalHBoxLayout);
 
@@ -303,7 +348,7 @@ void CfgMachSettings::on_pBtnApply_clicked()
             QFont font = lEdit->font();
             font.setBold(false);
             lEdit->setFont(font);
-            WritePrivateProfileString(lEdit->property("group").toString(),lEdit->property("key").toString(),lEdit->text(),cPath);
+            WritePrivateProfileString(lEdit->property("groupName").toString(),lEdit->property("key").toString(),lEdit->text(),cPath);
         }
     }
 
@@ -319,7 +364,7 @@ void CfgMachSettings::on_pBtnApply_clicked()
             QFont font = cbBox->font();
             font.setBold(false);
             cbBox->setFont(font);
-            WritePrivateProfileString(cbBox->property("group").toString(),cbBox->property("key").toString(),cbBox->currentIndex()==0?"0":"1",cPath);
+            WritePrivateProfileString(cbBox->property("groupName").toString(),cbBox->property("key").toString(),cbBox->currentIndex()==0?"0":"1",cPath);
         }
     }
 }
