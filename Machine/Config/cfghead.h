@@ -14,13 +14,11 @@ public:
 
 signals:
 public:
-    void GetHeadInfo(int _index);
+    void GetHeadInfo();
     QString GetHeadCfgPath();
 
     void UpdateHeadMaxPluse(int _xPluse,int _yPluse,int _hIndex);
     void UpdateHeadCutLimit(int _xPluse,int _yPluse,int _hIndex);
-    bool GetPrivateProfileString(QString strSect,QString strKey,QString *szBuf,QString strConfigPath);
-    bool WritePrivateProfileString(QString strSect,QString strKey,QString strText,QString strConfigPath);
 
 private:
     QString headCfgPath;
@@ -30,6 +28,9 @@ private:
     double feedSpd;     //送料速度(m/s)
     double feedAcc;     //送料加速度(m/s²)
     QStringList apronIndexList;
+
+    bool GetPrivateProfileString(QString strSect,QString strKey,QString *szBuf,QString strConfigPath);
+    bool WritePrivateProfileString(QString strSect,QString strKey,QString strText,QString strConfigPath);
 
 public:
     QPointF posOrg;//红色激光点

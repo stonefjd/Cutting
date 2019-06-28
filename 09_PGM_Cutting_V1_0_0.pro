@@ -38,7 +38,6 @@ SOURCES += \
     Machine/Knife/sdmachinehead.cpp \
     Machine/Knife/sdmachine.cpp \
     Machine/Knife/sdcuttoollib.cpp \
-    Machine/Config/configknife.cpp \
     Machine/Config/configknifelib.cpp \
     Machine/Config/configapron.cpp \
     File/cutfiledraw.cpp \
@@ -48,7 +47,9 @@ SOURCES += \
     Machine/Config/cfgmachsettings.cpp \
     Machine/Config/cfgmachhandle.cpp \
     Machine/Config/cfgmach.cpp \
-    Machine/Config/cfghead.cpp
+    Machine/Config/cfghead.cpp \
+    Machine/Config/cfgknife.cpp \
+    Machine/Config/cfgbasedefine.cpp
 
 HEADERS += \
     windowcutting.h \
@@ -65,10 +66,8 @@ HEADERS += \
     Machine/Knife/sdmachinehead.h \
     Machine/Knife/sdmachine.h \
     Machine/Knife/sdcuttoollib.h \
-    Machine/Config/configknife.h \
     Machine/Config/configknifelib.h \
     Machine/Config/configapron.h \
-    Machine/Config/configinfo.h \
     File/cutfiledraw.h \
     File/cutfileformat.h \
     User/usermanager.h \
@@ -77,7 +76,9 @@ HEADERS += \
     Machine/Config/cfgmachsettings.h \
     Machine/Config/cfgmachhandle.h \
     Machine/Config/cfgmach.h \
-    Machine/Config/cfghead.h
+    Machine/Config/cfghead.h \
+    Machine/Config/cfgknife.h \
+    Machine/Config/cfgbasedefine.h
 
 FORMS += \
         windowcutting.ui \

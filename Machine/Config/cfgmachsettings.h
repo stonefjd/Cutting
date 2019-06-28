@@ -5,6 +5,8 @@
 #include <QFont>
 #include <QtSql>
 #include <QFormLayout>
+#include <QLineEdit>
+#include <QPushButton>
 #include "cfgmach.h"
 #include "cfghead.h"
 #include "User/userhandle.h"
@@ -40,9 +42,9 @@ public:
 private slots:
     void SlotLineEditTextChanged(const QString &text);
     void SlotComboBoxCurrentIndexChanged(int index);
-    void on_pBtnOK_clicked();
-    void on_pBtnCancle_clicked();
-    void on_pBtnApply_clicked();
+    void SlotBtnOkClicked();
+    void SlotBtnApplyClicked();
+    void SlotBtnCancleClicked();
 };
 
 #endif // CFGMACHSETTINGS_H

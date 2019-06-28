@@ -6,7 +6,7 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QDebug>
-#include "configinfo.h"
+#include "cfgbasedefine.h"
 
 class CfgMach : public QWidget
 {
@@ -49,6 +49,10 @@ private:
 public:
 
 private:
+//--------W/R from .ini file
+    bool GetPrivateProfileString(QString strSect,QString strKey,QString *szBuf,QString strConfigPath);
+    bool WritePrivateProfileString(QString strSect,QString strKey,QString strText,QString strConfigPath);
+
 public:
     explicit CfgMach(QWidget *parent = nullptr);
     void GetMachineBaseInfo();
@@ -111,9 +115,6 @@ public:
     void SetAlignStartZ(double);
     void SetAlignAbsX(double);
     void SetAlignAbsY(double);
-//--------W/R from .ini file
-    bool GetPrivateProfileString(QString strSect,QString strKey,QString *szBuf,QString strConfigPath);
-    bool WritePrivateProfileString(QString strSect,QString strKey,QString strText,QString strConfigPath);
 
 signals:
 

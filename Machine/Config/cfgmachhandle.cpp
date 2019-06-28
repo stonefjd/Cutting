@@ -3,7 +3,7 @@
 CfgMachHandle::CfgMachHandle(QObject *parent) : QObject(parent)
 {
     mConfig.GetMachineBaseInfo();
-    hConfig.GetHeadInfo(0);
+    hConfig.GetHeadInfo();
 
 
 }

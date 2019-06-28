@@ -1,11 +1,11 @@
 ﻿#include "cfghead.h"
-#include "configinfo.h"
+#include "cfgbase.h"
 CfgHead::CfgHead(QWidget *parent) : QWidget(parent)
 {
     headCfgPath = SETTING_PATH;
 }
 
-void CfgHead::GetHeadInfo(int _index)
+void CfgHead::GetHeadInfo()
 {
     QString strConfigPath = headCfgPath;
 
@@ -18,7 +18,7 @@ void CfgHead::GetHeadInfo(int _index)
     QString *szBuf = new QString;
 
     //机头个数
-    strSect = ("MachHead"+QString::number(_index));
+    strSect = ("MachHead0");
     strKey = ("HeadIndex");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
@@ -35,17 +35,6 @@ void CfgHead::GetHeadInfo(int _index)
     {
         posOrg.setY((*szBuf).toDouble());
     }
-    //区域限位，人为设定尺寸
-    strKey = ("PosLimitX");
-    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
-    {
-        posLimit.setX((*szBuf).toDouble());
-    }
-    strKey = ("PosLimitY");
-    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
-    {
-        posLimit.setY((*szBuf).toDouble());
-    }
     //最大长度：毫米
     strKey = ("PosMaxX");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
@@ -56,6 +45,27 @@ void CfgHead::GetHeadInfo(int _index)
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
         posMax.setY((*szBuf).toDouble());
+    }
+    //区域限位，人为设定尺寸
+    strKey = ("PosLimitX");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        posLimit.setX((*szBuf).toDouble());
+        if(posLimit.x()>posMax.x())
+        {
+            posLimit.setX(posMax.x());
+            WritePrivateProfileString(strSect,strKey,QString::number(posLimit.x()),strConfigPath);
+        }
+    }
+    strKey = ("PosLimitY");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        posLimit.setY((*szBuf).toDouble());
+        if(posLimit.y()>posMax.y())
+        {
+            posLimit.setY(posMax.y());
+            WritePrivateProfileString(strSect,strKey,QString::number(posLimit.y()),strConfigPath);
+        }
     }
     //比例因子：脉冲每毫米
     strKey = ("PosToPulseScaleX");
