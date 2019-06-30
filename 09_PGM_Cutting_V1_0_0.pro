@@ -49,7 +49,9 @@ SOURCES += \
     Machine/Config/cfgmach.cpp \
     Machine/Config/cfghead.cpp \
     Machine/Config/cfgknife.cpp \
-    Machine/Config/cfgbasedefine.cpp
+    Machine/Config/cfgbasedefine.cpp \
+    Machine/Config/cfglib.cpp \
+    Machine/Config/cfgcuttool.cpp
 
 HEADERS += \
     windowcutting.h \
@@ -78,7 +80,9 @@ HEADERS += \
     Machine/Config/cfgmach.h \
     Machine/Config/cfghead.h \
     Machine/Config/cfgknife.h \
-    Machine/Config/cfgbasedefine.h
+    Machine/Config/cfgbasedefine.h \
+    Machine/Config/cfglib.h \
+    Machine/Config/cfgcuttool.h
 
 FORMS += \
         windowcutting.ui \

@@ -7,8 +7,10 @@
 #include <QFormLayout>
 #include <QLineEdit>
 #include <QPushButton>
+#include "cfgbasedefine.h"
 #include "cfgmach.h"
 #include "cfghead.h"
+#include "cfglib.h"
 #include "User/userhandle.h"
 namespace Ui {
 class CfgMachSettings;
@@ -28,16 +30,15 @@ private:
 private:
     CfgMach *cMach;
     CfgHead *cHead;
+    CfgLib  *cLib;
     QString cPath;
     QSqlDatabase db;
     UserHandle *userHandle;
-    bool WritePrivateProfileString(QString strSect,QString strKey,QString strText,QString strConfigPath);
-    bool GetPrivateProfileString(QString strSect,QString strKey,QString *szBuf,QString strConfigPath);
 
 public:
     void SetCfgMach(CfgMach *_cMach);
     void SetCfgHead(CfgHead *_cHead);
-    void SetMachUser(UserHandle *_userHandle);
+    void SetCfgUser(UserHandle *_userHandle);
     void LoadData();
 private slots:
     void SlotLineEditTextChanged(const QString &text);

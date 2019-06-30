@@ -1,6 +1,5 @@
 ﻿#include "cfghead.h"
-#include "cfgbase.h"
-CfgHead::CfgHead(QWidget *parent) : QWidget(parent)
+CfgHead::CfgHead()
 {
     headCfgPath = SETTING_PATH;
 }
@@ -235,47 +234,4 @@ void CfgHead::UpdateHeadCutLimit(int _xPluse,int _yPluse,int _hIndex)
     }
     WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadCutLimitX",QString::number(_xPluse),headCfgPath);
     WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadCutLimitY",QString::number(_yPluse),headCfgPath);
-}
-
-bool CfgHead::WritePrivateProfileString(QString strSect,QString strKey,QString strText,QString strConfigPath)
-{
-    QFile file(strConfigPath);
-    if(!file.exists())
-    {
-        QMessageBox::information(this,QObject::tr("提示"),QObject::tr("初始化配置文件不存在"),QObject::tr("确定"));//setText(QObject::tr("软件配置文件不存在，以默认文件进行创建"))
-        return false;
-    }
-    else
-    {
-        QSettings settingsObj(strConfigPath,QSettings::IniFormat);
-
-        settingsObj.beginGroup(strSect);
-        settingsObj.setValue(strKey,strText);
-        settingsObj.endGroup();
-    }
-    return true;
-}
-bool CfgHead::GetPrivateProfileString(QString strSect,QString strKey,QString *szBuf,QString strConfigPath)
-{
-    QFile file(strConfigPath);
-    if(!file.exists())
-    {
-        QMessageBox::information(this,QObject::tr("提示"),QObject::tr("初始化配置文件不存在"),QObject::tr("确定"));//setText(QObject::tr("软件配置文件不存在，以默认文件进行创建"))
-        return false;
-    }
-    else
-    {
-        QSettings settingsObj(strConfigPath,QSettings::IniFormat);
-
-        settingsObj.beginGroup(strSect);
-        QString tpstr= (settingsObj.value(strKey)).toString();
-        if(tpstr == nullptr)
-        {
-            QStringList tpstrl = (settingsObj.value(strKey)).toStringList();
-            tpstr = tpstrl.join(',');
-        }
-        *szBuf = tpstr;
-        settingsObj.endGroup();
-    }
-    return true;
 }

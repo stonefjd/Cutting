@@ -1,11 +1,6 @@
 #ifndef CFGKNIFE_H
 #define CFGKNIFE_H
 
-#include <QObject>
-#include <QWidget>
-#include <QFile>
-#include <QSettings>
-#include <QMessageBox>
 #include "cfgbasedefine.h"
 // 刀具id号定义
 enum KnifeId
@@ -64,25 +59,23 @@ enum ApronCtrlMode
 
 
 
-class CfgKnife : public QWidget
+class CfgKnife
 {
-    Q_OBJECT
 private:
-    virtual void Free();
+    void Free();
+
+    void UpdateOffsetFromApron(double x,double y);
+
+public:
+    CfgKnife();
+    CfgKnife(KnifeId nCutToolId,short nKnifeId);
+    CfgKnife& operator = (const CfgKnife& other);
+    bool Copy(CfgKnife* pOther);
+    CfgKnife* Copied();
 
     void LoadCutToolKey();
     void LoadKnifeKey();
     void InitKnifeNames();
-    void UpdateOffsetFromApron(double x,double y);
-
-    bool GetPrivateProfileString(QString strSect,QString strKey,QString *szBuf,QString strConfigPath);
-    bool WritePrivateProfileString(QString strSect,QString strKey,QString strText,QString strConfigPath);
-
-public:
-    explicit CfgKnife(QWidget *parent = nullptr);
-             CfgKnife(KnifeId nCutToolId,short nKnifeId);
-    virtual  CfgKnife& operator = (const CfgKnife& other);
-
     void ReadKnifeInfo(QString sConfigPath,QString sSect);
     void WriteKnifeInfo(QString sConfigPath,QString sSect);
 public:
@@ -268,10 +261,6 @@ public:
     bool    IsCutToolType_Plot();
     //      判断是否为笔刀具
     bool    IsCutToolType_Pen();
-signals:
-
-public slots:
-
 public:
     short           m_nCutInfoId;		//刀具信息Id
     KnifeId         m_emCutToolId;		//基础刀具类型 (如果m_nCutToolId == 0,表示刀具没有配置)

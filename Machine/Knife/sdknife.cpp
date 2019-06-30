@@ -658,7 +658,7 @@ void SDKnife::WritePrivateProfileString(QString sSect,QString sKey,QString sInfo
 bool SDKnife::SaveEx(QString sConfigPath,QString sSect)
 {
     //string sSect = "Knife";
-    //sSect += SDString::intTostring(m_nGuid);
+    //sSect += SDString::number(m_nGuid);
 
     QString sKey = "";
     QString sInfo = "";
@@ -1189,9 +1189,67 @@ QString SDKnife::GetKnifeName()
 void   SDKnife::InitKnifeNames()
 {
     m_sKnifeName = m_sCutToolName;
-    if(m_nCutToolId != CUTTINGTOOL_PEN)
+    int nVal = 0;
+    switch(m_nCutToolId)
     {
+    case CUTTINGTOOL_PEN:
+        break;
+    case CUTTINGTOOL_ROLL:
         m_sKnifeName += QString::number(m_nKnifeId);
+        break;
+    case CUTTINGTOOL_EOT:
+        m_sKnifeName += QString::number(m_nKnifeId);
+    case CUTTINGTOOL_POT:
+        m_sKnifeName += QString::number(m_nKnifeId);
+        break;
+    case CUTTINGTOOL_VPUNCH:
+        m_sKnifeName += QString::number(m_nKnifeId);
+        break;
+    case CUTTINGTOOL_SPUNCH:
+        m_sKnifeName += QString::number(m_nKnifeId);
+        break;
+    case CUTTINGTOOL_RPUNCH:
+        m_sKnifeName += QString::number(m_nKnifeId);
+        break;
+    case CUTTINGTOOL_DRILL:
+        m_sKnifeName += QString::number(m_nKnifeId);
+        break;
+    case CUTTINGTOOL_VCUT:
+        m_sKnifeName += QString::number(m_nKnifeId);
+        break;
+    case CUTTINGTOOL_SCT:
+        m_sKnifeName += QString::number(m_nKnifeId);
+        break;
+    case CUTTINGTOOL_KCT:
+        m_sKnifeName += QString::number(m_nKnifeId);
+        break;
+    case CUTTINGTOOL_CREASE:
+        m_sKnifeName += QString::number(m_nKnifeId);
+        break;
+    case CUTTINGTOOL_MILL:
+        m_sKnifeName += QString::number(m_nKnifeId);
+        break;
+    case CUTTINGTOOL_EVCT:
+        m_sKnifeName += QString::number(m_nKnifeId);
+        break;
+    case CUTTINGTOOL_RCT:
+        m_sKnifeName += QString::number(m_nKnifeId);
+        break;
+    case CUTTINGTOOL_DCT:
+        m_sKnifeName += QString::number(m_nKnifeId);
+        break;
+    case CUTTINGTOOL_PLOT:
+        break;
+    case CUTTINGTOOL_REDLIGHT:
+        break;
+    case CUTTINGTOOL_LASER:
+        break;
+    case CUTTINGTOOL_CAMERA:
+        break;
+    case CUTTINGTOOL_NULL:
+        break;
+    default:
+        break;
     }
 }
 void   SDKnife::UpdateOffsetFromApron(double x,double y)
@@ -1204,14 +1262,14 @@ void   SDKnife::UpdateOffsetFromApron(double x,double y)
 }
 void   SDKnife::CreateGuid()
 {
-    m_nGuid = (m_nCutToolId|(m_nKnifeId<<8));// m_nKnifeId<<8 + m_nCutToolId;
+    m_nGuid = (m_nCutToolId|(m_nKnifeId<<6));// m_nKnifeId<<8 + m_nCutToolId;
 
 
     CreadApronCMode();
 }
 QString SDKnife::GetGuidString()
 {
-    //string sInfo = SDString::intTostring(m_nGuid);
+    //string sInfo = SDString::number(m_nGuid);
     QString sInfo = QString::number(m_nCutToolId);
     sInfo += "-";
     sInfo += QString::number(m_nKnifeId);

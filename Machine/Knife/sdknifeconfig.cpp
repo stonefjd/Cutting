@@ -494,11 +494,11 @@ int      SDKnifeConfig::GetKnifeIndexByGuid(int nGuid)
 
 short    SDKnifeConfig::GetCutToolTypeByGuid(int nGuid)
 {
-    return static_cast<short>(nGuid&0xff);
+    return GUID2CUTTOOLID(nGuid);
 }
 bool     SDKnifeConfig::IsCutToolType(int nGuid,short nCutToolType)
 {
-    return (static_cast<short>(nGuid&0xff)==nCutToolType);
+    return (GUID2CUTTOOLID(nGuid)==nCutToolType);
 }
 
 bool     SDKnifeConfig::IsCutToolType_Punch(int nGuid)

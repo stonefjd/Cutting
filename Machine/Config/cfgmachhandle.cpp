@@ -12,9 +12,9 @@ void CfgMachHandle::ShowSettings(UserHandle *_userHandle)
 {
     //new UI
     UI_cfgMachSetting = new CfgMachSettings;
+    UI_cfgMachSetting->SetCfgUser(_userHandle);
     UI_cfgMachSetting->SetCfgMach(&mConfig);
     UI_cfgMachSetting->SetCfgHead(&hConfig);
-    UI_cfgMachSetting->SetMachUser(_userHandle);
     //load data from param
     UI_cfgMachSetting->LoadData();
 
@@ -26,6 +26,12 @@ void CfgMachHandle::ShowSettings(UserHandle *_userHandle)
 
     //delete UI
     delete UI_cfgMachSetting;
+}
+void CfgMachHandle::ShowKnifeLib(UserHandle *_userHandle)
+{
+//    UI_cfgMachSetting = new CfgMachSettings;
+//    UI_cfgMachSetting->SetCfgUser(_userHandle);
+
 }
 void CfgMachHandle::UpdateConfigMaxPluse(double _xPos, double _yPos)
 {

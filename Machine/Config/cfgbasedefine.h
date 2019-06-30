@@ -7,6 +7,7 @@
 #include <QMessageBox>
 
 #define SETTING_PATH "Settings\\CutterSet.ini"
+#define KNIFETOOLLIB_PATH "Settings\\KnifeToolLib.ini"
 
 #define AXIS_X 1
 #define AXIS_Y 2
@@ -22,9 +23,9 @@ class CfgBaseDefine
 public:
     CfgBaseDefine();
 
-    bool GetPrivateProfileString(QString strSect,QString strKey,QString *szBuf,QString strConfigPath);
-    bool WritePrivateProfileString(QString strSect,QString strKey,QString strText,QString strConfigPath);
 
 };
+bool GetPrivateProfileString(QString strSect,QString strKey,QString *szBuf,QString strConfigPath);
+bool WritePrivateProfileString(QString strSect,QString strKey,QString strText,QString strConfigPath);
 
 #endif // CFGBASEDEFINE_H

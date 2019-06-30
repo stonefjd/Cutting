@@ -546,9 +546,8 @@ SDKnife*   SDCutToolLib::GetKnifeById(short nCutToolId, short nKnifeId)
 
 SDKnife*   SDCutToolLib::GetKnifeByGuid(int nGuid)
 {
-    short nCutToolId = static_cast<short>(nGuid&0xff);
-    short nKnifeId = static_cast<short>((nGuid>>8)&0xff);
-
+    short nCutToolId = GUID2CUTTOOLID(nGuid);
+    short nKnifeId = GUID2KNIFEID(nGuid);
     return GetKnifeById(nCutToolId,nKnifeId);
 }
 

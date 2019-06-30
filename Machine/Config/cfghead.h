@@ -1,18 +1,13 @@
 ﻿#ifndef CFGHEAD_H
 #define CFGHEAD_H
 
-#include <QWidget>
-#include <QSettings>
-#include <QFile>
-#include <QMessageBox>
 #include "configapron.h"
-class CfgHead : public QWidget
+#include "cfgbasedefine.h"
+class CfgHead
 {
-    Q_OBJECT
 public:
-    explicit CfgHead(QWidget *parent = nullptr);
+     CfgHead();
 
-signals:
 public:
     void GetHeadInfo();
     QString GetHeadCfgPath();
@@ -29,8 +24,6 @@ private:
     double feedAcc;     //送料加速度(m/s²)
     QStringList apronIndexList;
 
-    bool GetPrivateProfileString(QString strSect,QString strKey,QString *szBuf,QString strConfigPath);
-    bool WritePrivateProfileString(QString strSect,QString strKey,QString strText,QString strConfigPath);
 
 public:
     QPointF posOrg;//红色激光点
@@ -66,8 +59,6 @@ public:
     void SetFeedLen(double);
     void SetFeedSpd(double);
     void SetFeedAcc(double);
-
-public slots:
 };
 
 #endif // CFGHEAD_H

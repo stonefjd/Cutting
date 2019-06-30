@@ -1,17 +1,11 @@
 ﻿#ifndef CFGMACH_H
 #define CFGMACH_H
 
-#include <QWidget>
-#include <QFile>
-#include <QMessageBox>
-#include <QSettings>
-#include <QDebug>
 #include "cfgbasedefine.h"
 
-class CfgMach : public QWidget
+class CfgMach
 {
-    Q_OBJECT
-private:
+    private:
     QString machCfgPath;
 
     QString versionHw;
@@ -48,13 +42,9 @@ private:
     int headCount;
 public:
 
-private:
-//--------W/R from .ini file
-    bool GetPrivateProfileString(QString strSect,QString strKey,QString *szBuf,QString strConfigPath);
-    bool WritePrivateProfileString(QString strSect,QString strKey,QString strText,QString strConfigPath);
 
 public:
-    explicit CfgMach(QWidget *parent = nullptr);
+    CfgMach();
     void GetMachineBaseInfo();
 
     QString GetMachCfgPath();
@@ -115,10 +105,6 @@ public:
     void SetAlignStartZ(double);
     void SetAlignAbsX(double);
     void SetAlignAbsY(double);
-
-signals:
-
-public slots:
 };
 
 #endif // CFGMACH_H

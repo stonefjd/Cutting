@@ -4,6 +4,7 @@
 #include <QObject>
 #include "cfgmach.h"
 #include "cfghead.h"
+#include "cfglib.h"
 #include "cfgmachsettings.h"
 class CfgMachHandle : public QObject
 {
@@ -13,10 +14,12 @@ public:
 
     CfgMach mConfig;
     CfgHead hConfig;
+    CfgLib  lConfig;
     CfgMachSettings *UI_cfgMachSetting;
 
 public:
     void ShowSettings(UserHandle *_userHandle);
+    void ShowKnifeLib(UserHandle *_userHandle);
 signals:
 
 public slots:
