@@ -163,7 +163,16 @@ CfgKnife* CfgCutTool::GetKnifeByKey(QString sKey)
 
     return nullptr;
 }
-
+CfgKnife* CfgCutTool::GetKnifeByName(QString sName)
+{
+    for(int i = 0; i < m_stvKnifes.size(); i++)
+    {
+        CfgKnife* pKnife = m_stvKnifes.at(i);
+        if (pKnife->GetKnifeName() == sName)
+            return pKnife;
+    }
+    return nullptr;
+}
 bool     CfgCutTool::DelKnifeById(short nKnifeId)
 {
     for(int i = 0; i < m_stvKnifes.size(); i++)

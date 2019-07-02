@@ -2,10 +2,11 @@
 #define CFGMACHHANDLE_H
 
 #include <QObject>
-#include "cfgmach.h"
-#include "cfghead.h"
-#include "cfglib.h"
+//#include "cfgmach.h"
+//#include "cfghead.h"
+//#include "cfglib.h"
 #include "cfgmachsettings.h"
+#include "cfgknifemanager.h"
 class CfgMachHandle : public QObject
 {
     Q_OBJECT
@@ -14,12 +15,16 @@ public:
 
     CfgMach mConfig;
     CfgHead hConfig;
+    QList<CfgApron*> aConfig;
     CfgLib  lConfig;
-    CfgMachSettings *UI_cfgMachSetting;
+    CfgMachSettings *UI_cfgMachSettings;
+    CfgKnifeManager *UI_cfgKnifeManager;
 
 public:
-    void ShowSettings(UserHandle *_userHandle);
-    void ShowKnifeLib(UserHandle *_userHandle);
+    void ShowMachSettings(UserHandle *_userHandle);
+    void ShowKnifeManager(UserHandle *_userHandle);
+
+
 signals:
 
 public slots:

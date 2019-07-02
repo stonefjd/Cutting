@@ -130,27 +130,27 @@ void CfgHead::GetHeadInfo()
     {
         idleMoveAcc = (*szBuf).toDouble();
     }
-    //获取机座列表
-    strKey = ("Aprons");
-    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
-    {
-        apronIndexList = szBuf->split(',');
-    }
-    for(int _apronCnt=0;_apronCnt<apronIndexList.count();_apronCnt++)
-    {
-        strKey = ("Apron"+QString::number(_apronCnt));
-        QStringList apronParam;
-        if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
-        {
-            apronParam = (szBuf)->split(',');
-        }
-        configApron *apron = new configApron;
-        apron->SetApronIndex(_apronCnt);
-        apron->SetKnifeGuid(KNIFETOOLID2GUID(apronParam.at(1).toInt(),apronParam.at(2).toInt()));
-        apron->SetXOffset(apronParam.at(3).toDouble());
-        apron->SetXOffset(apronParam.at(4).toDouble());
-        aConfig.append(apron);
-    }
+//    //获取机座列表
+//    strKey = ("Aprons");
+//    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+//    {
+//        apronIndexList = szBuf->split(',');
+//    }
+//    for(int _apronCnt=0;_apronCnt<apronIndexList.count();_apronCnt++)
+//    {
+//        strKey = ("Apron"+QString::number(_apronCnt));
+//        QStringList apronParam;
+//        if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+//        {
+//            apronParam = (szBuf)->split(',');
+//        }
+//        CfgApron *apron = new CfgApron;
+//        apron->SetApronIndex(_apronCnt);
+//        apron->SetKnifeGuid(KNIFETOOLID2GUID(apronParam.at(1).toInt(),apronParam.at(2).toInt()));
+//        apron->SetXOffset(apronParam.at(3).toDouble());
+//        apron->SetXOffset(apronParam.at(4).toDouble());
+//        aConfig.append(apron);
+//    }
 }
 QPointF CfgHead::GetPosOrg()
 {
@@ -192,6 +192,14 @@ double  CfgHead::GetFeedSpd()
 {
     return feedSpd;
 }
+//void CfgHead::SetApronIndexList(QStringList _list)
+//{
+//    this->apronIndexList = _list;
+//}
+//QStringList CfgHead::GetApronIndexList(void)
+//{
+//    return this->apronIndexList;
+//}
 double  CfgHead::GetFeedAcc()
 {
     return feedAcc;

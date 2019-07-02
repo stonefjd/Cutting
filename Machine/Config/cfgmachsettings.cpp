@@ -6,6 +6,7 @@ CfgMachSettings::CfgMachSettings(QWidget *parent) :
     ui(new Ui::CfgMachSettings)
 {
     ui->setupUi(this);
+    this->setWindowTitle(tr("机械参数配置"));
     cPath = SETTING_PATH;
     //set up database
     if(QSqlDatabase::contains("qt_sql_default_connection"))
@@ -57,6 +58,7 @@ void CfgMachSettings::LoadData()
         const char* cStr = qByteArray.data();
         //new sub tab
         QWidget *tab = new QWidget();
+        bool tabIsEmpty = true;
         tab->setProperty("groupName",groupName);
         tabWidget->addTab(tab,QString(tr(cStr)));
 
@@ -86,6 +88,8 @@ void CfgMachSettings::LoadData()
             //set lable widget
             if(widgetAble !="N")
             {
+                tabIsEmpty = false;
+
                 QLabel *lable = new QLabel(tab);
                 QByteArray qByteArray = text.toUtf8();
                 const char* cStr = qByteArray.data();
@@ -144,8 +148,11 @@ void CfgMachSettings::LoadData()
         hrzlLayout->addLayout(buffLayout);
         hrzlLayout->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
         tab->setLayout(hrzlLayout);
+        if(tabIsEmpty == true)
+            tabWidget->removeTab(tabWidget->count()-1);
         //[END]---query group from the parameterTable
     }
+
     //[END]---query groupName from the groupTable
 
     QVBoxLayout *TotalVBoxLayout = new QVBoxLayout(this);

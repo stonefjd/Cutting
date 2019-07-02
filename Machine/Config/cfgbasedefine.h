@@ -27,5 +27,6 @@ public:
 };
 bool GetPrivateProfileString(QString strSect,QString strKey,QString *szBuf,QString strConfigPath);
 bool WritePrivateProfileString(QString strSect,QString strKey,QString strText,QString strConfigPath);
+bool WritePrivateProfileString(QString strSect,QString strKey,QStringList strText,QString strConfigPath);
 
 #endif // CFGBASEDEFINE_H

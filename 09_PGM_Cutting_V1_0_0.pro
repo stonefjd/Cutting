@@ -38,8 +38,6 @@ SOURCES += \
     Machine/Knife/sdmachinehead.cpp \
     Machine/Knife/sdmachine.cpp \
     Machine/Knife/sdcuttoollib.cpp \
-    Machine/Config/configknifelib.cpp \
-    Machine/Config/configapron.cpp \
     File/cutfiledraw.cpp \
     User/usermanager.cpp \
     User/user.cpp \
@@ -51,7 +49,9 @@ SOURCES += \
     Machine/Config/cfgknife.cpp \
     Machine/Config/cfgbasedefine.cpp \
     Machine/Config/cfglib.cpp \
-    Machine/Config/cfgcuttool.cpp
+    Machine/Config/cfgcuttool.cpp \
+    Machine/Config/cfgknifemanager.cpp \
+    Machine/Config/cfgapron.cpp
 
 HEADERS += \
     windowcutting.h \
@@ -68,8 +68,6 @@ HEADERS += \
     Machine/Knife/sdmachinehead.h \
     Machine/Knife/sdmachine.h \
     Machine/Knife/sdcuttoollib.h \
-    Machine/Config/configknifelib.h \
-    Machine/Config/configapron.h \
     File/cutfiledraw.h \
     File/cutfileformat.h \
     User/usermanager.h \
@@ -82,14 +80,17 @@ HEADERS += \
     Machine/Config/cfgknife.h \
     Machine/Config/cfgbasedefine.h \
     Machine/Config/cfglib.h \
-    Machine/Config/cfgcuttool.h
+    Machine/Config/cfgcuttool.h \
+    Machine/Config/cfgknifemanager.h \
+    Machine/Config/cfgapron.h
 
 FORMS += \
         windowcutting.ui \
     File/Settings/settings.ui \
     User/userlog.ui \
     User/usermanager.ui \
-    Machine/Config/cfgmachsettings.ui
+    Machine/Config/cfgmachsettings.ui \
+    Machine/Config/cfgknifemanager.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

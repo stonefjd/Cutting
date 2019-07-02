@@ -425,5 +425,10 @@ void WindowCutting::on_actionViewCutList_triggered(bool checked)
 
 void WindowCutting::on_actionMachSetting_triggered()
 {
-    cfgMachHandle->ShowSettings(userHandle);
+    cfgMachHandle->ShowMachSettings(userHandle);
+}
+
+void WindowCutting::on_actionKnifeSetting_triggered()
+{
+    cfgMachHandle->ShowKnifeManager(userHandle);
 }

@@ -1,7 +1,9 @@
 ﻿#ifndef CFGHEAD_H
 #define CFGHEAD_H
 
-#include "configapron.h"
+#include <QObject>
+
+#include "cfgapron.h"
 #include "cfgbasedefine.h"
 class CfgHead
 {
@@ -22,7 +24,7 @@ private:
     double feedLen;     //送料长度
     double feedSpd;     //送料速度(m/s)
     double feedAcc;     //送料加速度(m/s²)
-    QStringList apronIndexList;
+//    QStringList apronIndexList;
 
 
 public:
@@ -32,7 +34,7 @@ public:
     QPointF posToPulseScale;//脉冲每毫米
     QPointF pulseMax;//行走的最大脉冲数,取决于限位开关,目前等价于机械极限尺寸
     QPointF realToCutScale;
-    QList<configApron*> aConfig;
+//    QList<CfgApron*> aConfig;
     double idleMoveSpd;		//空走速度 (m/s)
     double idleMoveAcc;     //空走加速度(G)
 public:
@@ -59,6 +61,9 @@ public:
     void SetFeedLen(double);
     void SetFeedSpd(double);
     void SetFeedAcc(double);
+
+//    void SetApronIndexList(QStringList _list);
+//    QStringList GetApronIndexList(void);
 };
 
 #endif // CFGHEAD_H

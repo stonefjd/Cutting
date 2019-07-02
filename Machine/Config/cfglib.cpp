@@ -2,8 +2,8 @@
 CfgLib::CfgLib()
 {
     m_sLibCfgPath = KNIFETOOLLIB_PATH;
-    ReadCutToolLib();
-    SaveCutToolLib();
+//    ReadCutToolLib();
+//    SaveCutToolLib();
 }
 
 
@@ -37,7 +37,6 @@ bool CfgLib::ReadCutToolLib()
     {
         vCutToolIdArray = (*szBuf).split(',');
     }
-    qDebug()<<vCutToolIdArray;
 
     QString strTemp = ("");
     //读取刀具大类
@@ -115,7 +114,6 @@ bool CfgLib::ReadCutToolLib()
             QString sKnifeSect = "Knife";
             sKnifeSect += pKnife->GetGuidString();
 
-            qDebug()<<sKnifeSect;
             pKnife->ReadKnifeInfo(sConfigPath,sKnifeSect);//待修改确认
 
             pCutTool->AddKnifePro(pKnife);
@@ -296,7 +294,7 @@ CfgCutTool* CfgLib::GetCutToolById(short nCutToolId)
     for(int i = 0; i < m_stvCutTools.size(); i++)
     {
         CfgCutTool* pCutTool = m_stvCutTools.at(i);
-        if (pCutTool->GetCutToolId() == nCutToolId)
+        if (static_cast<short>(pCutTool->GetCutToolId()) == nCutToolId)
             return pCutTool;
     }
 
@@ -338,6 +336,13 @@ CfgKnife*   CfgLib::GetKnifeByGuid(int nGuid)
     short nCutToolId = GUID2CUTTOOLID(nGuid);
     short nKnifeId = GUID2KNIFEID(nGuid);
     return GetKnifeById(nCutToolId,nKnifeId);
+}
+CfgKnife*   CfgLib::GetKnifeByName(QString sName)
+{
+    QString knifeName = sName;
+    sName.remove(QRegExp("[12456789]"));
+    CfgCutTool* pCutTool = GetCutToolByKey(sName);
+    return pCutTool->GetKnifeByName(knifeName);
 }
 
 CfgKnife*   CfgLib::GetFirstCModeKnife(short nCModeId)

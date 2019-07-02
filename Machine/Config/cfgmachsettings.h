@@ -12,6 +12,11 @@
 #include "cfghead.h"
 #include "cfglib.h"
 #include "User/userhandle.h"
+/* 该类主要实现对.ini文件的无差别配置，针对单一定义的key/value类型的配置变量进行列表与配置
+ * KEY从database中获取，key的属性显示属性也在database中体现，key对应的value从.ini文件中获取。
+ * 定义的值在配置类中无特殊含义。
+ * 更新完之后，重新让机器类以及机头类从.ini文件中加载数据。
+ */
 namespace Ui {
 class CfgMachSettings;
 }

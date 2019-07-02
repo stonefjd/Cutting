@@ -73,6 +73,8 @@ private slots:
 
     void on_actionMachSetting_triggered();
 
+    void on_actionKnifeSetting_triggered();
+
 signals:
     void keyPressed(QKeyEvent);
     void keyReleased(QKeyEvent);

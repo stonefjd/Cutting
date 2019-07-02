@@ -48,6 +48,7 @@ public:
     //  获取刀具库中的刀
     CfgKnife*   GetKnifeByGuid(int nGuid);
     CfgKnife*   GetFirstCModeKnife(short nCModeId); //获取指定刀座控制方式的第一个刀具
+    CfgKnife*   GetKnifeByName(QString sName);
 
     //  获取刀具库中指定控制模式的所有子刀具
     void GetAllKnifesOnCMode(short nCModeId,QList<CfgKnife*> &vKnifes);

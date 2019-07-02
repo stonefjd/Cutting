@@ -1,22 +1,24 @@
-#ifndef CONFIGAPRON_H
-#define CONFIGAPRON_H
+#ifndef CFGAPRON_H
+#define CFGAPRON_H
 
-#include <QWidget>
+#include <QObject>
 
-class configApron : public QWidget
+#include "cfgknife.h"
+class CfgApron
 {
-    Q_OBJECT
 public:
-    explicit configApron(QWidget *parent = nullptr);
-
+    CfgApron();
 public:
+    void GetApronInfo(int index);
     //    刀座序号
     void  SetApronIndex(int nApronIndex);
     int   GetApronIndex();
 
+    void  SetApronUse(int _use);
+    int   GetApronUse(void);
     //    机头序号
-    void  SetApronHeadIndex(short nMachineIndex);
-    short GetApronHeadeIndex();
+//    void  SetApronHeadIndex(short nMachineIndex);
+//    short GetApronHeadeIndex();
 
 //    //    刀座Guid(全序号:刀座序号+机头序号)[(0--7位表示刀座序号，8--15位表示机头序号)]
 //    short GetApronGuid();
@@ -30,6 +32,8 @@ public:
     void  SetKnifeGuid(int nGuid);
     int   GetKnifeGuid();
 
+    void     SetKnife(CfgKnife *_knife);
+    CfgKnife* GetKnife();
     //     X偏移量，
     //     增加此变量的目的是为了更换刀具后保留刀座的偏移量
     //	   例如，刀座1设置了圆刀，后来刀座1没有装刀具，再后来又装了刀具，此时如果刀座1保留了偏移量，就不用调试刀具偏移量了。
@@ -42,15 +46,15 @@ public:
 
 private:
     int 		apronIndex; 		//刀座序号
-    short       apronHeadIndex;     //机头序号
+    int         apronUsed;
+//    short       apronHeadIndex;     //机头序号
 //    short		apronCtrlMode;		//控制方式
     int			apronKnifeGuid;		//刀具Guid
-    double      apronXOffset;		//刀座偏移量X。增加此变量的目的是为了更换刀具后保留刀座的偏移量，
-    double      apronYOffset;		//刀座偏移量Y。
+    double      apronOffsetX;		//刀座偏移量X。增加此变量的目的是为了更换刀具后保留刀座的偏移量，
+    double      apronOffsetY;		//刀座偏移量Y。
+    CfgKnife    *knifeInApron;
 
-signals:
-
-public slots:
+    QString apronCfgPath;
 };
 
-#endif // CONFIGAPRON_H
+#endif // CFGAPRON_H

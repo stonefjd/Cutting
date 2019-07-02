@@ -50,6 +50,7 @@ public:
     CfgKnife* GetKnifeById(short nKnifeId);
     CfgKnife* GetKnifeByIndex(int nIndex);
     CfgKnife* GetKnifeByKey(QString sKey);
+    CfgKnife* GetKnifeByName(QString sName);
 
     //		 删除子刀具
     bool     DelKnifeById(short nKnifeId);
