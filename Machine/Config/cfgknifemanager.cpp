@@ -6,8 +6,7 @@ CfgKnifeManager::CfgKnifeManager(QWidget *parent) :
     ui(new Ui::CfgKnifeManager)
 {
     ui->setupUi(this);
-    grpChkBox = new QButtonGroup;
-    connect(grpChkBox,SIGNAL(buttonClicked(int)),this,SLOT(SlotBtnGrpClicked(int)));
+    this->setWindowTitle(tr("刀具管理中心"));
 
 }
 
@@ -32,12 +31,12 @@ void CfgKnifeManager::SetCfgUser(UserHandle *_userHandle)
 {
     this->userHandle = _userHandle;
 }
-
 void CfgKnifeManager::LoadData()
 {
-    grpChkBox->setExclusive(false);//不互斥
-    QGridLayout *gridChkBoxLayout = new QGridLayout(ui->groupChkBox);
-    QGridLayout *gridCbBoxLayout = new QGridLayout(ui->groupCbBox);
+    ui->tabWidget->setCurrentIndex(0);
+    QGridLayout *gridChkBoxLayout = new QGridLayout(ui->tabKnifeLoad);
+
+//    QGridLayout *gridCbBoxLayout = new QGridLayout(ui->groupCbBox);
 
     cLib->GetAllKnifeNames(tempKnifeName);
 
@@ -45,44 +44,70 @@ void CfgKnifeManager::LoadData()
 
     for(int i=0;i<MAX_TOOLAPRON;i++)
     {
-    //[BEGIN]添加checkbox组件
-        QCheckBox *chkBox = new QCheckBox(ui->groupChkBox);
-        //check box 本身修饰
-        chkBox->setText(tr("刀座")+QString::number(i));
-        chkBox->setProperty("id",i);
-        gridChkBoxLayout->addWidget(chkBox, i/4, i%4, 1, 1);
-        //check box 加入group后的状态
-        grpChkBox->addButton(chkBox);
-        grpChkBox->setId(chkBox,i);
-    //[END]添加checkbox组件
+        //[BEGIN]添加分组
+        QGroupBox *grpBoxKnife = new QGroupBox(ui->tabKnifeLoad);
+        grpBoxKnife->setCheckable(true);
+        grpBoxKnife->setChecked(false);
+        grpBoxKnife->setTitle(tr("刀座")+QString::number(i));
+        grpBoxKnife->setProperty("id",i);
+        gridChkBoxLayout->addWidget(grpBoxKnife, i/4, i%4, 1, 1);
+        //[END]添加分组
 
-    //[BEGIN]添加Combo Box组件
-        QComboBox *cbBox = new QComboBox(ui->groupCbBox);
+        //[BEGIN]添加XY参数及校正按钮组件
+        QLabel *lbOffsetX = new QLabel(grpBoxKnife);
+        QLabel *lbOffsetY = new QLabel(grpBoxKnife);
+        QLineEdit *lEdtOffsetX = new QLineEdit(grpBoxKnife);
+        QLineEdit *lEdtOffsetY = new QLineEdit(grpBoxKnife);
+        lbOffsetX->setText(tr("X偏移"));
+        lbOffsetY->setText(tr("Y偏移"));
+        lEdtOffsetX->setEnabled(false);
+        lEdtOffsetY->setEnabled(false);
+        lbOffsetX->setBuddy(lEdtOffsetX);
+        lbOffsetY->setBuddy(lEdtOffsetY);
+        QPushButton *btnCalib = new QPushButton(grpBoxKnife);
+        btnCalib->setText(tr("校正"));
+        btnCalib->setProperty("id",i);
+        //[END]添加XY参数组件
+
+        //[BEGIN]添加Combo Box组件
+        QComboBox *cbBox = new QComboBox(grpBoxKnife);
         //
         cbBox->setProperty("id",i);
         cbBox->addItems(tempKnifeName);
         cbBox->setCurrentIndex(-1);
-        cbBox->setDisabled(true);
-        gridCbBoxLayout->addWidget(cbBox, i/4, i%4, 1, 1);
-        //
         cbBoxList.append(cbBox);
-    //[END]添加Combo Box组件
-    }
-//    QStringList tempSeat = cHead->GetApronIndexList();
-    for(int i=0;i<MAX_TOOLAPRON;i++)
-    {
+        //[END]添加Combo Box组件
+
+        //[BEGIN]添加布局
+        QFormLayout *fLayOffsetXY = new QFormLayout();
+        fLayOffsetXY->addRow(lbOffsetX,lbOffsetX->buddy());
+        fLayOffsetXY->addRow(lbOffsetY,lbOffsetY->buddy());
+        QVBoxLayout *vLayGroup = new QVBoxLayout(grpBoxKnife);
+        vLayGroup->addLayout(fLayOffsetXY);
+        vLayGroup->addWidget(btnCalib);
+        vLayGroup->addWidget(cbBox);
+        //[END]添加布局
+
+        //[BEGIN]加载控件相关变量参数
+        //
+        lEdtOffsetX->setText(QString::number(cApron->at(i)->GetXOffset()));
+        lEdtOffsetY->setText(QString::number(cApron->at(i)->GetYOffset()));
+        //guid to name
         int guid = cApron->at(i)->GetKnifeGuid();
         QString knifeName = cLib->GetKnifeByGuid(guid)->GetKnifeName();
         if(cApron->at(i)->GetApronUse() != 0)
         {
-
-            grpChkBox->button(i)->setChecked(true);
+            grpBoxKnife->setChecked(true);
             cbBoxList.at(i)->setEnabled(true);
         }
         cbBoxList.at(i)->setCurrentIndex(tempKnifeName.indexOf(knifeName));
-    }
+        //[END]加载控件相关变量参数
+        //
+        connect(grpBoxKnife,SIGNAL(clicked(bool)),this,SLOT(SlotBtnGrpClicked(bool)));
 
-    //未登录禁用组件
+        //
+    }
+//    //未登录禁用组件
 //    if(userHandle == nullptr ||userHandle->GetUser()->GetUserLevel()>5)
 //    {
 //        ui->tabWidget->setDisabled(true);
@@ -94,10 +119,14 @@ void CfgKnifeManager::LoadData()
 }
 
 //slots
-void CfgKnifeManager::SlotBtnGrpClicked(int id)
+void CfgKnifeManager::SlotBtnGrpClicked(bool _chk)
 {
-    if(grpChkBox->button(id)->isChecked())
+    QGroupBox *grpBox = qobject_cast<QGroupBox*>(sender());
+
+    int id = grpBox->property("id").toInt();
+    if(_chk)
     {
+
         cbBoxList.at(id)->setEnabled(true);
     }
     else
@@ -116,14 +145,16 @@ void CfgKnifeManager::on_btnOK_clicked()
 
 void CfgKnifeManager::on_btnApply_clicked()
 {
-//    int grpChkState = 2;
     QList<int> apronChoseList;
     QList<int> knifeGuidChoseList;
+    QList<QGroupBox*> groupBox;
+    groupBox.append(ui->tabKnifeLoad->findChildren<QGroupBox*>());
+    qDebug()<<groupBox.count();
 //    QString     knifeGuidStr;
     for(int i=0;i<MAX_TOOLAPRON;i++)
     {
         int chosed = 0;
-        if(grpChkBox->button(i)->isChecked())
+        if(groupBox.at(i)->isChecked())
         {
             tab1Valid = 0;
             if(cbBoxList.at(i)->currentIndex() == -1)
@@ -134,10 +165,10 @@ void CfgKnifeManager::on_btnApply_clicked()
             else
             {
                 chosed = 1;
-//                knifeGuid.append();
             }
         }
         apronChoseList.append(chosed);
+        qDebug()<<chosed;
 
         CfgKnife* knife = cLib->GetKnifeByName(cbBoxList.at(i)->currentText());
         knifeGuidChoseList.append(knife->GetGuid());
@@ -150,9 +181,8 @@ void CfgKnifeManager::on_btnApply_clicked()
         {
             int use = apronChoseList.at(i);
             int guid = knifeGuidChoseList.at(i);
-//            cApron->at(i)->SetApronUse(use);
-//            cApron->at(i)->SetKnifeGuid(knifeGuidChoseList.at(i));
-//            cApron->at(i)->SetKnife(cLib->GetKnifeByGuid(knifeGuidChoseList.at(i)));
+
+
             WritePrivateProfileString("Apron"+QString::number(i),"Used"             ,QString::number(use),SETTING_PATH);
             WritePrivateProfileString("Apron"+QString::number(i),"AddedKnifeGuid"   ,QString::number(guid),SETTING_PATH);
 
@@ -181,8 +211,6 @@ void CfgKnifeManager::on_btnApply_clicked()
     }
     default: break;
     }
-
-
 }
 
 void CfgKnifeManager::on_btnCancle_clicked()

@@ -7,6 +7,8 @@
 #include <QGridLayout>
 #include <QCheckBox>
 #include <QComboBox>
+#include <QLabel>
+#include <QLineEdit>
 #include "cfghead.h"
 #include "cfgmach.h"
 #include "cfglib.h"
@@ -31,7 +33,6 @@ public:
 
 private:
     Ui::CfgKnifeManager *ui;
-    QButtonGroup *grpChkBox;
     CfgHead *cHead;
     CfgLib  *cLib;
     QList<CfgApron*> *cApron;
@@ -41,7 +42,7 @@ private:
 
     int tab1Valid = 2;//0:正常 1:未选择刀具 2:无选中
 private slots:
-    void SlotBtnGrpClicked(int id);
+    void SlotBtnGrpClicked(bool _chk);
     void on_btnOK_clicked();
     void on_btnApply_clicked();
     void on_btnCancle_clicked();

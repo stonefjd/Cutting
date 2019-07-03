@@ -43,9 +43,9 @@
    <addaction name="actionWindIn"/>
    <addaction name="actionWindOut"/>
    <addaction name="actionResetRange"/>
-   <addaction name="actionEdgeScan"/>
    <addaction name="actionToolDeepCalibration"/>
    <addaction name="actionToolPositionCalibration"/>
+   <addaction name="actionEdgeScan"/>
    <addaction name="actionResize"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -626,7 +626,10 @@
   </action>
   <action name="actionResize">
    <property name="text">
-    <string>尺寸校准</string>
+    <string>边缘校准</string>
+   </property>
+   <property name="toolTip">
+    <string>边缘校准</string>
    </property>
   </action>
   <action name="actionLogManager">
