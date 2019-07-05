@@ -13,7 +13,9 @@
 #include <QFrame>
 #include <QPainter>
 #include <QCloseEvent>
-#include "File/CutFileListOp/cutfilelistop.h"
+
+#include "Base/cuttest.h"
+#include "File/cutfilelist.h"
 #include "File/cutfiledraw.h"
 #include "PhysicalLayer/gts.h"
 #include "User/userhandle.h"
@@ -88,9 +90,10 @@ private:
     Machine             *mMachine = new Machine;
     CfgMachHandle       *cfgMachHandle = new CfgMachHandle;
     UserHandle          *userHandle;
-    CutFileDraw     cutFlieDraw;
-    CutFileListOp   cutFileList;
-    QTimer          *debugTimer;
+    CutFileDraw         cutFlieDraw;
+    CutFileList         cutFileList;
+    QTimer              *debugTimer;
+    CutTest             *cuttest = new CutTest;
 };
 
 #endif // WINDOWCUTTING_H

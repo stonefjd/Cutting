@@ -1,9 +1,10 @@
-﻿#include "cutfilelistop.h"
+#include "cutfilelist.h"
 
-CutFileListOp::CutFileListOp(QObject *parent) : QObject(parent)
+CutFileList::CutFileList(QObject *parent) : QObject(parent)
 {
+
 }
-void CutFileListOp::CutFileList_WidgetInit(QTableWidget *_tableWidget)
+void CutFileList::CutFileList_WidgetInit(QTableWidget *_tableWidget)
 {
     //设置单框选中
     _tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -12,7 +13,7 @@ void CutFileListOp::CutFileList_WidgetInit(QTableWidget *_tableWidget)
     CutFileList_DisplayList(_tableWidget);
 }
 //--2019.03.01 修改FileVector数据结构,修改最后一个文件移除后的逻辑
-void CutFileListOp::CutFileList_DisplayList(QTableWidget *_tableWidget)
+void CutFileList::CutFileList_DisplayList(QTableWidget *_tableWidget)
 {
     if(!fileVector.isEmpty())
     {
@@ -34,7 +35,7 @@ void CutFileListOp::CutFileList_DisplayList(QTableWidget *_tableWidget)
             QTableWidgetItem *tableName = new QTableWidgetItem(fileVector.at(i).cutFileName);
             QTableWidgetItem *tablePath = new QTableWidgetItem(fileVector.at(i).cutFilePath);
 
-            spinBox->setValue(fileVector.at(i).cutCount);
+            spinBox->setValue(fileVector.at(i).cutTimes);
             spinBox->setProperty("index",QString::number(i));
             tableName->setFlags(tableName->flags() & (~Qt::ItemIsEditable));
             tablePath->setFlags(tablePath->flags() & (~Qt::ItemIsEditable));
@@ -59,7 +60,7 @@ void CutFileListOp::CutFileList_DisplayList(QTableWidget *_tableWidget)
     }
 }
 //--2019.03.01 FileVictor,修改BUG最后一个文件无法移除
-void CutFileListOp::CutFileList_RemoveFileFromList(QTableWidget *_tableWidget)
+void CutFileList::CutFileList_RemoveFileFromList(QTableWidget *_tableWidget)
 {
     int rowNow = _tableWidget->currentRow();
     if(fileVector.count()>0)
@@ -75,7 +76,7 @@ void CutFileListOp::CutFileList_RemoveFileFromList(QTableWidget *_tableWidget)
         }
     }
 }
-void CutFileListOp::CutFileList_UpFileFromList(QTableWidget *_tableWidget)
+void CutFileList::CutFileList_UpFileFromList(QTableWidget *_tableWidget)
 {
     int rowNow = _tableWidget->currentRow();
     if(rowNow>0)
@@ -85,7 +86,7 @@ void CutFileListOp::CutFileList_UpFileFromList(QTableWidget *_tableWidget)
         _tableWidget->setCurrentCell(rowNow-1,0,QItemSelectionModel::Select);
     }
 }
-void CutFileListOp::CutFileList_DownFileFromList(QTableWidget *_tableWidget)
+void CutFileList::CutFileList_DownFileFromList(QTableWidget *_tableWidget)
 {
     int rowNow = _tableWidget->currentRow();
     if(rowNow<(_tableWidget->rowCount()-1)&&rowNow>=0&&_tableWidget->rowCount()>1)
@@ -95,7 +96,7 @@ void CutFileListOp::CutFileList_DownFileFromList(QTableWidget *_tableWidget)
         _tableWidget->setCurrentCell(rowNow+1,0,QItemSelectionModel::Select);
     }
 }
-void CutFileListOp::CutFileList_ExportFileFromList(QTableWidget *_tableWidget)
+void CutFileList::CutFileList_ExportFileFromList(QTableWidget *_tableWidget)
 {
     QString file_path = QFileDialog::getSaveFileName(_tableWidget,"请选择模板保存路径...","","*.txt;;");
     if(!file_path.isEmpty() && !fileVector.isEmpty())
@@ -106,13 +107,13 @@ void CutFileListOp::CutFileList_ExportFileFromList(QTableWidget *_tableWidget)
         QTextStream in(&file);
         for(int i=0;i<fileVector.count();i++)
         {
-            in<<fileVector.at(i).cutCount<<'|'<<fileVector.at(i).cutFilePath<<'\n';
+            in<<fileVector.at(i).cutTimes<<'|'<<fileVector.at(i).cutFilePath<<'\n';
         }
         file.close();
     }
 }
 //导入单个裁切文件
-void CutFileListOp::CutFileList_ChoseSingleFile()
+void CutFileList::CutFileList_ChoseSingleFile()
 {
     QStringList tempStrList;
     tempStrList = CutFileList_ViewOpenFile(QTranslator::tr("打开刀路文件"),QTranslator::tr("file(*.xml *.png)"),QFileDialog::ExistingFiles);
@@ -133,7 +134,7 @@ void CutFileListOp::CutFileList_ChoseSingleFile()
                         fileVector.at(j).cutFilePath == fileinfoTemp.filePath())
                 {
                     //只改变对应的次数，不增加新文件路径
-                    fileVector[j].cutCount++;
+                    fileVector[j].cutTimes++;
                     flagReplace = true;
                 }
             }
@@ -145,14 +146,14 @@ void CutFileListOp::CutFileList_ChoseSingleFile()
             QFileInfo fileinfo(tempStrList.at(i));
             fileData.cutFileName = fileinfo.fileName();
             fileData.cutFilePath = fileinfo.filePath();
-            fileData.cutCount = 1;
+            fileData.cutTimes = 1;
             fileVector.insert(fileVector.end(),fileData);
             CutFileList_LoadCutData(fileVector.count()-1);
         }
     }
 }
 //--2019.03.01导入文件列表
-void CutFileListOp::CutFileList_ChoseList()
+void CutFileList::CutFileList_ChoseList()
 {
     //打开文件获取切割任务列表文件
     QStringList tempStrList;
@@ -201,7 +202,7 @@ void CutFileListOp::CutFileList_ChoseList()
         fileData_t fileData;
         fileData.cutFileName = fileinfo.fileName();
         fileData.cutFilePath = fileinfo.filePath();
-        fileData.cutCount = pathInFileList.split('|').at(0).toInt();
+        fileData.cutTimes = pathInFileList.split('|').at(0).toInt();
         //将文件特性加载入文件容器中
         fileVector.insert(fileVector.end(),fileData);
     }
@@ -213,23 +214,23 @@ void CutFileListOp::CutFileList_ChoseList()
 }
 
 
-QString CutFileListOp::CutFileList_GetListPath()
+QString CutFileList::CutFileList_GetListPath()
 {
     return filePath;
 }
 
-void CutFileListOp::CutFileList_SetPosLogicOrg(QPointF *_org)
+void CutFileList::CutFileList_SetPosLogicOrg(QPointF *_org)
 {
     this->posLogicOrg = _org;
 }
-void CutFileListOp::CutFileList_SetFactorCutScale(QPointF *_scale)
+void CutFileList::CutFileList_SetFactorCutScale(QPointF *_scale)
 {
     this->factorCutScale = _scale;
 }
 
 //--槽函数
 //2019.03.01修改内容
-void CutFileListOp::CutFileList_SpinBoxChg(int i)
+void CutFileList::CutFileList_SpinBoxChg(int i)
 {
     QSpinBox *spinBox = qobject_cast<QSpinBox*>(sender());
     if(spinBox == nullptr)
@@ -237,12 +238,12 @@ void CutFileListOp::CutFileList_SpinBoxChg(int i)
         return;
     }
     int index = spinBox->property("index").toInt();
-    fileVector[index].cutCount = i;
+    fileVector[index].cutTimes = i;
 }
 
 //--私有成员函数
 //--2019.03.01 设为私有函数
-QStringList CutFileListOp::CutFileList_ViewOpenFile(QString _name,QString _filter,enum QFileDialog::FileMode _fileMode)
+QStringList CutFileList::CutFileList_ViewOpenFile(QString _name,QString _filter,enum QFileDialog::FileMode _fileMode)
 {
     QFileDialog *fileDialog = new QFileDialog;
     QStringList tempStrList;
@@ -260,17 +261,17 @@ QStringList CutFileListOp::CutFileList_ViewOpenFile(QString _name,QString _filte
     return  fileDialog->selectedFiles();
 }
 //--2019.03.01 添加
-void CutFileListOp::CutFileList_PrintVector(QList<fileData_t> _fileVector)
+void CutFileList::CutFileList_PrintVector(QList<fileData_t> _fileVector)
 {
     for(int i = 0;i<_fileVector.count();i++)
     {
         qDebug()<<_fileVector.at(i).cutFileName;
         qDebug()<<_fileVector.at(i).cutFilePath;
-        qDebug()<<_fileVector.at(i).cutCount;
+        qDebug()<<_fileVector.at(i).cutTimes;
     }
 }
 //--2019.03.01 添加，载入XML裁切数据
-void CutFileListOp::CutFileList_LoadCutData(int _fIdx)
+void CutFileList::CutFileList_LoadCutData(int _fIdx)
 {
     int fIdx = _fIdx;
     QFile file(fileVector[fIdx].cutFilePath);
@@ -354,7 +355,7 @@ void CutFileListOp::CutFileList_LoadCutData(int _fIdx)
                                     }
                                 }
                             }
-                            fileVector[fIdx].windowCluster[wIdx].sampleCluster[sIdx].lineCluster[lIdx].dotCount = dIdx;
+//                            fileVector[fIdx].windowCluster[wIdx].sampleCluster[sIdx].lineCluster[lIdx].dotCount = dIdx;
                             lIdx++;
                         }
                         else if(l.toElement().tagName() == "SPunch")
@@ -418,13 +419,13 @@ void CutFileListOp::CutFileList_LoadCutData(int _fIdx)
                             drillIdx++;
                         }
                     }
-                    fileVector[fIdx].windowCluster[wIdx].sampleCluster[sIdx].lineCount =lIdx;
-                    fileVector[fIdx].windowCluster[wIdx].sampleCluster[sIdx].punchDotCount =punchIdx;
-                    fileVector[fIdx].windowCluster[wIdx].sampleCluster[sIdx].drillDotCount =drillIdx;
+//                    fileVector[fIdx].windowCluster[wIdx].sampleCluster[sIdx].lineCount =lIdx;
+//                    fileVector[fIdx].windowCluster[wIdx].sampleCluster[sIdx].punchDotCount =punchIdx;
+//                    fileVector[fIdx].windowCluster[wIdx].sampleCluster[sIdx].drillDotCount =drillIdx;
                     sIdx++;
                 }
             }
-            fileVector[fIdx].windowCluster[wIdx].sampleCount = sIdx;
+//            fileVector[fIdx].windowCluster[wIdx].sampleCount = sIdx;
             wIdx++;
         }
     }
@@ -507,11 +508,5 @@ void CutFileListOp::CutFileList_LoadCutData(int _fIdx)
                 center.setY(center.y() / (6*area));
                 fileVector[i].windowCluster[j].sampleCluster[k].focusInSample = center;
             }
-#if CODE_TEST == 1
-    fileVector[0].windowCluster[0].sampleCluster[0].isFinished = true;
-    fileVector[0].windowCluster[0].sampleCluster[1].isFinished = true;
-    fileVector[0].windowCluster[0].sampleCluster[2].isFinished = true;
-    fileVector[0].windowCluster[0].sampleCluster[3].isFinished = true;
-#endif
     //set scale Factor
 }

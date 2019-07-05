@@ -186,9 +186,10 @@ void CfgKnifeManager::on_btnApply_clicked()
             WritePrivateProfileString("Apron"+QString::number(i),"Used"             ,QString::number(use),SETTING_PATH);
             WritePrivateProfileString("Apron"+QString::number(i),"AddedKnifeGuid"   ,QString::number(guid),SETTING_PATH);
 
+            //重新装载刀座列表
             CfgApron *tempApron = new CfgApron;
             tempApron->GetApronInfo(i);
-
+            //对刀座列表重新放入数据
             CfgKnife *tmpKnife = cLib->GetKnifeByGuid(tempApron->GetKnifeGuid());
             tempApron->SetKnife(tmpKnife);
             cApron->append(tempApron);

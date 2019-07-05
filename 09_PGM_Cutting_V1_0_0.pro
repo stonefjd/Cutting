@@ -30,7 +30,6 @@ SOURCES += \
     PhysicalLayer/hardwareadaptor.cpp \
     Machine/machine.cpp \
     Machine/Fan/fan.cpp \
-    File/CutFileListOp/cutfilelistop.cpp \
     User/userlog.cpp \
     Machine/Knife/sdknife.cpp \
     Machine/Knife/sdknifeconfig.cpp \
@@ -51,7 +50,12 @@ SOURCES += \
     Machine/Config/cfglib.cpp \
     Machine/Config/cfgcuttool.cpp \
     Machine/Config/cfgknifemanager.cpp \
-    Machine/Config/cfgapron.cpp
+    Machine/Config/cfgapron.cpp \
+    File/cutfilelist.cpp \
+    File/cutfiledata.cpp \
+    Base/cutsample.cpp \
+    Base/cutline.cpp \
+    Base/cuttest.cpp
 
 HEADERS += \
     windowcutting.h \
@@ -59,7 +63,6 @@ HEADERS += \
     PhysicalLayer/gts.h \
     Machine/machine.h \
     Machine/Fan/fan.h \
-    File/CutFileListOp/cutfilelistop.h \
     User/userlog.h \
     Machine/Knife/Symbol.h \
     Machine/Knife/sdknife.h \
@@ -82,7 +85,12 @@ HEADERS += \
     Machine/Config/cfglib.h \
     Machine/Config/cfgcuttool.h \
     Machine/Config/cfgknifemanager.h \
-    Machine/Config/cfgapron.h
+    Machine/Config/cfgapron.h \
+    File/cutfilelist.h \
+    File/cutfiledata.h \
+    Base/cutsample.h \
+    Base/cutline.h \
+    Base/cuttest.h
 
 FORMS += \
         windowcutting.ui \

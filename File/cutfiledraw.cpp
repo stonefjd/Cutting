@@ -180,7 +180,7 @@ void CutFileDraw::CutFileDraw_DisplayFileData()
                 painter.setFont(QFont("华文行楷", 10));
                 painter.drawText(fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).focusInSample, QString::number(fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).sampleId));
                 //Vcut
-                for(int punchCnt = 0;punchCnt<fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).punchDotCount;punchCnt++)
+                for(int punchCnt = 0;punchCnt<fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).punchCluster.count();punchCnt++)
                 {
                     QPointF center = fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).punchCluster.at(punchCnt).dot;
                     QLineF line;
@@ -188,12 +188,12 @@ void CutFileDraw::CutFileDraw_DisplayFileData()
                     line.setAngle(-static_cast<qreal>(fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).punchCluster.at(punchCnt).dotAngle));
                     painter.drawLine(line);
                 }
-                //Drill
-                for(int drillCnt = 0;drillCnt<fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).punchDotCount;drillCnt++)
-                {
-                    QPointF center = fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).punchCluster.at(drillCnt).dot;
-                    painter.drawEllipse(center,3*factorCutScale->x(),3*factorCutScale->y());
-                }
+//                //Drill
+//                for(int drillCnt = 0;drillCnt<fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).drillCluster.count();drillCnt++)
+//                {
+//                    QPointF center = fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).drillCluster.at(drillCnt).dot;
+//                    painter.drawEllipse(center,3*factorCutScale->x(),3*factorCutScale->y());
+//                }
             }
         }
     }

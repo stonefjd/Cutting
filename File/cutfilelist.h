@@ -1,5 +1,5 @@
-﻿#ifndef CUTFILELISTOP_H
-#define CUTFILELISTOP_H
+#ifndef CUTFILELIST_H
+#define CUTFILELIST_H
 
 #include <QObject>
 #include <QString>
@@ -13,16 +13,13 @@
 #include <QSpinBox>
 #include <QPointF>
 #include <QDomElement>
-#include <QFrame>
-#include <QPainter>
-
 #include "File/cutfileformat.h"
 
-class CutFileListOp : public QObject
+class CutFileList : public QObject
 {
     Q_OBJECT
 public:
-    explicit CutFileListOp(QObject *parent = nullptr);
+    explicit CutFileList(QObject *parent = nullptr);
     void CutFileList_ChoseList();
     void CutFileList_ChoseSingleFile();
     void CutFileList_RemoveFileFromList(QTableWidget *_tableWidget);
@@ -54,4 +51,4 @@ private:
     void CutFileList_LoadCutData(int _fIdx);
 };
 
-#endif // CUTFILELISTOP_H
+#endif // CUTFILELIST_H
