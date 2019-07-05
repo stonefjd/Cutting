@@ -3,8 +3,11 @@
 CutTest::CutTest(QObject *parent) : QObject(parent)
 {
     sample = new CutSample;
-//    sample->GetNormalLine()[0].AddPoint(QPointF(0,0),100.1);
+//    CutLine *a = new CutLine;
+//    a->AddPoint(QPointF(1,1),133);
+//    sample->GetNormalLine()->append(a);
+//    sample->GetNormalLine()[0]->AddPoint(QPointF(0,0),100.1);
 
-    CutSample *sample2 = sample;
-//    sample2->GetNormalLine()[0].AddPoint(QPointF(1,1),100.2);
+//    CutSample *sample2 = sample;
+//    sample2->GetNormalLine()[0]->AddPoint(QPointF(1,1),100.2);
 }
