@@ -55,7 +55,8 @@ SOURCES += \
     File/cutfiledata.cpp \
     Base/cutsample.cpp \
     Base/cutline.cpp \
-    Base/cuttest.cpp
+    Base/cuttest.cpp \
+    Base/cutfile.cpp
 
 HEADERS += \
     windowcutting.h \
@@ -90,7 +91,8 @@ HEADERS += \
     File/cutfiledata.h \
     Base/cutsample.h \
     Base/cutline.h \
-    Base/cuttest.h
+    Base/cuttest.h \
+    Base/cutfile.h
 
 FORMS += \
         windowcutting.ui \

@@ -1,4 +1,4 @@
-#ifndef CUTSAMPLE_H
+﻿#ifndef CUTSAMPLE_H
 #define CUTSAMPLE_H
 
 #include <QObject>
@@ -21,7 +21,12 @@ public:
     int GetSampleId(void);
     void SetSampleId(int _id);
 
-    QList<CutLine*> *GetNormalLine();
+    QRectF GetInhaleSqare();
+    void SetInhaleSqare(QRectF _sqare);
+    CutLine* GetPunchLine();
+    CutLine* GetDrillLine();
+    CutLine* GetNormalLine(int _index);
+    QList<CutLine*> *GetNormalLineList();
 signals:
 
 public slots:
