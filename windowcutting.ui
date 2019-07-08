@@ -29,6 +29,20 @@
       </property>
      </widget>
     </item>
+    <item>
+     <widget class="QFrame" name="mainPaint">
+      <property name="styleSheet">
+       <string notr="true">#mainPaint{border:1px solid rgb(0,0,0)}
+#mainPaint{background-color:rgb(50,50,50)}</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
@@ -316,7 +330,7 @@
      <x>0</x>
      <y>0</y>
      <width>880</width>
-     <height>22</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSettings">
@@ -476,6 +490,12 @@
     <number>8</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_6"/>
+  </widget>
+  <widget class="QDockWidget" name="dockWgtList">
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_3"/>
   </widget>
   <action name="actionImportCutFile">
    <property name="text">

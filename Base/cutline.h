@@ -9,15 +9,16 @@ class CutLine : public QObject
 {
     Q_OBJECT
 private:
-    QPolygonF       m_pgLine;
-    QList<double>   m_ldAngle;
+    QPolygonF       m_qpgLine;
+    QList<double>   m_qldAngle;
     double          m_dDepth;//0代表最深, 1代表离毛毡1mm
     int             m_nKnifeGuid;
-    QString         m_strLable;
+    QString         m_qstrLable;
+    QPointF         m_qpOffset;
 public:
     explicit CutLine(QObject *parent = nullptr);
 
-    void    AddPoint(QPointF _point,double _angle);
+    void    AddCutPoint(QPointF _point,double _angle);
 
     void    SetDepth(double _depth);
     double  GetDepth(void);

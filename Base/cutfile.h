@@ -2,20 +2,31 @@
 #define CUTFILE_H
 
 #include <QObject>
-#include "cutsample.h"
+#include "cutpage.h"
 class CutFile : public QObject
 {
     Q_OBJECT
 private:
-    QList<CutSample*> *m_lSampleList;
-    int m_nPageLenth;
+    QList<CutPage*> *m_qlcFile = new QList<CutPage*>;
+    QString         m_qstrFileName;
+    QString         m_qstrFilePath;
+    int             m_qstrTimes;//切割次数
 public:
     explicit CutFile(QObject *parent = nullptr);
-    void SetPageLength(int _pageLength);
-    int GetPageLength();
+    void    AddCutPage(CutPage *page,int _len);
 
-    QList<CutSample*>* GetSampleList();
-    CutSample* GetSample(int _index);
+    void    SetFilePath(QString _path);
+    QString GetFilePath(void);
+
+    void    SetFileName(QString _name);
+    QString GetFileName(void);
+
+    void    SetCutTimes(int _times);
+    int     GetCutTimes(void);
+
+    CutPage* GetPage(int _index);
+    QList<CutPage*> *GetPageList();
+
 signals:
 
 public slots:

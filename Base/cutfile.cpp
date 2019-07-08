@@ -2,23 +2,47 @@
 
 CutFile::CutFile(QObject *parent) : QObject(parent)
 {
-
+    this->m_qlcFile->clear();
+    this->m_qstrTimes = 0;
 }
 
-void CutFile:: SetPageLength(int _pageLength)
+void CutFile::AddCutPage(CutPage *page,int _len)
 {
-    this->m_nPageLenth = _pageLength;
+    page->SetPageLength(_len);
+    this->m_qlcFile->append(page);
+//    this->m_qlcFile->last()->
 }
 
-int CutFile::GetPageLength()
+void    CutFile::SetFilePath(QString _path)
 {
-    return this->m_nPageLenth;
+    this->m_qstrFilePath = _path;
 }
-QList<CutSample*>* CutFile::GetSampleList()
+QString CutFile::GetFilePath(void)
 {
-    return this->m_lSampleList;
+    return this->m_qstrFilePath;
 }
-CutSample* CutFile::GetSample(int _index)
+void    CutFile::SetFileName(QString _name)
 {
-    return this->m_lSampleList->at(_index);
+    this->m_qstrFileName = _name;
+}
+QString CutFile::GetFileName(void)
+{
+    return this->m_qstrFileName;
+}
+void    CutFile::SetCutTimes(int _times)
+{
+    this->m_qstrTimes = _times;
+}
+int     CutFile::GetCutTimes(void)
+{
+    return this->m_qstrTimes;
+}
+
+CutPage* CutFile::GetPage(int _index)
+{
+    return this->m_qlcFile->at(_index);
+}
+QList<CutPage*>* CutFile::GetPageList()
+{
+    return this->m_qlcFile;
 }

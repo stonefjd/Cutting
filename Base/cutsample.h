@@ -12,14 +12,14 @@ public:
     explicit CutSample(QObject *parent = nullptr);
 
 private:
-    int m_nSampleId;
+//    int m_nSampleId;
     QRectF m_rctAirSquare;
-    QList<CutLine*> *m_lNormalLine = new QList<CutLine*>;
-    CutLine* m_lPunchLine = new CutLine;
-    CutLine* m_lDrillLine = new CutLine;
+    QList<CutLine*>*    m_qlcNormalLine = new QList<CutLine*>;
+    CutLine*            m_cPunchLine    = new CutLine;
+    CutLine*            m_cDrillLine    = new CutLine;
 public:
-    int GetSampleId(void);
-    void SetSampleId(int _id);
+//    int GetSampleId(void);
+//    void SetSampleId(int _id);
 
     QRectF GetInhaleSqare();
     void SetInhaleSqare(QRectF _sqare);

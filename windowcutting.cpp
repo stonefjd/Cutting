@@ -22,6 +22,8 @@ WindowCutting::WindowCutting(QWidget *parent) :
     ui->btnDirGroup->setId(ui->btnOpOrg,BTN_ID_O);
 //----status bar
     ui->statusBar->showMessage("ready");
+//----cutFileHandle
+    cutFileHandle = new CutFileHandle(ui->dockWgtList,ui->mainPaint);
 //----CutFileOperator
     ui->dockWgtCutFile->setWindowTitle(tr("任务列表"));
     ui->dockWgtCutFile->setMaximumWidth(200);
@@ -400,6 +402,7 @@ void WindowCutting::debugTask_100ms()
     if(mMachine->GetMachineMainState() != stMain_Wait || mMachine->GetStateMotorRunningX()||mMachine->GetStateMotorRunningY())
     {
         ui->paintFrame->update();
+        ui->mainPaint->update();
     }
 }
 //void WindowCutting::messageBoxAutoRemove(QString _str)

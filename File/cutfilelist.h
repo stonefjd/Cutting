@@ -43,7 +43,7 @@ public:
 
 private:
     QString filePath;//特指列表文档的路径!
-    QStringList filePathList;
+//    QStringList filePathList;
     QPointF *posLogicOrg;
     QPointF *factorCutScale;
     QStringList CutFileList_ViewOpenFile(QString _name,QString _filter,enum QFileDialog::FileMode _fileMode);

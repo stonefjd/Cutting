@@ -52,11 +52,12 @@ SOURCES += \
     Machine/Config/cfgknifemanager.cpp \
     Machine/Config/cfgapron.cpp \
     File/cutfilelist.cpp \
-    File/cutfiledata.cpp \
     Base/cutsample.cpp \
     Base/cutline.cpp \
-    Base/cuttest.cpp \
-    Base/cutfile.cpp
+    Base/cutfile.cpp \
+    Base/cutpage.cpp \
+    File/cutfilehandle.cpp \
+    File/cutfile_ui.cpp
 
 HEADERS += \
     windowcutting.h \
@@ -88,11 +89,12 @@ HEADERS += \
     Machine/Config/cfgknifemanager.h \
     Machine/Config/cfgapron.h \
     File/cutfilelist.h \
-    File/cutfiledata.h \
     Base/cutsample.h \
     Base/cutline.h \
-    Base/cuttest.h \
-    Base/cutfile.h
+    Base/cutfile.h \
+    Base/cutpage.h \
+    File/cutfilehandle.h \
+    File/cutfile_ui.h
 
 FORMS += \
         windowcutting.ui \

@@ -1,16 +1,18 @@
 #include "cutline.h"
 CutLine::CutLine(QObject *parent) : QObject(parent)
 {
-    m_pgLine.clear();
-    m_ldAngle.clear();
+    m_qpgLine.clear();
+    m_qldAngle.clear();
     m_dDepth = 0;
     m_nKnifeGuid = 0;
+    m_qstrLable = "NoLine";
+    m_qpOffset = QPointF(0,0);
 }
 
-void    CutLine::AddPoint(QPointF _point,double _angle)
+void    CutLine::AddCutPoint(QPointF _point,double _angle)
 {
-    m_pgLine.append(_point);
-    m_ldAngle.append(_angle);
+    m_qpgLine.append(_point);
+    m_qldAngle.append(_angle);
 }
 
 void    CutLine::SetDepth(double _depth)
@@ -35,10 +37,10 @@ int     CutLine::GetKnifeGuid(void)
 
 void    CutLine::SetLineLable(QString _lineLable)
 {
-    this->m_strLable = _lineLable;
+    this->m_qstrLable = _lineLable;
 }
 
 QString CutLine::GetLineLable(void)
 {
-    return this->m_strLable;
+    return this->m_qstrLable;
 }
