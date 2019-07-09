@@ -2,13 +2,14 @@
 
 CutFileHandle::CutFileHandle(QObject *parent) : QObject(parent)
 {
-//    UI_cutFile->SetFileList(&this->qlcFileList);
+//    cutFile_UI->SetFileList(&this->qlcFileList);
 }
 
-CutFileHandle::CutFileHandle(QDockWidget *_dockwgt,QFrame *_frame)
+CutFileHandle::CutFileHandle(QDockWidget *_dockwgt,QFrame *_frame,CfgMachHandle *_machHandle)
 {
-     UI_cutFile->SetFileList(&this->qlcFileList);
-     UI_cutFile->SetDockWidget(_dockwgt);
-     UI_cutFile->SetPaintFrame(_frame);
-     UI_cutFile->InitialModel();
+     cutFile_UI->SetFileData(&this->cutFile_Data);
+//     cutFile_UI->SetDockWidget(_dockwgt);
+//     cutFile_UI->SetPaintFrame(_frame);
+//     cutFile_UI->SetMachHandle(_machHandle);
+     cutFile_UI->InitialModel(_dockwgt,_frame,_machHandle);
 }

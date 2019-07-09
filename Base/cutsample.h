@@ -17,6 +17,8 @@ private:
     QList<CutLine*>*    m_qlcNormalLine = new QList<CutLine*>;
     CutLine*            m_cPunchLine    = new CutLine;
     CutLine*            m_cDrillLine    = new CutLine;
+    QPointF             m_qpGravity;
+    bool                m_bCutFinished;
 public:
 //    int GetSampleId(void);
 //    void SetSampleId(int _id);
@@ -27,6 +29,12 @@ public:
     CutLine* GetDrillLine();
     CutLine* GetNormalLine(int _index);
     QList<CutLine*> *GetNormalLineList();
+
+    void    SetPointGravity(QPointF _pointF);
+    QPointF GetPointGravity();
+
+    void    SetCutFinished(bool _flag);
+    bool    GetCutFinished();
 signals:
 
 public slots:

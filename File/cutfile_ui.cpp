@@ -2,23 +2,25 @@
 
 CutFile_UI::CutFile_UI(QObject *parent) : QObject(parent)
 {
-    this->qlcFileList->clear();
+
 }
-void CutFile_UI::SetFileList(QList<CutFile*>* _list)
+void CutFile_UI::SetFileData(CutFile_Data *_fileData)
 {
-    this->qlcFileList = _list;
+    this->cFileData = _fileData;
 }
-void CutFile_UI::SetDockWidget(QDockWidget *_dockWidget)
+
+void CutFile_UI::InitialModel(QDockWidget *_dockwgt,QFrame *_frame,CfgMachHandle *_machHandle)
 {
-    this->qwDockWidget = _dockWidget;
-}
-void CutFile_UI::SetPaintFrame(QFrame *_frame)
-{
+//----set the parameter
+    this->qwDockWidget = _dockwgt;
     this->qwFrame = _frame;
-}
-void CutFile_UI::InitialModel()
-{
-//----table widget
+    this->cFileData->SetPosOrg(_machHandle->GetHConfig()->GetPosOrg());
+    this->cFileData->SetPosLmt(_machHandle->GetHConfig()->GetPosLmt());
+    this->cFileData->SetPosMax(_machHandle->GetHConfig()->GetPosMax());
+    this->cFileData->SetPosToPulseScale (_machHandle->GetHConfig()->GetPosToPulseScale());
+    this->cFileData->SetRealToCutScale  (_machHandle->GetHConfig()->GetRealToCutScale());
+
+//----table widget UI
     gridLayout->addWidget(qwBtnAddt, 0, 0, 1, 1);
     gridLayout->addWidget(qwBtnUpwd, 0, 1, 1, 1);
     gridLayout->addWidget(qwBtnImpt, 0, 2, 1, 1);
@@ -52,10 +54,19 @@ void CutFile_UI::InitialModel()
     qwTableFnsh->verticalHeader()->setHidden(true);
     qwTableFnsh->horizontalHeader()->setHidden(true);
 
-    DisplayFileList(this->qwTableWait,this->qlcFileList);
+    DisplayFileList(this->qwTableWait,this->cFileData->GetFileList());
 
-//----frame
+//----frame UI
+    qwFrame->setStyleSheet("background-color:rgb(50,50,50);");
+    qwFrame->show();
     qwFrame->installEventFilter(this);
+    paintFactor = 1;
+    posFWheel.setX(0);
+    posFWheel.setY(0);
+    posFMousePressed.setX(0);
+    posFMousePressed.setY(0);
+    posFMouseMoved.setX(0);
+    posFMouseMoved.setY(0);
 }
 //----event
 bool CutFile_UI::eventFilter(QObject *watched, QEvent *e)
@@ -64,13 +75,52 @@ bool CutFile_UI::eventFilter(QObject *watched, QEvent *e)
     {
         if(e->type() == QEvent::Paint)
         {
-            DrawFile();
+            DrawFile(0);
+        }
+        if(e->type() == QEvent::Wheel)
+        {
+            bool subDiv =false;
+            QKeyEvent *eventKey = static_cast<QKeyEvent*>(e);
+            //滚轮是否按住ctrl
+            if(eventKey->modifiers() == Qt::ControlModifier)
+            {
+                subDiv = true;
+            }
+            //根据ctrl调节大小
+            QWheelEvent *eventWheel = static_cast<QWheelEvent*>(e);
+            posFWheel = eventWheel->pos();
+            (eventWheel->delta()>0)?(subDiv?(paintFactor*=1.01):(paintFactor*=1.1)):(subDiv?(paintFactor/=1.01):(paintFactor/=1.1));
+            qwFrame->repaint();
+        }
+        if(e->type() == QEvent::MouseMove)
+        {
+            QMouseEvent *eventMouse = static_cast<QMouseEvent*>(e);
+            this->posFMouseMoved = (transPosToLogic.map(eventMouse->localPos())-posFMousePressed);
+            qwFrame->update();
+        }
+        if(e->type() == QEvent::MouseButtonPress)
+        {
+            QMouseEvent *eventMouse = static_cast<QMouseEvent*>(e);
+            this->posFMousePressed = transPosToLogic.map(eventMouse->localPos());
+        }
+        if(e->type() == QEvent::MouseButtonRelease)
+        {
+            this->posFMouseMoved = QPointF(0,0);
+        }
+        if(e->type() == QEvent::MouseButtonDblClick)
+        {
+            double factorWidth  = static_cast<double>(qwFrame->width() )/static_cast<double>(this->cFileData->GetPosMax()->x());
+            double factorHeight = static_cast<double>(qwFrame->height())/static_cast<double>(this->cFileData->GetPosMax()->y());
+            this->paintFactor = factorWidth<factorHeight?factorWidth:factorHeight;
+            this->transPosToLogic.setMatrix(1/this->paintFactor,0,0,0,1/this->paintFactor,0,0,0,1/this->paintFactor);
+
+            qwFrame->repaint();
         }
     }
     return true;
 }
 //----private
-void CutFile_UI::DrawFile()
+void CutFile_UI::DrawFile(int _fileIndex)
 {
     QPainter painter(this->qwFrame);
     QPen pen(QColor(100,212,100),0);
@@ -79,7 +129,90 @@ void CutFile_UI::DrawFile()
     QPen penCutLable(QColor(0,255,0),0);
     painter.setPen(pen);
 
-    painter.drawRect(QRectF(10.0,10.0,100.0, 100.0));
+    //----设置缩放和平移的量纲
+    painter.scale(static_cast<qreal>(paintFactor),static_cast<qreal>(paintFactor));
+    painter.translate(transPosToLogic.inverted().map(posFMouseMoved)/paintFactor);
+    //----获取当前 控件坐标->刻度坐标的转换
+    transPosToLogic = painter.combinedTransform().inverted();
+    //当前像素点和数字逻辑点的坐标
+    posLogic = painter.combinedTransform().inverted().map(posFWheel);
+//    qDebug()<<posFWheel<<posLogic;
+
+    //----绘制静态图
+    painter.save();
+    //----绘制机床最大尺寸和允许裁剪尺寸
+    painter.setPen(penPaintMax);
+    painter.drawRect(QRectF(0.0,0.0,cFileData->GetPosMax()->x(), cFileData->GetPosMax()->y()));
+//    painter.setFont(QFont("华文行楷", 30));
+//    painter.drawText(QPointF(200,200), "你好123");
+    painter.setPen(penPaintLimit);
+    painter.drawRect(QRectF(cFileData->GetPosOrg()->x(),cFileData->GetPosOrg()->y(),
+                            cFileData->GetPosLmt()->x()-cFileData->GetPosOrg()->x(),cFileData->GetPosLmt()->y()-cFileData->GetPosOrg()->y()));
+    //----绘制下刀+实际偏移补偿
+    painter.setBrush(QColor(0,255,0,100));
+    painter.setPen(penCutLable);
+    QPointF offset(20/cFileData->GetPosToPulseScale()->x(),
+                   20/cFileData->GetPosToPulseScale()->y());
+    QPointF paintCutLable[6]={QPointF( 0, 0)+offset,
+                              QPointF( 5, 5)+offset,
+                              QPointF(20, 5)+offset,
+                              QPointF(20,-5)+offset,
+                              QPointF( 5,-5)+offset,
+                              QPointF( 0, 0)+offset};
+
+    painter.drawPolygon(paintCutLable,5);
+    painter.restore();
+
+    if((!cFileData->GetFileList()->isEmpty()) && cFileData->GetFileList()->count()>_fileIndex)
+    {
+        painter.setPen(pen);
+        painter.setRenderHint(QPainter::Antialiasing,true);
+
+        CutFile *_file = cFileData->GetFileList()->at(_fileIndex);
+        for(int i= 0;i<_file->GetPageList()->count();i++)
+        {
+            CutPage *_page = _file->GetPage(i);
+            for(int j = 0;j<_page->GetSampleList()->count();j++)
+            {
+                CutSample *_sample = _page->GetSample(j);
+                for(int k = 0;k<_sample->GetNormalLineList()->count();k++)
+                {
+                    painter.save();
+                    painter.setBrush(QColor(0,255,0,100));
+                    painter.setPen(penCutLable);
+                    QPolygonF *tempPolygon(_sample->GetNormalLine(k)->GetPointList());
+                    //just one line
+                    if(tempPolygon->first() != tempPolygon->last() || !_sample->GetCutFinished())
+                    {
+                        painter.drawPolyline(*tempPolygon);
+                    }
+                    else
+                    {
+                        painter.drawPolygon(*tempPolygon);
+                    }
+                    painter.restore();
+                }
+                //尺寸与原点偏移补偿
+                painter.setFont(QFont("华文行楷", 10));
+                painter.drawText(_sample->GetPointGravity(), QString::number(j));
+                //Vcut
+//                for(int punchCnt = 0;punchCnt<fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).punchCluster.count();punchCnt++)
+//                {
+//                    QPointF center = fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).punchCluster.at(punchCnt).dot;
+//                    QLineF line;
+//                    line.setPoints(center,QPointF(center.x()+5*(factorCutScale->x()),center.y()));
+//                    line.setAngle(-static_cast<qreal>(fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).punchCluster.at(punchCnt).dotAngle));
+//                    painter.drawLine(line);
+//                }
+//                //Drill
+//                for(int drillCnt = 0;drillCnt<fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).drillCluster.count();drillCnt++)
+//                {
+//                    QPointF center = fileContent->at(0).windowCluster.at(i).sampleCluster.at(j).drillCluster.at(drillCnt).dot;
+//                    painter.drawEllipse(center,3*factorCutScale->x(),3*factorCutScale->y());
+//                }
+            }
+        }
+    }
 }
 
 void CutFile_UI::LoadFileData(CutFile *_file)
@@ -157,6 +290,93 @@ void CutFile_UI::LoadFileData(CutFile *_file)
                     }
                 }
             }
+        }
+    }
+    file.close();
+
+    //change to mm unit,change to scale and add org set
+    for(int i=0;i<_file->GetPageList()->count();i++)
+    {
+        CutPage *_page = _file->GetPage(i);
+        for(int j=0;j<_page->GetSampleList()->count();j++)
+        {
+            CutSample *_sample = _page->GetSample(j);
+            for(int k=0;k<_sample->GetNormalLineList()->count();k++)
+            {
+                CutLine *_line = _sample->GetNormalLine(k);
+                for(int l=0;l<_line->GetPointList()->count();l++)
+                {
+                    //step 01:set to mm unit
+                    QPointF _tempPoint1 = _line->GetPointList()->at(l).toPoint()/HEX_PER_MM;
+//                    _line->GetPointList()->replace(l, _tempPoint1);
+                    //step 02:set to scale step
+                    QPointF _tempPoint2;
+                    _tempPoint2.setX(_tempPoint1.x()*cFileData->GetRealToCutScale()->x());
+                    _tempPoint2.setY(_tempPoint1.y()*cFileData->GetRealToCutScale()->y());
+//                    _line->GetPointList()->replace(l, _tempPoint2);
+                    //step 03:add org offset
+                    QPointF _tempPoint3;
+                    _tempPoint3.setX(_tempPoint2.x() + cFileData->GetPosOrg()->x());
+                    _tempPoint3.setY(_tempPoint2.y() + cFileData->GetPosOrg()->y());
+                    _line->GetPointList()->replace(l, _tempPoint3);
+                }
+            }
+//            for(int l=0;l<fileVector.at(i).windowCluster.at(j).sampleCluster.at(k).punchCluster.count();l++)
+//            {
+//                fileVector[i].windowCluster[j].sampleCluster[k].punchCluster[l].dot/=HEX_PER_MM;
+//                fileVector[i].windowCluster[j].sampleCluster[k].punchCluster[l].dot.setX(
+//                            fileVector[i].windowCluster[j].sampleCluster[k].punchCluster[l].dot.x()*factorCutScale->x());
+//                fileVector[i].windowCluster[j].sampleCluster[k].punchCluster[l].dot.setY(
+//                            fileVector[i].windowCluster[j].sampleCluster[k].punchCluster[l].dot.y()*factorCutScale->y());
+
+//                fileVector[i].windowCluster[j].sampleCluster[k].punchCluster[l].dot.setX(
+//                            fileVector[i].windowCluster[j].sampleCluster[k].punchCluster[l].dot.x() + posLogicOrg->x());
+//                fileVector[i].windowCluster[j].sampleCluster[k].punchCluster[l].dot.setY(
+//                            fileVector[i].windowCluster[j].sampleCluster[k].punchCluster[l].dot.y() + posLogicOrg->y());
+//            }
+//            for(int l=0;l<fileVector.at(i).windowCluster.at(j).sampleCluster.at(k).drillCluster.count();l++)
+//            {
+//                fileVector[i].windowCluster[j].sampleCluster[k].drillCluster[l].dot/=HEX_PER_MM;
+//                fileVector[i].windowCluster[j].sampleCluster[k].drillCluster[l].dot.setX(
+//                            fileVector[i].windowCluster[j].sampleCluster[k].drillCluster[l].dot.x()*factorCutScale->x());
+//                fileVector[i].windowCluster[j].sampleCluster[k].drillCluster[l].dot.setY(
+//                            fileVector[i].windowCluster[j].sampleCluster[k].drillCluster[l].dot.y()*factorCutScale->y());
+
+
+//                fileVector[i].windowCluster[j].sampleCluster[k].drillCluster[l].dot.setX(
+//                            fileVector[i].windowCluster[j].sampleCluster[k].drillCluster[l].dot.x() + posLogicOrg->x());
+//                fileVector[i].windowCluster[j].sampleCluster[k].drillCluster[l].dot.setY(
+//                            fileVector[i].windowCluster[j].sampleCluster[k].drillCluster[l].dot.y() + posLogicOrg->y());
+//            }
+        }
+    }
+    //set Sample Point
+    for(int i=0;i<_file->GetPageList()->count();i++)
+    {
+        CutPage *_page = _file->GetPage(i);
+        for(int j=0;j<_page->GetSampleList()->count();j++)
+        {
+            double area = 0;
+            QPointF center;
+            center.setX(0);
+            center.setY(0);
+            CutSample *_sample = _page->GetSample(j);
+            for(int k=0;k<_sample->GetNormalLineList()->count();k++)
+            {
+                CutLine *_line = _sample->GetNormalLine(k);
+                for(int m=0;m<_line->GetPointList()->count()-1;m++)
+                {
+                    QPointF tempThis = _line->GetPointList()->at(m);
+                    QPointF tempNext = _line->GetPointList()->at(m+1);
+
+                    area +=     (tempThis.x()*tempNext.y() - tempNext.x()*tempThis.y())/2;
+                    center.setX(center.x() + (tempThis.x()*tempNext.y() - tempNext.x()*tempThis.y()) * (tempThis.x() + tempNext.x()));
+                    center.setY(center.y() + (tempThis.x()*tempNext.y() - tempNext.x()*tempThis.y()) * (tempThis.y() + tempNext.y()));
+                }
+            }
+            center.setX(center.x() / (6*area));
+            center.setY(center.y() / (6*area));
+            _sample->SetPointGravity(center);
         }
     }
 }
@@ -327,19 +547,20 @@ void CutFile_UI::SlotBtnAddtClicked()
         return;
     for(int i=0;i<tempStrList.count();i++)
     {
-        if(this->CheckFileRepeat(tempStrList.at(i),this->qlcFileList) == false)
+        if(this->CheckFileRepeat(tempStrList.at(i),this->cFileData->GetFileList()) == false)
         {
-            this->AddFile(tempStrList.at(i),this->qlcFileList);
-            LoadFileData(this->qlcFileList->last());
+            this->AddFile(tempStrList.at(i),this->cFileData->GetFileList());
+            LoadFileData(this->cFileData->GetFileList()->last());
         }
     }
-    this->DisplayFileList(this->qwTableWait,this->qlcFileList);
+    this->DisplayFileList(this->qwTableWait,this->cFileData->GetFileList());
+    this->qwFrame->repaint();
 }
 void CutFile_UI::SlotBtnRemvClicked()
 {
     qDebug()<<"R";
     int rowNow = this->qwTableWait->currentRow();
-    if(this->qlcFileList->count()>0)
+    if(this->cFileData->GetFileList()->count()>0)
     {
         QMessageBox msgBox;
         msgBox.setWindowTitle(tr("提示"));
@@ -348,54 +569,58 @@ void CutFile_UI::SlotBtnRemvClicked()
         int ret = msgBox.exec();
         if(ret == QMessageBox::Yes)
         {
-            this->qlcFileList->removeAt(rowNow);
+            this->cFileData->GetFileList()->removeAt(rowNow);
         }
     }
-    this->DisplayFileList(this->qwTableWait,this->qlcFileList);
+    this->DisplayFileList(this->qwTableWait,this->cFileData->GetFileList());
+    this->qwFrame->repaint();
 }
 void CutFile_UI::SlotBtnUpwdClicked()
 {
     int rowNow = qwTableWait->currentRow();
     if(rowNow>0)
     {
-        qlcFileList->move(rowNow,rowNow-1);
+        this->cFileData->GetFileList()->move(rowNow,rowNow-1);
         qwTableWait->setCurrentCell(rowNow,QItemSelectionModel::Deselect);
         qwTableWait->setCurrentCell(rowNow-1,0,QItemSelectionModel::Select);
     }
-    this->DisplayFileList(this->qwTableWait,this->qlcFileList);
+    this->DisplayFileList(this->qwTableWait,this->cFileData->GetFileList());
+    this->qwFrame->repaint();
 }
 void CutFile_UI::SlotBtnDnwdClicked()
 {
     int rowNow = qwTableWait->currentRow();
     if(rowNow<(qwTableWait->rowCount()-1)&&rowNow>=0&&qwTableWait->rowCount()>1)
     {
-        qlcFileList->move(rowNow,rowNow+1);
+        this->cFileData->GetFileList()->move(rowNow,rowNow+1);
         qwTableWait->setCurrentCell(rowNow,QItemSelectionModel::Deselect);
         qwTableWait->setCurrentCell(rowNow+1,0,QItemSelectionModel::Select);
     }
-    this->DisplayFileList(this->qwTableWait,this->qlcFileList);
+    this->DisplayFileList(this->qwTableWait,this->cFileData->GetFileList());
+    this->qwFrame->repaint();
 }
 void CutFile_UI::SlotBtnImptClicked()
 {
-    this->ImportFiles(this->qlcFileList);
-    this->DisplayFileList(this->qwTableWait,this->qlcFileList);
+    this->ImportFiles(this->cFileData->GetFileList());
+    this->DisplayFileList(this->qwTableWait,this->cFileData->GetFileList());
+    this->qwFrame->repaint();
 }
 void CutFile_UI::SlotBtnExptClicked()
 {
     QString file_path = QFileDialog::getSaveFileName(qwTableWait,"请选择模板保存路径...","","*.txt;;");
-    if(!file_path.isEmpty() && !qlcFileList->isEmpty())
+    if(!file_path.isEmpty() && !this->cFileData->GetFileList()->isEmpty())
     {
         QFile file(file_path);
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
             return;
         QTextStream in(&file);
-        for(int i=0;i<qlcFileList->count();i++)
+        for(int i=0;i<this->cFileData->GetFileList()->count();i++)
         {
-            in<<qlcFileList->at(i)->GetCutTimes()<<'|'<<qlcFileList->at(i)->GetFilePath()<<'\n';
+            in<<this->cFileData->GetFileList()->at(i)->GetCutTimes()<<'|'<<this->cFileData->GetFileList()->at(i)->GetFilePath()<<'\n';
         }
         file.close();
     }
-    this->DisplayFileList(this->qwTableWait,this->qlcFileList);
+    this->DisplayFileList(this->qwTableWait,this->cFileData->GetFileList());
 }
 void CutFile_UI::SlotChkBxSpin(int _cnt)
 {
@@ -405,5 +630,5 @@ void CutFile_UI::SlotChkBxSpin(int _cnt)
         return;
     }
     int index = spinBox->property("index").toInt();
-    this->qlcFileList->at(index)->SetCutTimes(_cnt);
+    this->cFileData->GetFileList()->at(index)->SetCutTimes(_cnt);
 }

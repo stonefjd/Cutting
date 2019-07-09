@@ -18,13 +18,25 @@
 #include <QPainter>
 
 #include "Base/cutfile.h"
+#include "Machine/Config/cfgmachhandle.h"
+#include "cutfile_data.h"
 class CutFile_UI : public QObject
 {
     Q_OBJECT
 private:
-    QList<CutFile*>* qlcFileList = new QList<CutFile*>;
+    CutFile_Data *cFileData;
+
+    QPointF posFWheel;
+    QPointF posFMousePressed;
+    QPointF posFMouseMoved;
+
+    QTransform transPosToLogic;
+    QPointF posLogic;
+    double  paintFactor;
+
     QDockWidget *qwDockWidget;
     QFrame      *qwFrame;
+//    CfgMachHandle *cMachHandle;
 
     QPushButton *qwBtnAddt  = new QPushButton(tr("添加"));
     QPushButton *qwBtnRemv  = new QPushButton(tr("移除"));
@@ -45,16 +57,14 @@ private:
     void        AddFile         (QString _filePath,         QList<CutFile*>* _fileList);
     void        ImportFiles     (                           QList<CutFile*>* _fileList);
     void        LoadFileData    (CutFile *_file);
-    void        DrawFile        ();
+    void        DrawFile        (int _fileIndex);
 protected:
     bool eventFilter(QObject *watched, QEvent *e);
 
 public:
     explicit CutFile_UI(QObject *parent = nullptr);
-    void SetFileList(QList<CutFile*>* _list);
-    void SetDockWidget(QDockWidget *_dockWidget);
-    void SetPaintFrame(QFrame *_frame);
-    void InitialModel();
+    void SetFileData(CutFile_Data *_fileData);
+    void InitialModel(QDockWidget *_dockwgt, QFrame *_frame, CfgMachHandle *_machHandle);
 signals:
 
 public slots:

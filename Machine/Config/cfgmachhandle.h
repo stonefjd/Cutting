@@ -13,8 +13,8 @@ class CfgMachHandle : public QObject
 public:
     explicit CfgMachHandle(QObject *parent = nullptr);
 
-    CfgMach mConfig;
-    CfgHead hConfig;
+    CfgMach *mConfig = new CfgMach;
+    CfgHead *hConfig = new CfgHead;
     QList<CfgApron*> aConfig;
     CfgLib  lConfig;
     CfgMachSettings *UI_cfgMachSettings;
@@ -24,6 +24,7 @@ public:
     void ShowMachSettings(UserHandle *_userHandle);
     void ShowKnifeManager(UserHandle *_userHandle);
 
+    CfgHead *GetHConfig();
 
 signals:
 

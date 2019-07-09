@@ -2,8 +2,8 @@
 
 CfgMachHandle::CfgMachHandle(QObject *parent) : QObject(parent)
 {
-    mConfig.GetMachineBaseInfo();
-    hConfig.GetHeadInfo();
+    mConfig->GetMachineBaseInfo();
+    hConfig->GetHeadInfo();
     lConfig.ReadCutToolLib();
     for(int i=0;i<MAX_TOOLAPRON;i++)
     {
@@ -31,8 +31,8 @@ void CfgMachHandle::ShowMachSettings(UserHandle *_userHandle)
     //new UI
     UI_cfgMachSettings = new CfgMachSettings;
     UI_cfgMachSettings->SetCfgUser(_userHandle);
-    UI_cfgMachSettings->SetCfgMach(&mConfig);
-    UI_cfgMachSettings->SetCfgHead(&hConfig);
+    UI_cfgMachSettings->SetCfgMach(mConfig);
+    UI_cfgMachSettings->SetCfgHead(hConfig);
     //load data from param
     UI_cfgMachSettings->LoadData();
 
@@ -48,7 +48,7 @@ void CfgMachHandle::ShowMachSettings(UserHandle *_userHandle)
 void CfgMachHandle::ShowKnifeManager(UserHandle *_userHandle)
 {
     UI_cfgKnifeManager = new CfgKnifeManager;
-    UI_cfgKnifeManager->SetCfgHead(&hConfig);
+    UI_cfgKnifeManager->SetCfgHead(hConfig);
     UI_cfgKnifeManager->SetCfgLib(&lConfig);
     UI_cfgKnifeManager->SetCfgApron(&aConfig);
     UI_cfgKnifeManager->SetCfgUser(_userHandle);
@@ -64,6 +64,10 @@ void CfgMachHandle::ShowKnifeManager(UserHandle *_userHandle)
 void CfgMachHandle::UpdateConfigMaxPluse(double _xPos, double _yPos)
 {
 //    mConfig.UpdateMachRunMax(static_cast<int>(_xPos),static_cast<int>(_yPos));
-    hConfig.UpdateHeadMaxPluse(static_cast<int>(_xPos),static_cast<int>(_yPos),0);
+    hConfig->UpdateHeadMaxPluse(static_cast<int>(_xPos),static_cast<int>(_yPos),0);
 //    hConfig.at(0)->UpdateHeadCutLimit(static_cast<int>(_xPos),static_cast<int>(_yPos),0);
+}
+CfgHead* CfgMachHandle::GetHConfig()
+{
+    return this->hConfig;
 }

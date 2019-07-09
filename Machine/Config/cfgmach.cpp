@@ -4,6 +4,40 @@
 CfgMach::CfgMach()
 {
     machCfgPath = SETTING_PATH;
+
+    versionHw   = "1";
+    versionSw   = "1";
+    machType    = 0;
+//    double  machTypeSub;
+
+    sizeX       = 2500;
+    sizeY       = 1600;
+    feltThick   = 3;
+
+    effctLvLimit = 0;
+    effctLvSwage = 0;
+    effctLvPuase = 0;
+    effctLvPump  = 0;
+
+    enFanZone   = 0;
+    enInhal     = 0;
+    enBlow      = 0;
+    freqInhale  = 5000;
+    freqBlow    = 5000;
+
+    timeSwage   = 200;			//压料时间(s)
+    timeBlow    = 200;          //吹气时间(s)
+    timeLoadBefore  = 200;		//放料开始提前时间(s)
+    timeLoadAfter   = 200;		//放料结束提前时间(s)
+    timeInhaleDelay = 200;		//吸气延迟时间(ms)
+
+    alignEn     = 0;
+    alignMaxZ   = 10;
+    alignStartZ = 10;
+    alignAbsX   = 100;
+    alignAbsY   = 100;
+
+    headCount   = 100;
 }
 QString CfgMach::GetMachCfgPath()
 {

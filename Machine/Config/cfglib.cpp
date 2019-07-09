@@ -340,7 +340,7 @@ CfgKnife*   CfgLib::GetKnifeByGuid(int nGuid)
 CfgKnife*   CfgLib::GetKnifeByName(QString sName)
 {
     QString knifeName = sName;
-    sName.remove(QRegExp("[12456789]"));
+    sName.remove(QRegExp("[123456789]"));
     CfgCutTool* pCutTool = GetCutToolByKey(sName);
     return pCutTool->GetKnifeByName(knifeName);
 }
