@@ -13,3 +13,8 @@ CutFileHandle::CutFileHandle(QDockWidget *_dockwgt,QFrame *_frame,CfgMachHandle 
 //     cutFile_UI->SetMachHandle(_machHandle);
      cutFile_UI->InitialModel(_dockwgt,_frame,_machHandle);
 }
+void CutFileHandle::SlotUpdateHeadPosRt(int _xPos,int _yPos)
+{
+    cutFile_Data.SetPosRt(QPointF(static_cast<double>(_xPos)/cutFile_Data.GetPosToPulseScale()->x(),
+                                      static_cast<double>(_yPos)/cutFile_Data.GetPosToPulseScale()->y()));
+}

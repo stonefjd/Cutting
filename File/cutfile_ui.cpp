@@ -151,8 +151,8 @@ void CutFile_UI::DrawFile(int _fileIndex)
     //----绘制下刀+实际偏移补偿
     painter.setBrush(QColor(0,255,0,100));
     painter.setPen(penCutLable);
-    QPointF offset(20/cFileData->GetPosToPulseScale()->x(),
-                   20/cFileData->GetPosToPulseScale()->y());
+    QPointF offset(cFileData->GetPosRt().x(),
+                   cFileData->GetPosRt().y());
     QPointF paintCutLable[6]={QPointF( 0, 0)+offset,
                               QPointF( 5, 5)+offset,
                               QPointF(20, 5)+offset,

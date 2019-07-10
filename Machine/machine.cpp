@@ -639,7 +639,8 @@ void Machine::GetRunningData()
     double xPos,yPos;
     ADP_GetAxisPrfPos(AXIS_X,&xPos);
     ADP_GetAxisPrfPos(AXIS_Y,&yPos);
-//    if((head0_Pos.x()!=xPos) && (head0_Pos.y()!=yPos))
+    emit UpdateHeadPosRt(static_cast<int>(xPos),static_cast<int>(yPos));
+    //获取当前角度和上个周期的角度
     {
         head0_PosLast.setX(head0_Pos.x());
         head0_PosLast.setY(head0_Pos.y());
@@ -655,6 +656,10 @@ void Machine::GetRunningData()
     ((xSts&0x0400) != 0)?(mStateMotorRunningX=true):(mStateMotorRunningX=false);
     ((ySts&0x0400) != 0)?(mStateMotorRunningY=true):(mStateMotorRunningY=false);
 }
+//QPointF Machine::GetHeadPosRt()
+//{
+//    return this->head0_Pos;
+//}
 void Machine::Mach_SetHead0Org(QPointF *_head0_Org)
 {
     this->head0_Org = _head0_Org;

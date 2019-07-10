@@ -16,7 +16,7 @@ private:
     QPointF *posMax;       //全局最大运动边界
 
     QPointF *realToCutScale;    //实际切割缩放比例
-    QPointF *rtPos;  //实时机头位置
+    QPointF posRt;  //实时机头位置
     double  *rtAgl;//实时角度
 public:
     explicit CutFile_Data(QObject *parent = nullptr);
@@ -32,8 +32,8 @@ public:
     QPointF *GetPosMax();
     void    SetRealToCutScale(QPointF *_pointF);
     QPointF *GetRealToCutScale();
-    void    SetRtPos(QPointF *_pointF);
-    QPointF *GetRtPos();
+    void    SetPosRt(QPointF _pointF);
+    QPointF GetPosRt();
     void    SetRtAgl(double *_agl);
     double  *GetRtAgl();
 signals:

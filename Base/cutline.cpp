@@ -6,7 +6,7 @@ CutLine::CutLine(QObject *parent) : QObject(parent)
     m_dDepth = 0;
     m_nKnifeGuid = 0;
     m_qstrLable = "NoLine";
-    m_qpOffset = QPointF(0,0);
+    m_qpKnifeOffset = QPointF(0,0);
 }
 
 void    CutLine::AddCutPoint(QPointF _point,double _angle)

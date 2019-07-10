@@ -105,6 +105,9 @@ public:
     double  head0_MoveAngel;
     QPointF head0_PosLast;
 public:
+//    QPointF GetHeadPosRt();
+
+public:
     void Mach_SetHead0Org(QPointF *_head0_Org);
     void Mach_SetHead0PulsePerMillimeter(QPointF *_head0_PulsePerMillimeter);
     void Mach_SetHead0Limit(QPointF *_head0_Limit);
@@ -123,6 +126,7 @@ public:
     void GetRunningData();
 signals:
     void UpdateMachineMaxPluse(double _xPos, double _yPos);
+    void UpdateHeadPosRt(int _xPos, int _yPos);//更新脉冲x,y坐标（脉冲信号）
 public slots:
     void Task_10ms();
     void SubStateOpBtnPress(int id);

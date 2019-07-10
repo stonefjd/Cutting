@@ -58,14 +58,14 @@ QPointF* CutFile_Data::GetRealToCutScale()
     return this->realToCutScale;
 }
 
-void    CutFile_Data::SetRtPos(QPointF *_pointF)
+void    CutFile_Data::SetPosRt(QPointF _pointF)
 {
-    this->rtPos = _pointF;
+    this->posRt = _pointF;
 }
 
-QPointF* CutFile_Data::GetRtPos()
+QPointF CutFile_Data::GetPosRt()
 {
-    return this->rtPos;
+    return this->posRt;
 }
 
 void    CutFile_Data::SetRtAgl(double *_agl)

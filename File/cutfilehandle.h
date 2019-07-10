@@ -21,6 +21,8 @@ public:
 signals:
 
 public slots:
+    void SlotUpdateHeadPosRt(int _xPos,int _yPos);
+
 };
 
 #endif // CUTFILEHANDLE_H

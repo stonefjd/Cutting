@@ -64,7 +64,7 @@ WindowCutting::WindowCutting(QWidget *parent) :
     connect(ui->actionEdgeScan, SIGNAL(triggered()),        mMachine,SLOT(SubStateOpBtnEdgeScan()));
 
     connect(mMachine,           SIGNAL(UpdateMachineMaxPluse(double,double)),cfgMachHandle,SLOT(UpdateConfigMaxPluse(double,double)));
-
+    connect(mMachine,           SIGNAL(UpdateHeadPosRt(int,int)),cutFileHandle,SLOT(SlotUpdateHeadPosRt(int,int)));
 //----UserLog
     userHandle = nullptr;
     //disable all the operate item
