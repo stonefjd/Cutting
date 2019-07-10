@@ -22,37 +22,17 @@ WindowCutting::WindowCutting(QWidget *parent) :
     ui->btnDirGroup->setId(ui->btnOpOrg,BTN_ID_O);
 //----status bar
     ui->statusBar->showMessage("ready");
-//----cutFileHandle
-    cutFileHandle = new CutFileHandle(ui->dockWgtList,ui->mainPaint,cfgMachHandle);
-//----CutFileOperator
-    ui->dockWgtCutFile->setWindowTitle(tr("任务列表"));
-    ui->dockWgtCutFile->setMaximumWidth(200);
-    ui->dockWgtCutFile->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);
-    ui->tableWgtFileWaiting->setFocusPolicy(Qt::NoFocus);
-    cutFileList.CutFileList_WidgetInit(ui->tableWgtFileWaiting);
-    cutFileList.CutFileList_SetPosLogicOrg(cfgMachHandle->hConfig->posOrg);
-    cutFileList.CutFileList_SetFactorCutScale(cfgMachHandle->hConfig->realToCutScale);
-
-//----CutFileDraw
-    ui->paintFrame->setMouseTracking(false);
-    ui->paintFrame->installEventFilter(this);
-    ui->paintFrame->setFocusPolicy(Qt::StrongFocus);
-    cutFlieDraw.CutFileDraw_SetPaintFrame(ui->paintFrame);
-    cutFlieDraw.CutFileDraw_SetPaintContent(&cutFileList.fileVector);
-    cutFlieDraw.CutFileDraw_SetRangePage(cfgMachHandle->hConfig->posLimit);
-    cutFlieDraw.CutFileDraw_SetRangeMax(cfgMachHandle->hConfig->posMax);
-    cutFlieDraw.CutFileDraw_SetPaintFactorPulsePerMillimeter(cfgMachHandle->hConfig->posToPulseScale);
-    cutFlieDraw.CutFileDraw_SetPaintLogicOrg(cfgMachHandle->hConfig->posOrg);
-    cutFlieDraw.CutFileDraw_SetFactorCutScale(cfgMachHandle->hConfig->realToCutScale);
-    cutFlieDraw.CutFileDraw_SetPaintLogicRealTime(&mMachine->head0_Pos,&mMachine->head0_MoveAngel);
+//----new Handle,shouldn't change the order
+    cutFileHandle = new CutFileHandle(ui->dockWgtList,ui->mainPaint);
+    cfgMachHandle = new CfgMachHandle;
 //----Machine Init
     //mMachine.mFan_1.StateMachineInit(ui->actionWindIn,ui->actionWindOut);
-    mMachine->Mach_SetHead0Org(cfgMachHandle->hConfig->posOrg);
-    mMachine->Mach_SetHead0PulsePerMillimeter(cfgMachHandle->hConfig->posToPulseScale);
-    mMachine->Mach_SetHead0Limit(cfgMachHandle->hConfig->posLimit);
+    mMachine->Mach_SetHead0Org(&cfgMachHandle->hConfig->posOrg);
+    mMachine->Mach_SetHead0PulsePerMillimeter(&cfgMachHandle->hConfig->posToPulseScale);
+    mMachine->Mach_SetHead0Limit(&cfgMachHandle->hConfig->posLimit);
     mMachine->Mach_SetHead0IdleMoveSpd(cfgMachHandle->hConfig->idleMoveSpd);
     mMachine->Mach_SetHead0IdleMoveAcc(cfgMachHandle->hConfig->idleMoveAcc);
-    mMachine->Mach_SetCutContent(&cutFileList.fileVector);
+//    mMachine->Mach_SetCutContent(&cutFileList.fileVector);
 
     connect(this,SIGNAL(keyPressed(QKeyEvent)), mMachine,SLOT(SubStateOpKeyPress(QKeyEvent)));
     connect(this,SIGNAL(keyReleased(QKeyEvent)),mMachine,SLOT(SubStateOpKeyRelease(QKeyEvent)));
@@ -63,62 +43,27 @@ WindowCutting::WindowCutting(QWidget *parent) :
     connect(ui->actionResize,   SIGNAL(triggered()),        mMachine,SLOT(SubStateOpBtnReSize()));
     connect(ui->actionEdgeScan, SIGNAL(triggered()),        mMachine,SLOT(SubStateOpBtnEdgeScan()));
 
-    connect(mMachine,           SIGNAL(UpdateMachineMaxPluse(double,double)),cfgMachHandle,SLOT(UpdateConfigMaxPluse(double,double)));
-    connect(mMachine,           SIGNAL(UpdateHeadPosRt(int,int)),cutFileHandle,SLOT(SlotUpdateHeadPosRt(int,int)));
+    connect(mMachine,           SIGNAL(UpdateMachineMaxPluse(double,double)),
+            cfgMachHandle,      SLOT(UpdateConfigMaxPluse(double,double)));
+    connect(mMachine,           SIGNAL(UpdateHeadPosRt(int,int)),
+            cutFileHandle,      SLOT(SlotUpdateHeadPosRt(int,int)));
+    connect(cfgMachHandle,      SIGNAL(UpdateDataHead(QPointF,QPointF,QPointF,QPointF,QPointF)),
+            cutFileHandle,      SLOT(SlotUpdateDataHead(QPointF,QPointF,QPointF,QPointF,QPointF)));
+    connect(cfgMachHandle,      SIGNAL(UpdateDataApron(QList<CfgApron*>)),
+            cutFileHandle,      SLOT(SlotUpdateDataApron(QList<CfgApron*>)));
+    connect(cutFileHandle,      SIGNAL(UpdateDataApron()),
+            cfgMachHandle,      SLOT(SlotUpdateDataApron()));
 //----UserLog
     userHandle = nullptr;
     //disable all the operate item
     this->userLog_PermissionConfirm();
 
+//----
+    cfgMachHandle->InitCommunicate();
 //----Start debug timer
     debugTimer=new QTimer(this);
     connect(debugTimer,SIGNAL(timeout()),this,SLOT(debugTask_100ms()));
     debugTimer->start(20);
-}
-
-bool WindowCutting::eventFilter(QObject *watched, QEvent *e)
-{
-    if(watched == ui->paintFrame)
-    {
-        if(e->type() == QEvent::Paint)
-        {
-            cutFlieDraw.CutFileDraw_DisplayFileData();
-        }
-        if(e->type() == QEvent::Wheel)
-        {
-            bool subDiv =false;
-            QKeyEvent *eventKey = static_cast<QKeyEvent*>(e);
-            if(eventKey->modifiers() == Qt::ControlModifier)
-            {
-                subDiv = true;
-            }
-            QWheelEvent *eventWheel = static_cast<QWheelEvent*>(e);
-            cutFlieDraw.CutFileDraw_SetPosFWheel(eventWheel->pos());
-            cutFlieDraw.CutFileDraw_SetFactor(eventWheel->delta(),subDiv);
-            ui->paintFrame->repaint();
-        }
-        if(e->type() == QEvent::MouseMove)
-        {
-            QMouseEvent *eventMouse = static_cast<QMouseEvent*>(e);
-            cutFlieDraw.CutFileDraw_SetPosFMouseMoveDelta(eventMouse->localPos());
-            ui->paintFrame->update();
-        }
-        if(e->type() == QEvent::MouseButtonPress)
-        {
-            QMouseEvent *eventMouse = static_cast<QMouseEvent*>(e);
-            cutFlieDraw.CutFileDraw_SetPosFMousePressed(eventMouse->localPos());
-        }
-        if(e->type() == QEvent::MouseButtonRelease)
-        {
-            cutFlieDraw.CutFileDraw_SetPosFMouseReleased();
-        }
-        if(e->type() == QEvent::MouseButtonDblClick)
-        {
-            cutFlieDraw.CutFileDraw_SetSizeFixed();
-            ui->paintFrame->repaint();
-        }
-    }
-    return QMainWindow::eventFilter(watched,e);
 }
 
 WindowCutting::~WindowCutting()
@@ -133,7 +78,7 @@ void WindowCutting::userLog_PermissionConfirm()
     actionList.append(ui->mainToolBar->findChildren<QWidget*>());
     //actionList.append(ui->menuBar->findChildren<QWidget*>());
     actionList.append(ui->dockWgtOperate->findChildren<QWidget*>());
-    actionList.append(ui->dockWgtCutFile->findChildren<QWidget*>());
+    actionList.append(ui->dockWgtList->findChildren<QWidget*>());
 
     if(userHandle == nullptr)
     {
@@ -184,60 +129,6 @@ void WindowCutting::on_actionReset_triggered()
 //--only for TEST
 void WindowCutting::on_pushButton_clicked()
 {
-//    short sRtn;
-//    sRtn = GT_ClrSts(1,8);
-
-//    sRtn = GT_AxisOn(AXIS_X);
-//    sRtn = GT_AxisOn(AXIS_Y);
-//    sRtn = GT_ZeroPos(AXIS_X);
-//    sRtn = GT_ZeroPos(AXIS_Y);
-//    sRtn = GT_SetPrfPos(AXIS_X, 0);
-//    sRtn = GT_SetPrfPos(AXIS_Y, 0);
-
-//    TCrdPrm crdPrm;
-//    memset(&crdPrm, 0, sizeof(crdPrm));
-//    crdPrm.dimension=2;   // 坐标系为二维坐标系
-//    crdPrm.synVelMax=50;  // 最大合成速度：500pulse/ms
-//    crdPrm.synAccMax=1;   // 最大加速度：1pulse/ms^2
-//    crdPrm.evenTime = 50;   // 最小匀速时间：50ms
-//    crdPrm.profile[0] = 1;   // 规划器1对应到X轴
-//    crdPrm.profile[1] = 2;   // 规划器2对应到Y轴
-//    crdPrm.setOriginFlag = 1;  // 表示需要指定坐标系的原点坐标的规划位置
-//    crdPrm.originPos[0] = 100;  // 坐标系的原点坐标的规划位置为（100, 100）
-//    crdPrm.originPos[1] = 100;
-//    sRtn = GT_SetCrdPrm(1, &crdPrm);
-
-//    // 指令返回值变量
-//    short run;  // 坐标系运动完成段查询变量
-//    long segment;  // 坐标系的缓存区剩余空间查询变量
-//    // 即将把数据存入坐标系1的FIFO0中，所以要首先清除此缓存区中的数据
-//    TCrdData crdData[500];
-//    GT_InitLookAhead(1, 0, 5, 1, 500, crdData);
-//    sRtn = GT_CrdClear(1, 0);
-//    // 向缓存区写入第一段插补数据
-//    if(cutFileList.fileVector[0].windowCluster[0].sampleCluster[0].lineCluster[0].dotCount!=0)
-//    {
-//        for(int i=0;i<cutFileList.fileVector[0].windowCluster[0].sampleCluster[0].lineCluster[0].dotCount;i++)
-//        {
-//            sRtn = GT_LnXY(    1,    // 该插补段的坐标系是坐标系1
-//                               static_cast<long>(cutFileList.fileVector[0].windowCluster[0].sampleCluster[0].lineCluster[0].pointCluster[i].x()*107),
-//                               static_cast<long>(cutFileList.fileVector[0].windowCluster[0].sampleCluster[0].lineCluster[0].pointCluster[i].y()*107),  // 该插补段的终点坐标(15000, 15000)
-//                               20,    // 该插补段的目标速度：100pulse/ms
-//                               0.05,    // 插补段的加速度：0.1pulse/ms^2
-//                               0,    // 终点速度为0
-//                               0);    // 向坐标系1的FIFO0缓存区传递该直线插补数据
-//        }
-//    }
-//    GT_CrdData(1, nullptr, 0);
-//    sRtn = GT_CrdStart(1, 0);
-//    do
-//    {
-//        sRtn = GT_CrdStatus(     1,   // 坐标系是坐标系1
-//                                 &run,  // 读取插补运动状态
-//                                 &segment, // 读取当前已经完成的插补段数
-//                                 0);   // 查询坐标系1的FIFO0缓存区
-//        qDebug()<<"run:"<<run<<" seg:"<<segment;
-//    }while(run == 1);
 }
 void WindowCutting::on_pushButton_2_clicked()
 {
@@ -249,52 +140,6 @@ void WindowCutting::on_pushButton_4_clicked()
 {
 }
 
-
-
-//--CutFileOperator
-void WindowCutting::on_btnFileAdd_clicked()
-{
-    cutFileList.CutFileList_ChoseSingleFile();
-    cutFileList.CutFileList_DisplayList(ui->tableWgtFileWaiting);
-    ui->paintFrame->repaint();
-}
-void WindowCutting::on_btnFileImport_clicked()
-{
-    cutFileList.CutFileList_ChoseList();
-    cutFileList.CutFileList_DisplayList(ui->tableWgtFileWaiting);
-    ui->paintFrame->repaint();
-}
-void WindowCutting::on_btnFileRmv_clicked()
-{
-    cutFileList.CutFileList_RemoveFileFromList(ui->tableWgtFileWaiting);
-    cutFileList.CutFileList_DisplayList(ui->tableWgtFileWaiting);
-}
-void WindowCutting::on_btnFileUp_clicked()
-{
-    cutFileList.CutFileList_UpFileFromList(ui->tableWgtFileWaiting);
-    cutFileList.CutFileList_DisplayList(ui->tableWgtFileWaiting);
-    ui->paintFrame->repaint();
-}
-void WindowCutting::on_btnFileDown_clicked()
-{
-    cutFileList.CutFileList_DownFileFromList(ui->tableWgtFileWaiting);
-    cutFileList.CutFileList_DisplayList(ui->tableWgtFileWaiting);
-    ui->paintFrame->repaint();
-}
-void WindowCutting::on_btnFileExport_clicked()
-{
-    cutFileList.CutFileList_ExportFileFromList(ui->tableWgtFileWaiting);
-}
-void WindowCutting::on_actionImportCutFile_triggered()
-{
-    cutFileList.CutFileList_ChoseSingleFile();
-    cutFileList.CutFileList_DisplayList(ui->tableWgtFileWaiting);
-}
-void WindowCutting::on_actionImportCutFileList_triggered()
-{
-    cutFileList.CutFileList_ChoseList();
-    cutFileList.CutFileList_DisplayList(ui->tableWgtFileWaiting);
-}
 //--userLog
 void WindowCutting::on_actionLogManager_triggered()
 {
@@ -338,7 +183,7 @@ void WindowCutting::on_actionLogOn_triggered()
     }
     this->userLog_PermissionConfirm();
 }
-//--machine--fan
+//----machine--fan
 void WindowCutting::on_actionWindIn_triggered(bool arg1)
 {
     if(arg1 == true)
@@ -401,29 +246,18 @@ void WindowCutting::debugTask_100ms()
 
     if(mMachine->GetMachineMainState() != stMain_Wait || mMachine->GetStateMotorRunningX()||mMachine->GetStateMotorRunningY())
     {
-        ui->paintFrame->update();
         ui->mainPaint->update();
     }
 }
-//void WindowCutting::messageBoxAutoRemove(QString _str)
-//{
-//    QMessageBox *msgBox = new QMessageBox;
-//    msgBox->setText(_str);
-//    QTimer::singleShot(500,msgBox,SLOT(accept()));
-//    msgBox->exec();
-//    delete msgBox;
-//}
 
-
-
-void WindowCutting::on_dockWgtCutFile_visibilityChanged(bool visible)
+void WindowCutting::on_dockWgtList_visibilityChanged(bool visible)
 {
     ui->actionViewCutList->setChecked(visible);
 }
 
 void WindowCutting::on_actionViewCutList_triggered(bool checked)
 {
-    ui->dockWgtCutFile->setVisible(checked);
+    ui->dockWgtList->setVisible(checked);
 }
 
 void WindowCutting::on_actionMachSetting_triggered()

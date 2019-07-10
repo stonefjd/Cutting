@@ -30,6 +30,9 @@ public:
 
     void    SetLineLable(QString _lineLable);
     QString GetLineLable(void);
+
+    void    SetKnifeOffset(QPointF _pointF);
+    QPointF GetKnifeOffset();
 signals:
 
 public slots:

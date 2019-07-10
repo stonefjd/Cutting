@@ -51,6 +51,9 @@ private slots:
     void SlotBtnOkClicked();
     void SlotBtnApplyClicked();
     void SlotBtnCancleClicked();
+signals:
+    void UpdateDataHead();
+
 };
 
 #endif // CFGMACHSETTINGS_H

@@ -14,8 +14,6 @@
 #include <QPainter>
 #include <QCloseEvent>
 
-#include "File/cutfilelist.h"
-#include "File/cutfiledraw.h"
 #include "File/cutfilehandle.h"
 #include "PhysicalLayer/gts.h"
 #include "User/userhandle.h"
@@ -42,22 +40,12 @@ public:
     ~WindowCutting();
 
 private slots:
-    void on_btnFileAdd_clicked();
-    void on_btnFileImport_clicked();
-    void on_btnFileRmv_clicked();
-    void on_btnFileDown_clicked();
-    void on_btnFileUp_clicked();
-    void on_btnFileExport_clicked();
-
     void on_pushButton_clicked();
     void on_pushButton_2_clicked();
     void on_pushButton_3_clicked();
     void on_pushButton_4_clicked();
 
     void on_actionReset_triggered();
-
-    void on_actionImportCutFile_triggered();
-    void on_actionImportCutFileList_triggered();
 
     void on_actionLogOn_triggered();
     void on_actionWindIn_triggered(bool arg1);
@@ -69,7 +57,7 @@ private slots:
 
     void on_actionLogManager_triggered();
 
-    void on_dockWgtCutFile_visibilityChanged(bool visible);
+    void on_dockWgtList_visibilityChanged(bool visible);
 
     void on_actionViewCutList_triggered(bool checked);
 
@@ -81,17 +69,15 @@ signals:
     void keyPressed(QKeyEvent);
     void keyReleased(QKeyEvent);
 protected:
-    bool eventFilter(QObject *watched, QEvent *e);
+//    bool eventFilter(QObject *watched, QEvent *e);
     void userLog_PermissionConfirm();
 private:
 
 private:
     Ui::WindowCutting   *ui;
     Machine             *mMachine = new Machine;
-    CfgMachHandle       *cfgMachHandle = new CfgMachHandle;
+    CfgMachHandle       *cfgMachHandle;
     UserHandle          *userHandle;
-    CutFileDraw         cutFlieDraw;
-    CutFileList         cutFileList;
     QTimer              *debugTimer;
     CutFileHandle       *cutFileHandle;
 };

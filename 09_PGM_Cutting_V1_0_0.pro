@@ -37,7 +37,6 @@ SOURCES += \
     Machine/Knife/sdmachinehead.cpp \
     Machine/Knife/sdmachine.cpp \
     Machine/Knife/sdcuttoollib.cpp \
-    File/cutfiledraw.cpp \
     User/usermanager.cpp \
     User/user.cpp \
     User/userhandle.cpp \
@@ -51,7 +50,6 @@ SOURCES += \
     Machine/Config/cfgcuttool.cpp \
     Machine/Config/cfgknifemanager.cpp \
     Machine/Config/cfgapron.cpp \
-    File/cutfilelist.cpp \
     Base/cutsample.cpp \
     Base/cutline.cpp \
     Base/cutfile.cpp \
@@ -74,8 +72,6 @@ HEADERS += \
     Machine/Knife/sdmachinehead.h \
     Machine/Knife/sdmachine.h \
     Machine/Knife/sdcuttoollib.h \
-    File/cutfiledraw.h \
-    File/cutfileformat.h \
     User/usermanager.h \
     User/user.h \
     User/userhandle.h \
@@ -89,7 +85,6 @@ HEADERS += \
     Machine/Config/cfgcuttool.h \
     Machine/Config/cfgknifemanager.h \
     Machine/Config/cfgapron.h \
-    File/cutfilelist.h \
     Base/cutsample.h \
     Base/cutline.h \
     Base/cutfile.h \

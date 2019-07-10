@@ -41,6 +41,8 @@ private:
     QStringList tempKnifeName;
 
     int tab1Valid = 2;//0:正常 1:未选择刀具 2:无选中
+signals:
+    void UpdateDataApron();
 private slots:
     void SlotBtnGrpClicked(bool _chk);
     void on_btnOK_clicked();

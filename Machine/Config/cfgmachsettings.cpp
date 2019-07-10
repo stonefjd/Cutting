@@ -69,8 +69,8 @@ void CfgMachSettings::LoadData()
         {
             qDebug() << queryParam.lastError();
         }
-        QFormLayout *buffLayout = new QFormLayout(tab);
-        QHBoxLayout *hrzlLayout = new QHBoxLayout(tab);
+        QFormLayout *buffLayout = new QFormLayout();
+        QHBoxLayout *hrzlLayout = new QHBoxLayout();
         while(queryParam.next())
         {
             //get query value from table
@@ -90,7 +90,7 @@ void CfgMachSettings::LoadData()
             {
                 tabIsEmpty = false;
 
-                QLabel *lable = new QLabel(tab);
+                QLabel *lable = new QLabel();
                 QByteArray qByteArray = text.toUtf8();
                 const char* cStr = qByteArray.data();
                 lable->setText(tr(cStr));
@@ -100,7 +100,7 @@ void CfgMachSettings::LoadData()
                 if(widgetName == "QLineEdit")
                 {
                     //new widget
-                    QLineEdit *lineEdit = new QLineEdit(tab);
+                    QLineEdit *lineEdit = new QLineEdit();
                     //set value
                     lineEdit->setText(*value);
                     //connect slot
@@ -111,7 +111,7 @@ void CfgMachSettings::LoadData()
                 else if(widgetName == "QComboBox")
                 {
                     //new widget
-                    QComboBox *comboBox = new QComboBox(tab);
+                    QComboBox *comboBox = new QComboBox();
                     //set value and index
                     QStringList indexTextList = range.split(',');
                     for(int i=0;i<indexTextList.count();i++)
@@ -156,7 +156,7 @@ void CfgMachSettings::LoadData()
     //[END]---query groupName from the groupTable
 
     QVBoxLayout *TotalVBoxLayout = new QVBoxLayout(this);
-    QHBoxLayout *buttonLayout    = new QHBoxLayout(this);
+    QHBoxLayout *buttonLayout    = new QHBoxLayout();
     QPushButton *btnOk     = new QPushButton(tr("确认"),this);
     QPushButton *btnApply  = new QPushButton(tr("应用"),this);
     QPushButton *btnCancle = new QPushButton(tr("取消"),this);
@@ -201,7 +201,6 @@ void CfgMachSettings::SlotBtnApplyClicked()
             WritePrivateProfileString(lEdit->property("groupName").toString(),lEdit->property("key").toString(),lEdit->text(),cPath);
         }
     }
-
     //set comboBox value
     QList<QComboBox*> cbBoxList;
     QComboBox *cbBox;
@@ -219,7 +218,8 @@ void CfgMachSettings::SlotBtnApplyClicked()
     }
     cMach->GetMachineBaseInfo();
     cHead->GetHeadInfo();
-//    this->LoadData();
+    //更新机头参数到文档管理中
+    emit UpdateDataHead();
 }
 
 

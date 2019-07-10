@@ -200,6 +200,7 @@ void CfgKnifeManager::on_btnApply_clicked()
             tempApron->SetKnife(tmpKnife);
             cApron->append(tempApron);
         }
+        emit UpdateDataApron();
         break;
     case 1://1:未选择刀具
     {

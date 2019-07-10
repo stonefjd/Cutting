@@ -16,9 +16,9 @@
 #include <QMessageBox>
 #include <QDomElement>
 #include <QPainter>
+#include <QSizePolicy>
 
 #include "Base/cutfile.h"
-#include "Machine/Config/cfgmachhandle.h"
 #include "cutfile_data.h"
 class CutFile_UI : public QObject
 {
@@ -36,7 +36,6 @@ private:
 
     QDockWidget *qwDockWidget;
     QFrame      *qwFrame;
-//    CfgMachHandle *cMachHandle;
 
     QPushButton *qwBtnAddt  = new QPushButton(tr("添加"));
     QPushButton *qwBtnRemv  = new QPushButton(tr("移除"));
@@ -64,9 +63,9 @@ protected:
 public:
     explicit CutFile_UI(QObject *parent = nullptr);
     void SetFileData(CutFile_Data *_fileData);
-    void InitialModel(QDockWidget *_dockwgt, QFrame *_frame, CfgMachHandle *_machHandle);
+    void InitialModel(QDockWidget *_dockwgt, QFrame *_frame);
 signals:
-
+    void UpdateFileAdded();
 public slots:
     void SlotBtnAddtClicked();
     void SlotBtnRemvClicked();

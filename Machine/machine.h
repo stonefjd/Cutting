@@ -9,7 +9,6 @@
 //#include "Machine/Knife/sdknifeconfig.h"
 #include "Machine/Config/cfgmach.h"
 #include "Machine/Config/cfghead.h"
-#include "File/cutfileformat.h"
 enum MainState
 {
     stMain_Stop,
@@ -97,7 +96,6 @@ private:
     QPointF *head0_Org;
     QPointF *head0_Limit;
     QPointF *head0_PulsePerMillimeter;
-    QList<fileData_t> *fileContent;
     double  *head0_IdleMoveSpd;
     double  *head0_IdleMoveAcc;
 public:
@@ -111,7 +109,6 @@ public:
     void Mach_SetHead0Org(QPointF *_head0_Org);
     void Mach_SetHead0PulsePerMillimeter(QPointF *_head0_PulsePerMillimeter);
     void Mach_SetHead0Limit(QPointF *_head0_Limit);
-    void Mach_SetCutContent(QList<fileData_t> *_fileContent);
     void Mach_SetHead0IdleMoveSpd(double *_movSpd);
     void Mach_SetHead0IdleMoveAcc(double *_movAcc);
 

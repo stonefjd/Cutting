@@ -9,38 +9,26 @@ void CutFile_UI::SetFileData(CutFile_Data *_fileData)
     this->cFileData = _fileData;
 }
 
-void CutFile_UI::InitialModel(QDockWidget *_dockwgt,QFrame *_frame,CfgMachHandle *_machHandle)
+void CutFile_UI::InitialModel(QDockWidget *_dockwgt, QFrame *_frame)
 {
 //----set the parameter
     this->qwDockWidget = _dockwgt;
     this->qwFrame = _frame;
-    this->cFileData->SetPosOrg(_machHandle->GetHConfig()->GetPosOrg());
-    this->cFileData->SetPosLmt(_machHandle->GetHConfig()->GetPosLmt());
-    this->cFileData->SetPosMax(_machHandle->GetHConfig()->GetPosMax());
-    this->cFileData->SetPosToPulseScale (_machHandle->GetHConfig()->GetPosToPulseScale());
-    this->cFileData->SetRealToCutScale  (_machHandle->GetHConfig()->GetRealToCutScale());
+//    this->cFileData->SetPosOrg(_machHandle->GetHConfig()->GetPosOrg());
+//    this->cFileData->SetPosLmt(_machHandle->GetHConfig()->GetPosLmt());
+//    this->cFileData->SetPosMax(_machHandle->GetHConfig()->GetPosMax());
+//    this->cFileData->SetPosToPulseScale (_machHandle->GetHConfig()->GetPosToPulseScale());
+//    this->cFileData->SetRealToCutScale  (_machHandle->GetHConfig()->GetRealToCutScale());
 
 //----table widget UI
+
     gridLayout->addWidget(qwBtnAddt, 0, 0, 1, 1);
-    gridLayout->addWidget(qwBtnUpwd, 0, 1, 1, 1);
-    gridLayout->addWidget(qwBtnImpt, 0, 2, 1, 1);
-    gridLayout->addWidget(qwBtnRemv, 1, 0, 1, 1);
+    gridLayout->addWidget(qwBtnUpwd, 1, 0, 1, 1);
+    gridLayout->addWidget(qwBtnImpt, 2, 0, 1, 1);
+    gridLayout->addWidget(qwBtnRemv, 0, 1, 1, 1);
     gridLayout->addWidget(qwBtnDnwd, 1, 1, 1, 1);
-    gridLayout->addWidget(qwBtnExpt, 1, 2, 1, 1);
-
-
-    vLayout->addWidget(this->qwTableWait);
-    vLayout->addWidget(this->qwTableFnsh);
-    vLayout->addLayout(gridLayout);
-
-    qwDockWidget->widget()->setLayout(vLayout);
-    qwDockWidget->setWindowTitle("任务列表");
-    connect(qwBtnAddt,SIGNAL(clicked()),this,SLOT(SlotBtnAddtClicked()));
-    connect(qwBtnRemv,SIGNAL(clicked()),this,SLOT(SlotBtnRemvClicked()));
-    connect(qwBtnUpwd,SIGNAL(clicked()),this,SLOT(SlotBtnUpwdClicked()));
-    connect(qwBtnDnwd,SIGNAL(clicked()),this,SLOT(SlotBtnDnwdClicked()));
-    connect(qwBtnImpt,SIGNAL(clicked()),this,SLOT(SlotBtnImptClicked()));
-    connect(qwBtnExpt,SIGNAL(clicked()),this,SLOT(SlotBtnExptClicked()));
+    gridLayout->addWidget(qwBtnExpt, 2, 1, 1, 1);
+    gridLayout->setSizeConstraint(QLayout::SetMinimumSize);
 
     //设置单框选中
     qwTableWait->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -48,11 +36,40 @@ void CutFile_UI::InitialModel(QDockWidget *_dockwgt,QFrame *_frame,CfgMachHandle
     //设置选择内容为整行
     qwTableWait->setSelectionBehavior(QAbstractItemView::SelectRows);
     qwTableFnsh->setSelectionBehavior(QAbstractItemView::SelectRows);
-    //隐藏行列标题
+    //隐藏列标题
     qwTableWait->verticalHeader()->setHidden(true);
-    qwTableWait->horizontalHeader()->setHidden(true);
     qwTableFnsh->verticalHeader()->setHidden(true);
+    //隐藏行标题
+    qwTableWait->horizontalHeader()->setHidden(true);
     qwTableFnsh->horizontalHeader()->setHidden(true);
+    //设置无选中
+    qwTableWait->setFocusPolicy(Qt::NoFocus);
+    qwTableFnsh->setFocusPolicy(Qt::NoFocus);
+
+//    qwTableWait->setFixedWidth(40);
+//    qwTableFnsh->setFixedWidth(40);
+//    qwTableWait->minimumWidth();
+//    qwTableFnsh->minimumWidth();
+//    qwTableWait->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Preferred);
+//    qwTableFnsh->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Preferred);
+
+    vLayout->addWidget(this->qwTableWait);
+    vLayout->addWidget(this->qwTableFnsh);
+    vLayout->addLayout(gridLayout);
+
+    qwDockWidget->widget()->setLayout(vLayout);
+    qwDockWidget->setFixedWidth(180);
+    qwDockWidget->setWindowTitle("任务列表");
+    qwDockWidget->resize(qwDockWidget->minimumSizeHint());
+    qwDockWidget->setFeatures(QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable);//设置移动和浮动（不可关闭）
+    connect(qwBtnAddt,SIGNAL(clicked()),this,SLOT(SlotBtnAddtClicked()));
+    connect(qwBtnRemv,SIGNAL(clicked()),this,SLOT(SlotBtnRemvClicked()));
+    connect(qwBtnUpwd,SIGNAL(clicked()),this,SLOT(SlotBtnUpwdClicked()));
+    connect(qwBtnDnwd,SIGNAL(clicked()),this,SLOT(SlotBtnDnwdClicked()));
+    connect(qwBtnImpt,SIGNAL(clicked()),this,SLOT(SlotBtnImptClicked()));
+    connect(qwBtnExpt,SIGNAL(clicked()),this,SLOT(SlotBtnExptClicked()));
+
+
 
     DisplayFileList(this->qwTableWait,this->cFileData->GetFileList());
 
@@ -60,6 +77,9 @@ void CutFile_UI::InitialModel(QDockWidget *_dockwgt,QFrame *_frame,CfgMachHandle
     qwFrame->setStyleSheet("background-color:rgb(50,50,50);");
     qwFrame->show();
     qwFrame->installEventFilter(this);
+    qwFrame->setMouseTracking(false);
+    qwFrame->setFocusPolicy(Qt::StrongFocus);
+
     paintFactor = 1;
     posFWheel.setX(0);
     posFWheel.setY(0);
@@ -109,8 +129,8 @@ bool CutFile_UI::eventFilter(QObject *watched, QEvent *e)
         }
         if(e->type() == QEvent::MouseButtonDblClick)
         {
-            double factorWidth  = static_cast<double>(qwFrame->width() )/static_cast<double>(this->cFileData->GetPosMax()->x());
-            double factorHeight = static_cast<double>(qwFrame->height())/static_cast<double>(this->cFileData->GetPosMax()->y());
+            double factorWidth  = static_cast<double>(qwFrame->width() )/static_cast<double>(this->cFileData->GetPosMax().x());
+            double factorHeight = static_cast<double>(qwFrame->height())/static_cast<double>(this->cFileData->GetPosMax().y());
             this->paintFactor = factorWidth<factorHeight?factorWidth:factorHeight;
             this->transPosToLogic.setMatrix(1/this->paintFactor,0,0,0,1/this->paintFactor,0,0,0,1/this->paintFactor);
 
@@ -142,12 +162,12 @@ void CutFile_UI::DrawFile(int _fileIndex)
     painter.save();
     //----绘制机床最大尺寸和允许裁剪尺寸
     painter.setPen(penPaintMax);
-    painter.drawRect(QRectF(0.0,0.0,cFileData->GetPosMax()->x(), cFileData->GetPosMax()->y()));
+    painter.drawRect(QRectF(0.0,0.0,cFileData->GetPosMax().x(), cFileData->GetPosMax().y()));
 //    painter.setFont(QFont("华文行楷", 30));
 //    painter.drawText(QPointF(200,200), "你好123");
     painter.setPen(penPaintLimit);
-    painter.drawRect(QRectF(cFileData->GetPosOrg()->x(),cFileData->GetPosOrg()->y(),
-                            cFileData->GetPosLmt()->x()-cFileData->GetPosOrg()->x(),cFileData->GetPosLmt()->y()-cFileData->GetPosOrg()->y()));
+    painter.drawRect(QRectF(cFileData->GetPosOrg().x(),cFileData->GetPosOrg().y(),
+                            cFileData->GetPosLmt().x()-cFileData->GetPosOrg().x(),cFileData->GetPosLmt().y()-cFileData->GetPosOrg().y()));
     //----绘制下刀+实际偏移补偿
     painter.setBrush(QColor(0,255,0,100));
     painter.setPen(penCutLable);
@@ -308,16 +328,14 @@ void CutFile_UI::LoadFileData(CutFile *_file)
                 {
                     //step 01:set to mm unit
                     QPointF _tempPoint1 = _line->GetPointList()->at(l).toPoint()/HEX_PER_MM;
-//                    _line->GetPointList()->replace(l, _tempPoint1);
                     //step 02:set to scale step
                     QPointF _tempPoint2;
-                    _tempPoint2.setX(_tempPoint1.x()*cFileData->GetRealToCutScale()->x());
-                    _tempPoint2.setY(_tempPoint1.y()*cFileData->GetRealToCutScale()->y());
-//                    _line->GetPointList()->replace(l, _tempPoint2);
+                    _tempPoint2.setX(_tempPoint1.x()*cFileData->GetRealToCutScale().x());
+                    _tempPoint2.setY(_tempPoint1.y()*cFileData->GetRealToCutScale().y());
                     //step 03:add org offset
                     QPointF _tempPoint3;
-                    _tempPoint3.setX(_tempPoint2.x() + cFileData->GetPosOrg()->x());
-                    _tempPoint3.setY(_tempPoint2.y() + cFileData->GetPosOrg()->y());
+                    _tempPoint3.setX(_tempPoint2.x() + cFileData->GetPosOrg().x());
+                    _tempPoint3.setY(_tempPoint2.y() + cFileData->GetPosOrg().y());
                     _line->GetPointList()->replace(l, _tempPoint3);
                 }
             }
@@ -554,6 +572,7 @@ void CutFile_UI::SlotBtnAddtClicked()
         }
     }
     this->DisplayFileList(this->qwTableWait,this->cFileData->GetFileList());
+    emit UpdateFileAdded();
     this->qwFrame->repaint();
 }
 void CutFile_UI::SlotBtnRemvClicked()
@@ -603,6 +622,7 @@ void CutFile_UI::SlotBtnImptClicked()
 {
     this->ImportFiles(this->cFileData->GetFileList());
     this->DisplayFileList(this->qwTableWait,this->cFileData->GetFileList());
+    emit UpdateFileAdded();
     this->qwFrame->repaint();
 }
 void CutFile_UI::SlotBtnExptClicked()

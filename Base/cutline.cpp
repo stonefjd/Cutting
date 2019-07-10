@@ -48,3 +48,11 @@ QString CutLine::GetLineLable(void)
 {
     return this->m_qstrLable;
 }
+void    CutLine::SetKnifeOffset(QPointF _pointF)
+{
+    this->m_qpKnifeOffset = _pointF;
+}
+QPointF CutLine::GetKnifeOffset()
+{
+    return this->m_qpKnifeOffset;
+}
