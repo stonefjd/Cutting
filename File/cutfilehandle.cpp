@@ -7,22 +7,26 @@ CutFileHandle::CutFileHandle(QObject *parent) : QObject(parent)
 
 CutFileHandle::CutFileHandle(QDockWidget *_dockwgt, QFrame *_frame)
 {
-     cutFile_UI->SetFileData(&this->cutFile_Data);
+     cutFile_UI->SetFileData(this->cutFile_Data);
      cutFile_UI->InitialModel(_dockwgt,_frame);
      connect(cutFile_UI,SIGNAL(UpdateFileAdded()),this,SLOT(SlotUpdateFileAdded()));
 }
+CutFile_Data* CutFileHandle::GetFileData()
+{
+    return this->cutFile_Data;
+}
 void CutFileHandle::SlotUpdateHeadPosRt(int _xPos,int _yPos)
 {
-    cutFile_Data.SetPosRt(QPointF(static_cast<double>(_xPos)/cutFile_Data.GetPosToPulseScale().x(),
-                                  static_cast<double>(_yPos)/cutFile_Data.GetPosToPulseScale().y()));
+    cutFile_Data->SetPosRt(QPointF(static_cast<double>(_xPos)/cutFile_Data->GetPosToPulseScale().x(),
+                                  static_cast<double>(_yPos)/cutFile_Data->GetPosToPulseScale().y()));
 }
 void CutFileHandle::SlotUpdateDataHead(QPointF _posOrg,QPointF _posLmt,QPointF _posMax,QPointF _posToPulseScale,QPointF _realToCutScale)
 {
-    cutFile_Data.SetPosOrg(_posOrg);
-    cutFile_Data.SetPosLmt(_posLmt);
-    cutFile_Data.SetPosMax(_posMax);
-    cutFile_Data.SetPosToPulseScale(_posToPulseScale);
-    cutFile_Data.SetRealToCutScale(_realToCutScale);
+    cutFile_Data->SetPosOrg(_posOrg);
+    cutFile_Data->SetPosLmt(_posLmt);
+    cutFile_Data->SetPosMax(_posMax);
+    cutFile_Data->SetPosToPulseScale(_posToPulseScale);
+    cutFile_Data->SetRealToCutScale(_realToCutScale);
 }
 void CutFileHandle::SlotUpdateDataApron(QList<CfgApron*> _aConfig)
 {
@@ -34,8 +38,7 @@ void CutFileHandle::SlotUpdateDataApron(QList<CfgApron*> _aConfig)
         tempGuidList.append(_aConfig.at(i)->GetKnifeGuid());
         tempOffsetList.append(QPointF(_aConfig.at(i)->GetXOffset(),_aConfig.at(i)->GetYOffset()));
     }
-//    qDebug()<<tempGuidList<<' '<<tempOffsetList;
-    cutFile_Data.SetKnifeOffset(tempGuidList,tempOffsetList);
+    cutFile_Data->SetKnifeOffset(tempGuidList,tempOffsetList);
 }
 
 void CutFileHandle::SlotUpdateFileAdded()

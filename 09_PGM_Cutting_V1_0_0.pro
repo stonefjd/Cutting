@@ -31,12 +31,6 @@ SOURCES += \
     Machine/machine.cpp \
     Machine/Fan/fan.cpp \
     User/userlog.cpp \
-    Machine/Knife/sdknife.cpp \
-    Machine/Knife/sdknifeconfig.cpp \
-    Machine/Knife/sdapron.cpp \
-    Machine/Knife/sdmachinehead.cpp \
-    Machine/Knife/sdmachine.cpp \
-    Machine/Knife/sdcuttoollib.cpp \
     User/usermanager.cpp \
     User/user.cpp \
     User/userhandle.cpp \
@@ -65,13 +59,6 @@ HEADERS += \
     Machine/machine.h \
     Machine/Fan/fan.h \
     User/userlog.h \
-    Machine/Knife/Symbol.h \
-    Machine/Knife/sdknife.h \
-    Machine/Knife/sdknifeconfig.h \
-    Machine/Knife/sdapron.h \
-    Machine/Knife/sdmachinehead.h \
-    Machine/Knife/sdmachine.h \
-    Machine/Knife/sdcuttoollib.h \
     User/usermanager.h \
     User/user.h \
     User/userhandle.h \

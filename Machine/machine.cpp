@@ -284,56 +284,62 @@ void Machine::SubStateRunCut()
         break;
     case stSubCut_Run:
         {
-//            if(!fileContent->isEmpty())
-//            {
 
-//                ADP_ClrSts(1,4);
-//                ADP_SetCrdPrm(1, &crdPrm);
-//                //获取当前运动状态;坐标系 1;插补运动状态 run;当前插补段数 segment; 查询的坐标系缓存区 0;
-//                short run;  // 坐标系运动完成段查询变量
-//                long segment;  // 坐标系的缓存区剩余空间查询变量
-//                GT_CrdStatus(1, &run,&segment,0);
-//                if(run == 0)
-//                {
-//                    // 即将把数据存入坐标系1的FIFO0中，所以要首先清除此缓存区中的数据
-//                    TCrdData crdData[500];
-//                    GT_InitLookAhead(1, 0, 5, 1, 500, crdData);
-//                    GT_CrdClear(1, 0);
-//                    //当前window中的sample数量进行裁切
-//                    if(machine_ctSubState_Cut_SampleFinished<fileContent->at(0).windowCluster.at(0).sampleCluster.count())
-//                    {
-//                        if(machine_ctSubState_Cut_SampleFinished>0)
-//                        {
-//                            fileContent->first().windowCluster[0].sampleCluster[machine_ctSubState_Cut_SampleFinished-1].isFinished = true;
-//                        }
-//                        for(int j=0;j<fileContent->at(0).windowCluster.at(0).sampleCluster.at(machine_ctSubState_Cut_SampleFinished).lineCluster.count();j++)
-//                        {
-//                            for(int i=0;i<fileContent->at(0).windowCluster.at(0).sampleCluster.at(machine_ctSubState_Cut_SampleFinished).lineCluster.at(j).pointCluster.count();i++)
-//                            {
-//                                ADP_LnXY(    1,    // 该插补段的坐标系是坐标系1
-//                                            static_cast<long>(fileContent->at(0).windowCluster.at(0).sampleCluster.at(machine_ctSubState_Cut_SampleFinished).lineCluster.at(j).pointCluster.at(i).x()*head0_PulsePerMillimeter->x()),
-//                                            static_cast<long>(fileContent->at(0).windowCluster.at(0).sampleCluster.at(machine_ctSubState_Cut_SampleFinished).lineCluster.at(j).pointCluster.at(i).y()*head0_PulsePerMillimeter->y()),  // 该插补段的终点坐标(15000, 15000)
-//                                            20,    // 该插补段的目标速度：100pulse/ms
-//                                            0.05,    // 插补段的加速度：0.1pulse/ms^2
-//                                            0,    // 终点速度为0
-//                                            0);    // 向坐标系1的FIFO0缓存区传递该直线插补数据
-//                            }
-//                        }
-//                        GT_CrdData(1, nullptr, 0);
-//                        GT_CrdStart(1, 0);
-//                        machine_ctSubState_Cut_SampleFinished++;
-//                    }
-//                    else if(machine_ctSubState_Cut_SampleFinished == fileContent->at(0).windowCluster.at(0).sampleCluster.count())
-//                    {
-//                        if(machine_ctSubState_Cut_SampleFinished>0)
-//                        {
-//                            fileContent->first().windowCluster[0].sampleCluster[machine_ctSubState_Cut_SampleFinished-1].isFinished = true;
-//                        }
-//                        machine_ctSubState_Cut_SampleFinished = 0;
-//                        machine_stSubState_Cut = stSubCut_Stop;
-//                    }
-//                }
-//            }
+            if(!fileData->GetFileList()->isEmpty())
+            {
+                QList<CutFile*>* tempCutFileDataList = fileData->GetFileList();
+                ADP_ClrSts(1,4);
+                ADP_SetCrdPrm(1, &crdPrm);
+                //获取当前运动状态;坐标系 1;插补运动状态 run;当前插补段数 segment; 查询的坐标系缓存区 0;
+                short run;  // 坐标系运动完成段查询变量
+                long segment;  // 坐标系的缓存区剩余空间查询变量
+                GT_CrdStatus(1, &run,&segment,0);
+                if(run == 0)
+                {
+                    //当前window中的sample数量进行裁切
+                    if(machine_ctSubState_Cut_SampleFinished<tempCutFileDataList->at(0)->GetPage(0)->GetSampleList()->count())
+                    {
+//                        QThread::msleep(200);
+                        // 即将把数据存入坐标系1的FIFO0中，所以要首先清除此缓存区中的数据
+                        TCrdData crdData[500];
+                        GT_InitLookAhead(1, 0, 5, 1, 500, crdData);
+                        GT_CrdClear(1, 0);
+                        if(machine_ctSubState_Cut_SampleFinished>0)
+                        {
+                            tempCutFileDataList->at(0)->GetPage(0)->GetSample(machine_ctSubState_Cut_SampleFinished-1)->SetCutFinished(true);
+                        }
+                        for(int j=0;j<tempCutFileDataList->at(0)->GetPage(0)->GetSample(machine_ctSubState_Cut_SampleFinished)->GetNormalLineList()->count();j++)
+                        {
+                            for(int i=0;i<tempCutFileDataList->at(0)->GetPage(0)->GetSample(machine_ctSubState_Cut_SampleFinished)->GetNormalLine(j)->GetPointList()->count();i++)
+                            {
+                                QPointF tempPointF = tempCutFileDataList->at(0)->GetPage(0)->GetSample(machine_ctSubState_Cut_SampleFinished)->GetNormalLine(j)->GetPointList()->at(i);
+                                long x = static_cast<long>(tempPointF.x()*head0_PulsePerMillimeter->x());
+                                long y = static_cast<long>(tempPointF.y()*head0_PulsePerMillimeter->y());
+                                ADP_LnXY(    1,    // 该插补段的坐标系是坐标系1
+                                            x,
+                                            y,  // 该插补段的终点坐标(15000, 15000)
+                                            30,    // 该插补段的目标速度：100pulse/ms
+                                            0.1,    // 插补段的加速度：0.1pulse/ms^2
+                                            0,    // 终点速度为0
+                                            0);    // 向坐标系1的FIFO0缓存区传递该直线插补数据
+                            }
+                        }
+                        GT_CrdData(1, nullptr, 0);
+                        GT_CrdStart(1, 0);
+                        machine_ctSubState_Cut_SampleFinished++;
+                    }
+                    else if(machine_ctSubState_Cut_SampleFinished == tempCutFileDataList->at(0)->GetPage(0)->GetSampleList()->count())
+                    {
+                        if(machine_ctSubState_Cut_SampleFinished>0)
+                        {
+                            tempCutFileDataList->at(0)->GetPage(0)->GetSample(machine_ctSubState_Cut_SampleFinished-1)->SetCutFinished(true);
+//                            qDebug()<<"run<<' '<<segment";
+                        }
+                        machine_ctSubState_Cut_SampleFinished = 0;
+                        machine_stSubState_Cut = stSubCut_Stop;
+                    }
+                }
+            }
         }
         break;
     case stSubCut_Pause:

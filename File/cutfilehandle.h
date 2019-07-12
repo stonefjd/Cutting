@@ -14,10 +14,12 @@ class CutFileHandle : public QObject
     Q_OBJECT
 private:
     CutFile_UI *cutFile_UI = new CutFile_UI;
-    CutFile_Data cutFile_Data;
+    CutFile_Data *cutFile_Data = new CutFile_Data;
 public:
     explicit CutFileHandle(QObject *parent = nullptr);
     CutFileHandle(QDockWidget *_dockwgt, QFrame *_frame);
+
+    CutFile_Data* GetFileData();
 signals:
     void UpdateDataApron();
 public slots:

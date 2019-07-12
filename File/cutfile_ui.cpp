@@ -78,7 +78,7 @@ void CutFile_UI::InitialModel(QDockWidget *_dockwgt, QFrame *_frame)
     qwFrame->show();
     qwFrame->installEventFilter(this);
     qwFrame->setMouseTracking(false);
-    qwFrame->setFocusPolicy(Qt::StrongFocus);
+//    qwFrame->setFocusPolicy(Qt::StrongFocus);
 
     paintFactor = 1;
     posFWheel.setX(0);
@@ -156,7 +156,6 @@ void CutFile_UI::DrawFile(int _fileIndex)
     transPosToLogic = painter.combinedTransform().inverted();
     //当前像素点和数字逻辑点的坐标
     posLogic = painter.combinedTransform().inverted().map(posFWheel);
-//    qDebug()<<posFWheel<<posLogic;
 
     //----绘制静态图
     painter.save();

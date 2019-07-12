@@ -22,7 +22,7 @@ WindowCutting::WindowCutting(QWidget *parent) :
     ui->btnDirGroup->setId(ui->btnOpOrg,BTN_ID_O);
 //----status bar
     ui->statusBar->showMessage("ready");
-//----new Handle,shouldn't change the order
+//----new Handle, shouldn't change the order
     cutFileHandle = new CutFileHandle(ui->dockWgtList,ui->mainPaint);
     cfgMachHandle = new CfgMachHandle;
 //----Machine Init
@@ -32,6 +32,7 @@ WindowCutting::WindowCutting(QWidget *parent) :
     mMachine->Mach_SetHead0Limit(&cfgMachHandle->hConfig->posLimit);
     mMachine->Mach_SetHead0IdleMoveSpd(cfgMachHandle->hConfig->idleMoveSpd);
     mMachine->Mach_SetHead0IdleMoveAcc(cfgMachHandle->hConfig->idleMoveAcc);
+    mMachine->fileData = cutFileHandle->GetFileData();
 //    mMachine->Mach_SetCutContent(&cutFileList.fileVector);
 
     connect(this,SIGNAL(keyPressed(QKeyEvent)), mMachine,SLOT(SubStateOpKeyPress(QKeyEvent)));
@@ -62,7 +63,7 @@ WindowCutting::WindowCutting(QWidget *parent) :
     cfgMachHandle->InitCommunicate();
 //----Start debug timer
     debugTimer=new QTimer(this);
-    connect(debugTimer,SIGNAL(timeout()),this,SLOT(debugTask_100ms()));
+    connect(debugTimer,SIGNAL(timeout()),this,SLOT(debugTask_100ms()));//20ms
     debugTimer->start(20);
 }
 
@@ -75,10 +76,10 @@ WindowCutting::~WindowCutting()
 void WindowCutting::userLog_PermissionConfirm()
 {
     QList<QWidget*> actionList;
-    actionList.append(ui->mainToolBar->findChildren<QWidget*>());
-    //actionList.append(ui->menuBar->findChildren<QWidget*>());
-    actionList.append(ui->dockWgtOperate->findChildren<QWidget*>());
-    actionList.append(ui->dockWgtList->findChildren<QWidget*>());
+//    actionList.append(ui->mainToolBar->findChildren<QWidget*>());
+//    //actionList.append(ui->menuBar->findChildren<QWidget*>());
+//    actionList.append(ui->dockWgtOperate->findChildren<QWidget*>());
+//    actionList.append(ui->dockWgtList->findChildren<QWidget*>());
 
     if(userHandle == nullptr)
     {

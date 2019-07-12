@@ -6,9 +6,9 @@
 #include <QThread>
 #include "Fan/fan.h"
 #include "PhysicalLayer/hardwareadaptor.h"
-//#include "Machine/Knife/sdknifeconfig.h"
 #include "Machine/Config/cfgmach.h"
 #include "Machine/Config/cfghead.h"
+#include "File/cutfilehandle.h"
 enum MainState
 {
     stMain_Stop,
@@ -102,6 +102,7 @@ public:
     QPointF head0_Pos;
     double  head0_MoveAngel;
     QPointF head0_PosLast;
+    CutFile_Data *fileData;
 public:
 //    QPointF GetHeadPosRt();
 
