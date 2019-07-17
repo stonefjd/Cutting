@@ -9,6 +9,9 @@
 #include "Machine/Config/cfgmach.h"
 #include "Machine/Config/cfghead.h"
 #include "File/cutfilehandle.h"
+
+#define AXIS_X 1
+#define AXIS_Y 2
 enum MainState
 {
     stMain_Stop,

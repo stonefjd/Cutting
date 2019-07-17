@@ -7,7 +7,6 @@ static const double velRatio=2;
 Machine::Machine(QObject *parent) : QObject(parent)
 {
 //    this->mFan_1.SetState_FanStop();
-
     //--------DATA structure settings--------//
     Jog.acc = puntchLimitAcc;
     Jog.dec = puntchLimitAcc;
@@ -15,14 +14,14 @@ Machine::Machine(QObject *parent) : QObject(parent)
 
     memset(&crdPrm, 0, sizeof(crdPrm));
     crdPrm.dimension=2;   // 坐标系为二维坐标系
-    crdPrm.synVelMax=50;  // 最大合成速度：500pulse/ms
+    crdPrm.synVelMax=50;  // 最大合成速度：50pulse/ms
     crdPrm.synAccMax=1;   // 最大加速度：1pulse/ms^2
     crdPrm.evenTime = 50;   // 最小匀速时间：50ms
     crdPrm.profile[0] = 1;   // 规划器1对应到X轴
     crdPrm.profile[1] = 2;   // 规划器2对应到Y轴
     crdPrm.setOriginFlag = 1;  // 表示需要指定坐标系的原点坐标的规划位置
-    crdPrm.originPos[0] = 00000;  // 坐标系的原点坐标的规划位置为（100, 100）
-    crdPrm.originPos[1] = 00000;
+    crdPrm.originPos[0] = 0;  // 坐标系的原点坐标的规划位置为（100, 100）
+    crdPrm.originPos[1] = 0;
 
     //----set the knife of the machine
 //    sdKnifeConfigLib.ReadConfigFile();

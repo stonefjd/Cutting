@@ -50,7 +50,10 @@ SOURCES += \
     Base/cutpage.cpp \
     File/cutfilehandle.cpp \
     File/cutfile_ui.cpp \
-    File/cutfile_data.cpp
+    File/cutfile_data.cpp \
+    Control/ctrlmach.cpp \
+    Control/ctrlmach_ui.cpp \
+    Control/ctrlmachhandle.cpp
 
 HEADERS += \
     windowcutting.h \
@@ -78,7 +81,11 @@ HEADERS += \
     Base/cutpage.h \
     File/cutfilehandle.h \
     File/cutfile_ui.h \
-    File/cutfile_data.h
+    File/cutfile_data.h \
+    Control/ctrlmach.h \
+    Control/ctrlbasedefine.h \
+    Control/ctrlmach_ui.h \
+    Control/ctrlmachhandle.h
 
 FORMS += \
         windowcutting.ui \

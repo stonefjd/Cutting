@@ -219,7 +219,7 @@ void CfgMachSettings::SlotBtnApplyClicked()
     cMach->GetMachineBaseInfo();
     cHead->GetHeadInfo();
     //更新机头参数到文档管理中
-    emit UpdateDataHead();
+    emit UpdateDataHeadRequest();
 }
 
 

@@ -1,12 +1,12 @@
 ﻿#include "cfghead.h"
 CfgHead::CfgHead()
 {
-    headCfgPath = SETTING_PATH;
+    cfgHeadData.cfgPath = SETTING_PATH;
 }
 
 void CfgHead::GetHeadInfo()
 {
-    QString strConfigPath = headCfgPath;
+    QString strConfigPath = cfgHeadData.cfgPath;
 
     QString strSect = ("");
     QString strKey = ("");
@@ -21,114 +21,119 @@ void CfgHead::GetHeadInfo()
     strKey = ("HeadIndex");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        headIndex = (*szBuf).toInt();
+        cfgHeadData.headIndex = (*szBuf).toInt();
     }
     //原点偏移
     strKey = ("PosOrgX");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        posOrg.setX((*szBuf).toDouble());
+        cfgHeadData.posOrg.setX((*szBuf).toDouble());
     }
     strKey = ("PosOrgY");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        posOrg.setY((*szBuf).toDouble());
+        cfgHeadData.posOrg.setY((*szBuf).toDouble());
     }
     //最大长度：毫米
     strKey = ("PosMaxX");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        posMax.setX((*szBuf).toDouble());
+        cfgHeadData.posMax.setX((*szBuf).toDouble());
     }
     strKey = ("PosMaxY");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        posMax.setY((*szBuf).toDouble());
+        cfgHeadData.posMax.setY((*szBuf).toDouble());
     }
     //区域限位，人为设定尺寸
     strKey = ("PosLimitX");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        posLimit.setX((*szBuf).toDouble());
-        if(posLimit.x()>posMax.x())
+        cfgHeadData.posLmt.setX((*szBuf).toDouble());
+        if(cfgHeadData.posLmt.x()>cfgHeadData.posMax.x())
         {
-            posLimit.setX(posMax.x());
-            WritePrivateProfileString(strSect,strKey,QString::number(posLimit.x()),strConfigPath);
+            cfgHeadData.posLmt.setX(cfgHeadData.posMax.x());
+            WritePrivateProfileString(strSect,strKey,QString::number(cfgHeadData.posLmt.x()),strConfigPath);
         }
     }
     strKey = ("PosLimitY");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        posLimit.setY((*szBuf).toDouble());
-        if(posLimit.y()>posMax.y())
+        cfgHeadData.posLmt.setY((*szBuf).toDouble());
+        if(cfgHeadData.posLmt.y()>cfgHeadData.posMax.y())
         {
-            posLimit.setY(posMax.y());
-            WritePrivateProfileString(strSect,strKey,QString::number(posLimit.y()),strConfigPath);
+            cfgHeadData.posLmt.setY(cfgHeadData.posMax.y());
+            WritePrivateProfileString(strSect,strKey,QString::number(cfgHeadData.posLmt.y()),strConfigPath);
         }
     }
     //比例因子：脉冲每毫米
     strKey = ("PosToPulseScaleX");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        posToPulseScale.setX((*szBuf).toDouble());
+        cfgHeadData.posToPulseScale.setX((*szBuf).toDouble());
     }
     strKey = ("PosToPulseScaleY");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        posToPulseScale.setY((*szBuf).toDouble());
+        cfgHeadData.posToPulseScale.setY((*szBuf).toDouble());
+    }
+    strKey = ("PosToPulseScaleXY");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
+    {
+        cfgHeadData.posToPulseScaleXY = ((*szBuf).toDouble());
     }
     //X方向最大行走脉冲数
     strKey = ("PulseMaxX");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        pulseMax.setX((*szBuf).toDouble());
+        cfgHeadData.pulseMax.setX((*szBuf).toDouble());
     }
     strKey = ("PulseMaxY");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        pulseMax.setY((*szBuf).toDouble());
+        cfgHeadData.pulseMax.setY((*szBuf).toDouble());
     }
     //比例因子：设计尺寸到切割尺寸
     strKey = ("RealToCutScaleX");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        realToCutScale.setX((*szBuf).toDouble());
+        cfgHeadData.realToCutScale.setX((*szBuf).toDouble());
     }
     strKey = ("RealToCutScaleY");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        realToCutScale.setY((*szBuf).toDouble());
+        cfgHeadData.realToCutScale.setY((*szBuf).toDouble());
     }
 
     //送料长度
     strKey = ("FeedLen");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        feedLen = (*szBuf).toDouble();
+        cfgHeadData.feedLen = (*szBuf).toDouble();
     }
     //送料速度(m/s)
     strKey = ("FeedSpd");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        feedSpd = (*szBuf).toDouble();
+        cfgHeadData.feedSpd = (*szBuf).toDouble();
     }
     //送料加速度(m/s²)
     strKey = ("FeedAcc");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        feedAcc = (*szBuf).toDouble();
+        cfgHeadData.feedAcc = (*szBuf).toDouble();
     }
     //空走速度 (m/s)
     strKey = ("IdleMoveSpd");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        *idleMoveSpd = (*szBuf).toDouble();
+        cfgHeadData.idleMoveSpd = (*szBuf).toDouble();
     }
     //空走加速度(G)
     strKey = ("IdleMoveAcc");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        *idleMoveAcc = (*szBuf).toDouble();
+        cfgHeadData.idleMoveAcc = (*szBuf).toDouble();
     }
 //    //获取机座列表
 //    strKey = ("Aprons");
@@ -152,45 +157,49 @@ void CfgHead::GetHeadInfo()
 //        aConfig.append(apron);
 //    }
 }
+CfgHead_T CfgHead::GetCfgHeadData()
+{
+    return this->cfgHeadData;
+}
 QPointF CfgHead::GetPosOrg()
 {
-    return posOrg;
+    return cfgHeadData.posOrg;
 }
 QPointF CfgHead::GetPosLmt()
 {
-    return posLimit;
+    return cfgHeadData.posLmt;
 }
 QPointF CfgHead::GetPosMax()
 {
-    return posMax;
+    return cfgHeadData.posMax;
 }
 QPointF CfgHead::GetPosToPulseScale()
 {
-    return posToPulseScale;
+    return cfgHeadData.posToPulseScale;
 }
 QPointF CfgHead::GetPulseMax()
 {
-    return pulseMax;
+    return cfgHeadData.pulseMax;
 }
 QPointF CfgHead::GetRealToCutScale()
 {
-    return realToCutScale;
+    return cfgHeadData.realToCutScale;
 }
-double*  CfgHead::GetIdleMoveSpd()
+double  CfgHead::GetIdleMoveSpd()
 {
-    return idleMoveSpd;
+    return cfgHeadData.idleMoveSpd;
 }
-double*  CfgHead::GetIdleMoveAcc()
+double  CfgHead::GetIdleMoveAcc()
 {
-    return idleMoveAcc;
+    return cfgHeadData.idleMoveAcc;
 }
 double  CfgHead::GetFeedLen()
 {
-    return feedLen;
+    return cfgHeadData.feedLen;
 }
 double  CfgHead::GetFeedSpd()
 {
-    return feedSpd;
+    return cfgHeadData.feedSpd;
 }
 //void CfgHead::SetApronIndexList(QStringList _list)
 //{
@@ -202,32 +211,32 @@ double  CfgHead::GetFeedSpd()
 //}
 double  CfgHead::GetFeedAcc()
 {
-    return feedAcc;
+    return cfgHeadData.feedAcc;
 }
 
 QString CfgHead::GetHeadCfgPath()
 {
-    return headCfgPath;
+    return cfgHeadData.cfgPath;
 }
 void CfgHead::UpdateHeadMaxPluse(int _xPluse,int _yPluse,int _hIndex)
 {
-    pulseMax.setX(_xPluse);
-    pulseMax.setY(_yPluse);
-    posMax.setX(_xPluse/posToPulseScale.x());
-    posMax.setY(_yPluse/posToPulseScale.y());
-    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PulseMaxX",QString::number(_xPluse),headCfgPath);
-    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PulseMaxY",QString::number(_yPluse),headCfgPath);
-    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PosMaxX",QString::number(_xPluse/posToPulseScale.x()),headCfgPath);
-    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PosMaxY",QString::number(_yPluse/posToPulseScale.y()),headCfgPath);
-    if(_xPluse <= posLimit.x())
+    cfgHeadData.pulseMax.setX(_xPluse);
+    cfgHeadData.pulseMax.setY(_yPluse);
+    cfgHeadData.posMax.setX(_xPluse/cfgHeadData.posToPulseScale.x());
+    cfgHeadData.posMax.setY(_yPluse/cfgHeadData.posToPulseScale.y());
+    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PulseMaxX",QString::number(_xPluse),cfgHeadData.cfgPath);
+    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PulseMaxY",QString::number(_yPluse),cfgHeadData.cfgPath);
+    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PosMaxX",QString::number(_xPluse/cfgHeadData.posToPulseScale.x()),cfgHeadData.cfgPath);
+    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PosMaxY",QString::number(_yPluse/cfgHeadData.posToPulseScale.y()),cfgHeadData.cfgPath);
+    if(_xPluse <= cfgHeadData.posLmt.x())
     {
-        posLimit.setX(_xPluse);
-        WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadCutLimitX",QString::number(_xPluse),headCfgPath);
+        cfgHeadData.posLmt.setX(_xPluse);
+        WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadCutLimitX",QString::number(_xPluse),cfgHeadData.cfgPath);
     }
-    if(_yPluse <= posLimit.y())
+    if(_yPluse <= cfgHeadData.posLmt.y())
     {
-        posLimit.setX(_xPluse);
-        WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadCutLimitY",QString::number(_yPluse),headCfgPath);
+        cfgHeadData.posLmt.setX(_xPluse);
+        WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadCutLimitY",QString::number(_yPluse),cfgHeadData.cfgPath);
     }
 }
 //void CfgHead::UpdateHeadCutLimit(int _xPluse,int _yPluse,int _hIndex)

@@ -17,8 +17,9 @@
 #include "File/cutfilehandle.h"
 #include "PhysicalLayer/gts.h"
 #include "User/userhandle.h"
-#include "Machine/machine.h"
+//#include "Machine/machine.h"
 #include "Machine/Config/cfgmachhandle.h"
+#include "Control/ctrlmachhandle.h"
 #define BTN_ID_L 0
 #define BTN_ID_R 1
 #define BTN_ID_U 2
@@ -75,7 +76,8 @@ private:
 
 private:
     Ui::WindowCutting   *ui;
-    Machine             *mMachine = new Machine;
+//    Machine             *mMachine = new Machine;
+    CtrlMachHandle      *ctrlMachHandle;
     CfgMachHandle       *cfgMachHandle;
     UserHandle          *userHandle;
     QTimer              *debugTimer;

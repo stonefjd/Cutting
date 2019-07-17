@@ -5,12 +5,27 @@
 #include <QDebug>
 
 #include "cfgknife.h"
+struct CfgApron_T
+{
+    QString     cfgPath;
+    int 		apronIndex; 		//刀座序号
+    int         apronUsed;
+    int 		apronCtrlMode;		//控制方式
+    int			apronKnifeGuid;		//刀具Guid
+    double      apronOffsetX;		//刀座偏移量X。增加此变量的目的是为了更换刀具后保留刀座的偏移量，
+    double      apronOffsetY;		//刀座偏移量Y。
+    CfgKnife    *knifeInApron;
+};
+
 class CfgApron
 {
 public:
     CfgApron();
 public:
     void GetApronInfo(int index);
+
+    CfgApron_T GetCfgAprondData();
+
     //    刀座序号
     void  SetApronIndex(int nApronIndex);
     int   GetApronIndex();
@@ -43,15 +58,7 @@ public:
     double GetYOffset();
 
 private:
-    int 		apronIndex; 		//刀座序号
-    int         apronUsed;
-    int 		apronCtrlMode;		//控制方式
-    int			apronKnifeGuid;		//刀具Guid
-    double      apronOffsetX;		//刀座偏移量X。增加此变量的目的是为了更换刀具后保留刀座的偏移量，
-    double      apronOffsetY;		//刀座偏移量Y。
-    CfgKnife    *knifeInApron;
-
-    QString apronCfgPath;
+    CfgApron_T cfgApronData;
 };
 
 #endif // CFGAPRON_H

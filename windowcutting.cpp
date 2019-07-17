@@ -22,21 +22,27 @@ WindowCutting::WindowCutting(QWidget *parent) :
     ui->btnDirGroup->setId(ui->btnOpOrg,BTN_ID_O);
 //----status bar
     ui->statusBar->showMessage("ready");
-//----new Handle, shouldn't change the order
-    cutFileHandle = new CutFileHandle(ui->dockWgtList,ui->mainPaint);
-    cfgMachHandle = new CfgMachHandle;
-//----Machine Init
-    //mMachine.mFan_1.StateMachineInit(ui->actionWindIn,ui->actionWindOut);
+//----new Handle, 不能改变顺序
+    cutFileHandle   = new CutFileHandle(ui->dockWgtList,ui->mainPaint);
+    cfgMachHandle   = new CfgMachHandle;
+    ctrlMachHandle  = new CtrlMachHandle(ui->dockWgtCtrl);
+
+    connect(cfgMachHandle,  SIGNAL(UpdateDataHead(CfgHead_T)),          cutFileHandle,  SLOT(SlotUpdateDataHead(CfgHead_T)));
+    connect(cfgMachHandle,  SIGNAL(UpdateDataHead(CfgHead_T)),          ctrlMachHandle, SLOT(SlotUpdateDataHead(CfgHead_T)));
+    connect(cfgMachHandle,  SIGNAL(UpdateDataApron(QList<CfgApron_T>)), cutFileHandle,  SLOT(SlotUpdateDataApron(QList<CfgApron_T>)));
+    connect(cutFileHandle,  SIGNAL(UpdateDataApronRequest()),           cfgMachHandle,  SLOT(SlotUpdateDataApronRequest()));
+    connect(ctrlMachHandle, SIGNAL(UpdateHeadPosRt(QPointF)),           cutFileHandle,  SLOT(SlotUpdateHeadPosRt(QPointF)));
+    connect(this,           SIGNAL(keyPressed(QKeyEvent)),              ctrlMachHandle, SLOT(SlotKeyAction(QKeyEvent)));
+    connect(this,           SIGNAL(keyReleased(QKeyEvent)),             ctrlMachHandle, SLOT(SlotKeyAction(QKeyEvent)));//----Machine Init
+/*    //mMachine.mFan_1.StateMachineInit(ui->actionWindIn,ui->actionWindOut);
     mMachine->Mach_SetHead0Org(&cfgMachHandle->hConfig->posOrg);
     mMachine->Mach_SetHead0PulsePerMillimeter(&cfgMachHandle->hConfig->posToPulseScale);
     mMachine->Mach_SetHead0Limit(&cfgMachHandle->hConfig->posLimit);
     mMachine->Mach_SetHead0IdleMoveSpd(cfgMachHandle->hConfig->idleMoveSpd);
     mMachine->Mach_SetHead0IdleMoveAcc(cfgMachHandle->hConfig->idleMoveAcc);
     mMachine->fileData = cutFileHandle->GetFileData();
-//    mMachine->Mach_SetCutContent(&cutFileList.fileVector);
 
-    connect(this,SIGNAL(keyPressed(QKeyEvent)), mMachine,SLOT(SubStateOpKeyPress(QKeyEvent)));
-    connect(this,SIGNAL(keyReleased(QKeyEvent)),mMachine,SLOT(SubStateOpKeyRelease(QKeyEvent)));
+
     connect(ui->btnDirGroup,    SIGNAL(buttonPressed(int)), mMachine,SLOT(SubStateOpBtnPress(int)));
     connect(ui->btnDirGroup,    SIGNAL(buttonReleased(int)),mMachine,SLOT(SubStateOpBtnRelease(int)));
     connect(ui->actionRunPuase, SIGNAL(triggered(bool)),    mMachine,SLOT(SubStateCutRunOrPause(bool)));
@@ -46,22 +52,17 @@ WindowCutting::WindowCutting(QWidget *parent) :
 
     connect(mMachine,           SIGNAL(UpdateMachineMaxPluse(double,double)),
             cfgMachHandle,      SLOT(UpdateConfigMaxPluse(double,double)));
-    connect(mMachine,           SIGNAL(UpdateHeadPosRt(int,int)),
-            cutFileHandle,      SLOT(SlotUpdateHeadPosRt(int,int)));
-    connect(cfgMachHandle,      SIGNAL(UpdateDataHead(QPointF,QPointF,QPointF,QPointF,QPointF)),
-            cutFileHandle,      SLOT(SlotUpdateDataHead(QPointF,QPointF,QPointF,QPointF,QPointF)));
-    connect(cfgMachHandle,      SIGNAL(UpdateDataApron(QList<CfgApron*>)),
-            cutFileHandle,      SLOT(SlotUpdateDataApron(QList<CfgApron*>)));
-    connect(cutFileHandle,      SIGNAL(UpdateDataApron()),
-            cfgMachHandle,      SLOT(SlotUpdateDataApron()));
+
+*/
 //----UserLog
     userHandle = nullptr;
     //disable all the operate item
     this->userLog_PermissionConfirm();
-
-//----
+//----配置参数初始化，向其他模块传递配置参数
     cfgMachHandle->InitCommunicate();
-//----Start debug timer
+//----启动控制模块定时器
+    ctrlMachHandle->StartCtrlTimer();
+//----启动调试定时器
     debugTimer=new QTimer(this);
     connect(debugTimer,SIGNAL(timeout()),this,SLOT(debugTask_100ms()));//20ms
     debugTimer->start(20);
@@ -70,6 +71,7 @@ WindowCutting::WindowCutting(QWidget *parent) :
 WindowCutting::~WindowCutting()
 {
     delete ui;
+    ADP_DisableALLAxis();
     qDebug()<<"deleted";
 }
 //----protected function
@@ -101,11 +103,13 @@ void WindowCutting::userLog_PermissionConfirm()
 //----override----//
 void WindowCutting::keyPressEvent(QKeyEvent *event)
 {
-    emit keyPressed(*event);
+    if(!event->isAutoRepeat()&& (event->key() ==Qt::Key_A ||event->key() ==Qt::Key_D ||event->key() ==Qt::Key_W ||event->key() ==Qt::Key_S))
+        emit keyPressed(*event);
 }
 void WindowCutting::keyReleaseEvent(QKeyEvent *event)
 {
-    emit keyReleased(*event);
+    if(!event->isAutoRepeat()&& (event->key() ==Qt::Key_A ||event->key() ==Qt::Key_D ||event->key() ==Qt::Key_W ||event->key() ==Qt::Key_S))
+        emit keyReleased(*event);
 }
 //-------------------signals and slots--------------------------
 void WindowCutting::on_actionReset_triggered()
@@ -187,41 +191,44 @@ void WindowCutting::on_actionLogOn_triggered()
 //----machine--fan
 void WindowCutting::on_actionWindIn_triggered(bool arg1)
 {
-    if(arg1 == true)
-    {
-        //如果槽函数用toggled而不是triggered,则下面两句顺序不能反
-        if(ui->actionWindOut->isChecked())
-        {
-            ui->actionWindOut->setChecked(false);
-        }
-        mMachine->mFan_1.Fan_SetNormalState(FanWindIn);
-    }
-    else
-    {
-        qDebug()<<"fanStop";
-        mMachine->mFan_1.Fan_SetNormalState(FanStop);
-    }
-    ui->testLable->setText(QString::number(mMachine->mFan_1.Fan_GetState()));
+    (void)arg1;
+//    if(arg1 == true)
+//    {
+//        //如果槽函数用toggled而不是triggered,则下面两句顺序不能反
+//        if(ui->actionWindOut->isChecked())
+//        {
+//            ui->actionWindOut->setChecked(false);
+//        }
+//        mMachine->mFan_1.Fan_SetNormalState(FanWindIn);
+//    }
+//    else
+//    {
+//        qDebug()<<"fanStop";
+//        mMachine->mFan_1.Fan_SetNormalState(FanStop);
+//    }
+//    ui->testLable->setText(QString::number(mMachine->mFan_1.Fan_GetState()));
 }
 
 void WindowCutting::on_actionWindOut_triggered(bool arg1)
 {
-    if(arg1 == true)
-    {
-        //trigger 代码触发后不会触发槽函数，toggle会
-        if(ui->actionWindIn->isChecked())
-        {
-            ui->actionWindIn->setChecked(false);
-        }
-        mMachine->mFan_1.Fan_SetNormalState(FanWindOut);
-    }
-    else
-    {
-        qDebug()<<"fanStop";
-        mMachine->mFan_1.Fan_SetNormalState(FanStop);
-    }
-    ui->testLable->setText(QString::number(mMachine->mFan_1.Fan_GetState()));
+    (void)arg1;
+//    if(arg1 == true)
+//    {
+//        //trigger 代码触发后不会触发槽函数，toggle会
+//        if(ui->actionWindIn->isChecked())
+//        {
+//            ui->actionWindIn->setChecked(false);
+//        }
+//        mMachine->mFan_1.Fan_SetNormalState(FanWindOut);
+//    }
+//    else
+//    {
+//        qDebug()<<"fanStop";
+//        mMachine->mFan_1.Fan_SetNormalState(FanStop);
+//    }
+//    ui->testLable->setText(QString::number(mMachine->mFan_1.Fan_GetState()));
 }
+
 //just for change the icon display
 void WindowCutting::on_actionStop_triggered()
 {
@@ -233,19 +240,20 @@ void WindowCutting::on_actionStop_triggered()
 }
 void WindowCutting::debugTask_100ms()
 {
-    long x,y;
+    long x=0,y=0;
     double xPos=0,yPos=0;
-    ADP_GetSts(1,&x);
-    ADP_GetSts(2,&y);
-    ADP_GetAxisPrfPos(AXIS_X,&xPos);
-    ADP_GetAxisPrfPos(AXIS_Y,&yPos);
+//    ADP_GetSts(1,&x);
+//    ADP_GetSts(2,&y);
+//    ADP_GetAxisPrfPos(AXIS_X,&xPos);
+//    ADP_GetAxisPrfPos(AXIS_Y,&yPos);
     ui->lb_x->setText(QString::number(x));
     ui->lb_y->setText(QString::number(y));
 //    ui->lb_st->setText(QString::number(mMachine->machine_ctSubState_Operate_Key));
     ui->lb_xPos->setText("x "+QString::number(static_cast<int>(xPos)));
     ui->lb_yPos->setText("y "+QString::number(static_cast<int>(yPos)));
 
-    if(mMachine->GetMachineMainState() != stMain_Wait || mMachine->GetStateMotorRunningX()||mMachine->GetStateMotorRunningY())
+    //    if(ctrlMachHandle->GetMachState() != stMain_Wait || ctrlMachHandle->GetAxisRunStateX()||ctrlMachHandle->GetAxisRunStateY())
+    if(ctrlMachHandle->GetAxisRunState(AXIS_X)||ctrlMachHandle->GetAxisRunState(AXIS_Y))
     {
         ui->mainPaint->update();
     }

@@ -1,6 +1,7 @@
 #ifndef CFGKNIFE_H
 #define CFGKNIFE_H
 
+#include <QString>
 #include "cfgbasedefine.h"
 // 刀具id号定义
 enum KnifeId

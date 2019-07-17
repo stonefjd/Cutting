@@ -15,7 +15,7 @@ public:
 
     CfgMach *mConfig = new CfgMach;
     CfgHead *hConfig = new CfgHead;
-    QList<CfgApron*> aConfig;
+    QList<CfgApron*> aConfigList;
     CfgLib  lConfig;
 private:
     CfgMachSettings *UI_cfgMachSettings;
@@ -31,12 +31,12 @@ public:
     void InitCommunicate();
 signals:
     //逻辑原点，逻辑最大切割点，全局最大范围，每毫米脉冲数，实际切割&显示缩放比
-    void UpdateDataHead(QPointF posOrg,QPointF posLmt,QPointF posMax,QPointF posToPulseScale,QPointF realToCutScale);
-    void UpdateDataApron(QList<CfgApron*> _aConfig);
+    void UpdateDataHead(CfgHead_T _headData);
+    void UpdateDataApron(QList<CfgApron_T> _aConfig);
 public slots:
     void UpdateConfigMaxPluse(double _xPos, double _yPos);
-    void SlotUpdateDataHead();
-    void SlotUpdateDataApron();
+    void SlotUpdateDataHeadRequest();
+    void SlotUpdateDataApronRequest();
 
 };
 

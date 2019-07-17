@@ -4,11 +4,37 @@
 #include <QObject>
 #include <QDebug>
 #include <QTimer>
-
-#define GTSLIB 0
-
-#ifdef GTSLIB
+#include <QPointF>
+#define GOOGOL_PLUSE_4AXIS
+#ifdef GOOGOL_PLUSE_4AXIS
     #include <PhysicalLayer/gts.h>
+    const int AXIS_FIRST = 1;
+    const int AXIS_MAX = 4;
+    const int AXIS_X=1;
+    const int AXIS_Y=2;
+    const int AXIS_Z1=3;
+    const int AXIS_A1=4;
+    //--转速模式结构体，插补模式结构体
+//    static  TJogPrm Jog;
+//    static  TCrdPrm crdPrm;
+#endif
+
+#ifdef GOOGOL_PLUSE_8AXIS
+    const int AXIS_X=1;
+    const int AXIS_Y=2;
+    const int AXIS_Z1=3;
+    const int AXIS_A1=4;
+    const int AXIS_Z2=5;
+    const int AXIS_A2=6;
+#endif
+
+#ifdef  LEADSHINE
+#endif
+
+#ifdef  ADLINK_ETH
+#endif
+
+#ifdef INOVANCE_ETH
 #endif
 
 class HardwareAdaptor : public QObject
@@ -34,7 +60,7 @@ void ADP_Connect();
 void ADP_Reset();
 void ADP_AxisOn(short _axis);
 void ADP_ZeroPos(short _axis);
-void ADP_ClrSts(short axis, short count);
+void ADP_ClrSts(short axis, short count = 1);
 void ADP_GetSts(short axis, long *pSts);
 void ADP_LoadCfgFile(QString _path);
 void ADP_Disconnect();
@@ -52,6 +78,22 @@ void ADP_LnXY(short crd,long x,long y,double synVel,double synAcc,double velEnd,
 void ADP_CrdStart(short _mask,short _option);
 void ADP_Stop(long _mask,long _option);
 void ADP_GetAxisPrfPos(short _axis,double *_pValue);
+
+void ADP_InitData();
+void ADP_InitBoard(QString _path);
+void ADP_EnableAllAxis();
+void ADP_DisableALLAxis();
+void ADP_ZeroPosALl();
+void ADP_GetGpi(long *_diValue);
+void ADP_SetGpo(long _doValue);
+void ADP_StartHome();
+void ADP_StopHome();
+void ADP_StartMovePoint(short _crd,short _fifo,long _xPos,long _yPos,double spd,double acc);
+void ADP_GetRunStateAndSegment(short _crd,short *_pRun,long *_pSegment,short _fifo=0);
+void ADP_GetHeadPosRt(QPointF *_posRt,double _ppm);
+bool ADP_GetAxisRunState(short _axis);
+void ADP_SetJogMode(short _axis,double _spd,double _acc);
+
 
 void ADP_SetFanStop();
 void ADP_SetFanWindIn();

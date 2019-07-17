@@ -1,9 +1,8 @@
 #include "cutfilehandle.h"
 
-CutFileHandle::CutFileHandle(QObject *parent) : QObject(parent)
-{
-//    cutFile_UI->SetFileList(&this->qlcFileList);
-}
+//CutFileHandle::CutFileHandle(QObject *parent) : QObject(parent)
+//{
+//}
 
 CutFileHandle::CutFileHandle(QDockWidget *_dockwgt, QFrame *_frame)
 {
@@ -15,34 +14,35 @@ CutFile_Data* CutFileHandle::GetFileData()
 {
     return this->cutFile_Data;
 }
-void CutFileHandle::SlotUpdateHeadPosRt(int _xPos,int _yPos)
+//设置实时的机头值
+void CutFileHandle::SlotUpdateHeadPosRt(QPointF posRT)
 {
-    cutFile_Data->SetPosRt(QPointF(static_cast<double>(_xPos)/cutFile_Data->GetPosToPulseScale().x(),
-                                  static_cast<double>(_yPos)/cutFile_Data->GetPosToPulseScale().y()));
+    cutFile_Data->SetPosRt(posRT);
 }
-void CutFileHandle::SlotUpdateDataHead(QPointF _posOrg,QPointF _posLmt,QPointF _posMax,QPointF _posToPulseScale,QPointF _realToCutScale)
+void CutFileHandle::SlotUpdateDataHead(CfgHead_T _data)
 {
-    cutFile_Data->SetPosOrg(_posOrg);
-    cutFile_Data->SetPosLmt(_posLmt);
-    cutFile_Data->SetPosMax(_posMax);
-    cutFile_Data->SetPosToPulseScale(_posToPulseScale);
-    cutFile_Data->SetRealToCutScale(_realToCutScale);
+    cutFile_Data->SetPosOrg(_data.posOrg);
+    cutFile_Data->SetPosLmt(_data.posLmt);
+    cutFile_Data->SetPosMax(_data.posMax);
+    cutFile_Data->SetPosToPulseScaleXY(_data.posToPulseScaleXY);
+    cutFile_Data->SetRealToCutScale(_data.realToCutScale);
 }
-void CutFileHandle::SlotUpdateDataApron(QList<CfgApron*> _aConfig)
+void CutFileHandle::SlotUpdateDataApron(QList<CfgApron_T> _aConfig)
 {
     //通过机座数据更新裁切列表中的相关偏移数据
     QList<int> tempGuidList;
     QList<QPointF> tempOffsetList;
     for(int i=0;i<_aConfig.count();i++)
     {
-        tempGuidList.append(_aConfig.at(i)->GetKnifeGuid());
-        tempOffsetList.append(QPointF(_aConfig.at(i)->GetXOffset(),_aConfig.at(i)->GetYOffset()));
+        tempGuidList.append(_aConfig.at(i).apronKnifeGuid);
+        tempOffsetList.append(QPointF(_aConfig.at(i).apronOffsetX,_aConfig.at(i).apronOffsetY));
     }
     cutFile_Data->SetKnifeOffset(tempGuidList,tempOffsetList);
 }
 
 void CutFileHandle::SlotUpdateFileAdded()
 {
+    //请求更新刀座参数
     qDebug()<<"added";
-    emit UpdateDataApron();
+    emit UpdateDataApronRequest();
 }

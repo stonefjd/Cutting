@@ -18,24 +18,24 @@ QPointF CutFile_Data::GetPosOrg()
     return this->posOrg;
 }
 
-void    CutFile_Data::SetPosToPulseScale(QPointF _pointF)
+void    CutFile_Data::SetPosToPulseScaleXY(double _val)
 {
-    this->posToPulseScale = _pointF;
+    this->posToPulseScaleXY = _val;
 }
 
-QPointF CutFile_Data::GetPosToPulseScale()
+double CutFile_Data::GetPosToPulseScaleXY()
 {
-    return this->posToPulseScale;
+    return this->posToPulseScaleXY;
 }
 
 void    CutFile_Data::SetPosLmt(QPointF _pointF)
 {
-    this->posLimit = _pointF;
+    this->posLmt = _pointF;
 }
 
 QPointF CutFile_Data::GetPosLmt()
 {
-    return this->posLimit;
+    return this->posLmt;
 }
 
 void    CutFile_Data::SetPosMax(QPointF _pointF)

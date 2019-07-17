@@ -256,6 +256,6 @@ void UserManager::on_buttonBox_rejected()
 
 void UserManager::on_tableView_clicked(const QModelIndex &index)
 {
-
+    (void)index;
 }
 

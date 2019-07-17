@@ -12,8 +12,8 @@ class CutFile_Data : public QObject
 private:
     QList<CutFile*>* qlcFileList = new QList<CutFile*>;
     QPointF posOrg;            //逻辑切割原点
-    QPointF posToPulseScale;   //每毫米脉冲数
-    QPointF posLimit;     //逻辑切割范围
+    double  posToPulseScaleXY;   //每毫米脉冲数
+    QPointF posLmt;     //逻辑切割范围
     QPointF posMax;       //全局最大运动边界
     QPointF realToCutScale;    //实际切割缩放比例
 
@@ -25,8 +25,8 @@ public:
     QList<CutFile*>* GetFileList();
     void    SetPosOrg(QPointF _pointF);
     QPointF GetPosOrg();
-    void    SetPosToPulseScale(QPointF _pointF);
-    QPointF GetPosToPulseScale();
+    void    SetPosToPulseScaleXY(double _val);
+    double  GetPosToPulseScaleXY();
     void    SetPosLmt(QPointF _pointF);
     QPointF GetPosLmt();
     void    SetPosMax(QPointF _pointF);
