@@ -14,6 +14,7 @@ struct DirBit
     int  pos;
     int  neg;
 };
+
 const int DIR_W = 0;
 const int DIR_S = 1;
 const int DIR_A = 2;
@@ -105,11 +106,16 @@ private:
 //--传出参数
     QPointF posRT;
 //--跳转辅助变量
-    bool    m_cdInitMachOrg[AXIS_MAX] = {false};    //初始化回零状态位;value:0-Not OK,1-OK
-    uint8_t m_cdDirCmd = 0;                         //KeyBoard与Push Button方向按键记录bit0-W,bit1-S,bit2-A,bit3-D;value:0:released;1:pressed
-    DirBit  m_dirBitMove[2];                        //存储按键变量移位的位数,与m_cdDirCmd相对应,初始化存储位
-    StepCnt m_cdOprtStepBndrRsz = stStepNotIn;      //存储操作状态下，边缘校准的步骤
-    StepCnt m_cdOprtStepRngRst  = stStepNotIn;      //存储操作状态下，重设范围的步骤
+    bool    m_cdInitMachOrg[AXIS_MAX] = {false};            //初始化回零状态位;value:0-Not OK,1-OK
+    uint8_t m_cdDirCmd = 0;                                 //KeyBoard与Push Button方向按键记录bit0-W,bit1-S,bit2-A,bit3-D;value:0:released;1:pressed
+    DirBit  m_dirBitMove[2];                                //存储按键变量移位的位数,与m_cdDirCmd相对应,初始化存储位
+    StepCnt m_cdOprtStepBndrRsz         = stStepNotIn;      //存储操作状态下，边缘校准的步骤
+    StepCnt m_cdOprtStepRngRst          = stStepNotIn;      //存储操作状态下，重设范围的步骤
+    StepCnt m_cdOprtStepToolPosCalib    = stStepNotIn;      //存储操作状态下，刀位校准的步骤
+//--轴控制变量
+    short  m_nCtrlAxisZ = AXIS_NULL;      //默认Z方向轴
+    short  m_nCtrlAxisA = AXIS_NULL;
+    double m_nKnifeMaxDeep = 0;
 //--轴运行结构体变量
     TJogPrm m_tJogPrm;
     TCrdPrm m_tCrdPrm;
@@ -121,7 +127,7 @@ private:
     void StateMachScheduleSubOprt();
 
 //--辅助函数,根据按键和button状态匀速运行轴
-    void JoggingForAxis(short _axis);
+    void JoggingForAxis(short _axis,double _lowSpdScale = 1);
 public:
     explicit D_CtrlMach(QObject *parent = nullptr);
 
@@ -130,12 +136,16 @@ public:
     void StateMachScheduleMain();
 
 //--外部事件触发状态跳转
-    void EventActionButton(int _id);
+    void EventOprtSubEnter(int _id);
+    void EventOprtSubEnterToolPosCalib();
+    void EventOprtSubExitToolPosCalib();
     void EventActionKey(QKeyEvent event);
 //--系统状态读
     MainState GetMainState();
+//--轴控制量写
+    void    SetCtrlAxisGroup(short _axisZ, short _axisA, double _deep);
 //--轴状态读
-    bool    GetAxisRunState(int _axis);
+    bool    GetAxisRunState(short _axis);
 //--传入参数读写
     void    SetPosOrg(QPointF _pointF);
     QPointF GetPosOrg();

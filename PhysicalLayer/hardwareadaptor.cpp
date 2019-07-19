@@ -167,6 +167,12 @@ void ADP_LnXY(short crd,long x,long y,double synVel,double synAcc,double velEnd,
     GT_LnXY( crd, x, y, synVel, synAcc, velEnd, fifo);
 #endif
 }
+void ADP_BufMove(short crd,short moveAxis,long pos,double vel,double acc,short modal,short fifo)
+{
+#ifdef GOOGOL_PLUSE_4AXIS
+    GT_BufMove(crd,moveAxis,pos,vel,acc,modal,fifo);
+#endif
+}
 void ADP_CrdStart(short _mask,short _option)
 {
 #ifdef GOOGOL_PLUSE_4AXIS
@@ -329,14 +335,15 @@ bool ADP_GetAxisRunState(short _axis)
     return false;
 #endif
 }
-void ADP_SetJogMode(short _axis, double _spd, double _acc, TJogPrm _jog)
+void ADP_SetJogMode(short _axis, double _spd, double _acc, double _smooth)
 {
-#ifdef GOOGOL_PLUSE_4AXIS    
-    _jog.acc = _acc;
-    _jog.dec = _acc;
-    _jog.smooth = 0.5;
+#ifdef GOOGOL_PLUSE_4AXIS
+    TJogPrm jog;
+    jog.acc = _acc;
+    jog.dec = _acc;
+    jog.smooth = _smooth;
     GT_PrfJog(_axis);
-    GT_SetJogPrm (_axis,&_jog);
+    GT_SetJogPrm (_axis,&jog);
     GT_SetVel(_axis, _spd);
     long mask = static_cast<long>(1<<(_axis-1));
     GT_Update(mask);

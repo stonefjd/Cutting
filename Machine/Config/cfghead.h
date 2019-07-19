@@ -21,6 +21,7 @@ struct CfgHead_T
     QPointF realToCutScale;     //实际尺寸与切割尺寸的比值
     double idleMoveSpd;         //空走速度 (m/s)
     double idleMoveAcc;         //空走加速度(G)
+    QPointF posRt;
 };
 class CfgHead
 {
@@ -73,6 +74,7 @@ public:
     double  GetFeedSpd();
     double  GetFeedAcc();
 
+    void SetPosRt(QPointF _point);
 //    void SetPosOrg(QPointF);
 //    void SetPosLmt(QPointF);
 //    void SetPosMax(QPointF);

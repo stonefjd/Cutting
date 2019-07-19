@@ -45,7 +45,7 @@ private:
     int tab1Valid = 2;//0:正常 1:未选择刀具 2:无选中
 signals:
     void UpdateDataApronRequest();
-    void UpdateDataToolCalib(int id);
+    void EnterOprtToolPosCalibRequest(int _id,double _deep);
 private slots:
     void SlotBtnGrpClicked(bool _chk);
     void SlotBtnCalibClicked();

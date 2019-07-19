@@ -13,7 +13,7 @@ class U_CtrlRngRst : public QDialog
     Q_OBJECT
 private:
     Ui::U_CtrlRngRst *ui;
-    D_CtrlMach*     d_ctrlMach;
+    D_CtrlMach*         d_ctrlMach;
 
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
@@ -23,6 +23,8 @@ public:
 
     void        SetCtrlMachObj(D_CtrlMach* _ctrlMach);
     D_CtrlMach* GetCtrlMachObj(void);
+    void        InitialModel(void);
+
 signals:
     void keyPressed(QKeyEvent);
     void keyReleased(QKeyEvent);

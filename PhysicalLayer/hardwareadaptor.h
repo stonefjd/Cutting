@@ -8,15 +8,13 @@
 #define GOOGOL_PLUSE_4AXIS
 #ifdef GOOGOL_PLUSE_4AXIS
     #include <PhysicalLayer/gts.h>
+    const int AXIS_NULL  = 0;
     const int AXIS_FIRST = 1;
-    const int AXIS_MAX = 4;
+    const int AXIS_MAX   = 4;
     const int AXIS_X=1;
     const int AXIS_Y=2;
     const int AXIS_Z1=3;
     const int AXIS_A1=4;
-    //--转速模式结构体，插补模式结构体
-//    static  TJogPrm Jog;
-//    static  TCrdPrm crdPrm;
 #endif
 
 #ifdef GOOGOL_PLUSE_8AXIS
@@ -74,7 +72,8 @@ void ADP_SetVel(short _profile,double _vel);
 void ADP_SetPrfPos(short _profile,long _prfPos);
 void ADP_SetCrdPrm(short _crd,TCrdPrm *_pCrdPrm);
 void ADP_CrdClear(short _crd,short _fifo);
-void ADP_LnXY(short crd,long x,long y,double synVel,double synAcc,double velEnd,short fifo);
+void ADP_LnXY(short crd,long x,long y,double synVel,double synAcc,double velEnd,short fifo = 0);
+void ADP_BufMove(short crd,short moveAxis,long pos,double vel,double acc,short modal,short fifo=0);
 void ADP_CrdStart(short _mask,short _option);
 void ADP_Stop(long _mask,long _option);
 void ADP_GetAxisPrfPos(short _axis,double *_pValue);
@@ -94,7 +93,7 @@ void ADP_StartMovePoint(short _crd, short _fifo, long _xPos, long _yPos, double 
 void ADP_GetRunStateAndSegment(short _crd,short *_pRun,long *_pSegment,short _fifo=0);
 void ADP_GetHeadPosRt(QPointF *_posRt,double _ppm);
 bool ADP_GetAxisRunState(short _axis);
-void ADP_SetJogMode(short _axis,double _spd,double _acc,TJogPrm _jog);
+void ADP_SetJogMode(short _axis,double _spd,double _acc,double _smooth);
 
 
 void ADP_SetFanStop();

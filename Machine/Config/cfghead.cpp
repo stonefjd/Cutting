@@ -217,7 +217,10 @@ double  CfgHead::GetFeedAcc()
 {
     return cfgHeadData.feedAcc;
 }
-
+void CfgHead::SetPosRt(QPointF _point)
+{
+    this->cfgHeadData.posRt = _point;
+}
 QString CfgHead::GetHeadCfgPath()
 {
     return cfgHeadData.cfgPath;

@@ -46,14 +46,16 @@ void CfgMachHandle::ShowKnifeManager(UserHandle *_userHandle)
     UI_cfgKnifeManager->SetCfgUser(_userHandle);
 
     //connect signal for the data out
-    connect(UI_cfgKnifeManager,SIGNAL(UpdateDataApronRequest()),this,SLOT(SlotUpdateDataApronRequest()));
+    connect(UI_cfgKnifeManager,SIGNAL(UpdateDataApronRequest()),            this,SLOT(SlotUpdateDataApronRequest()));
+    connect(UI_cfgKnifeManager,SIGNAL(EnterOprtToolPosCalibRequest(int,double)),   this,SLOT(SlotEnterOprtToolPosCalibRequest(int,double)));
     //load data from param
     UI_cfgKnifeManager->LoadData();
     //settings
     UI_cfgKnifeManager->setModal(true);
     UI_cfgKnifeManager->exec();
     //disconnect signal to updata data
-    disconnect(UI_cfgKnifeManager,SIGNAL(UpdateDataApronRequest()),this,SLOT(SlotUpdateDataApronRequest()));
+    disconnect(UI_cfgKnifeManager,SIGNAL(UpdateDataApronRequest()),         this,SLOT(SlotUpdateDataApronRequest()));
+    disconnect(UI_cfgKnifeManager,SIGNAL(EnterOprtToolPosCalibRequest(int,double)),this,SLOT(SlotEnterOprtToolPosCalibRequest(int,double)));
     //delete UI
     delete UI_cfgKnifeManager;
 }
@@ -109,4 +111,12 @@ void CfgMachHandle::SlotUpdateDataApronRequest()
         aCfgDataList.append(aConfigList.at(i)->GetCfgAprondData());
     }
     emit UpdateDataApron(aCfgDataList);
+}
+void CfgMachHandle::SlotUpdateDataHeadPosRt(QPointF posRT)
+{
+    hConfig->SetPosRt(posRT);
+}
+void CfgMachHandle::SlotEnterOprtToolPosCalibRequest(int id, double deep)
+{
+    emit EnterOprtToolPosCalib(id,deep);
 }

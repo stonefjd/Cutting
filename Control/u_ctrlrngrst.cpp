@@ -16,6 +16,14 @@ void U_CtrlRngRst::SetCtrlMachObj(D_CtrlMach* _ctrlMach)
 {
     this->d_ctrlMach = _ctrlMach;
 }
+D_CtrlMach* U_CtrlRngRst::GetCtrlMachObj(void)
+{
+    return this->d_ctrlMach;
+}
+void U_CtrlRngRst::InitialModel(void)
+{
+
+}
 void U_CtrlRngRst::keyPressEvent(QKeyEvent *event)
 {
     if(!event->isAutoRepeat()&& (event->key() ==Qt::Key_A ||event->key() ==Qt::Key_D ||event->key() ==Qt::Key_W ||event->key() ==Qt::Key_S))

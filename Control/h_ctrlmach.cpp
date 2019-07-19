@@ -26,7 +26,7 @@ MainState H_CtrlMach::GetMachState()
 {
     return this->d_ctrlMach.GetMainState();
 }
-bool H_CtrlMach::GetAxisRunState(int _axis)
+bool H_CtrlMach::GetAxisRunState(short _axis)
 {
     return this->d_ctrlMach.GetAxisRunState(_axis);
 }
@@ -48,14 +48,23 @@ void H_CtrlMach::SlotUpdateDataHead(CfgHead_T _data)
     d_ctrlMach.SetIdleMoveSpd(_data.idleMoveSpd);
     d_ctrlMach.SetIdleMoveAcc(_data.idleMoveAcc);
 }
-//void CtrlMachHandle::SlotKeyPressed(QKeyEvent event)
-//{
-//    ctrlMach.SetKeyState(event);
-//}
-//void CtrlMachHandle::SlotKeyReleased(QKeyEvent event)
-//{
-//    ctrlMach.SetKeyState(event);
-//}
+void H_CtrlMach::SlotEnterOprtToolPosCalib(int _id, double _deep)
+{
+    //创建提示对象
+    u_ctrlToolPosCalib = new U_CtrlToolPosCalib;
+    //设置数据对象
+    u_ctrlToolPosCalib->SetCtrlMachObj(&d_ctrlMach);
+    //连接界面发出信号
+    connect(u_ctrlToolPosCalib,  SIGNAL(keyPressed(QKeyEvent)),  this, SLOT(SlotActionKeyBoard(QKeyEvent)));
+    connect(u_ctrlToolPosCalib,  SIGNAL(keyReleased(QKeyEvent)), this, SLOT(SlotActionKeyBoard(QKeyEvent)));
+    //设置显示属性
+    u_ctrlToolPosCalib->setModal(true);
+    //初始化界面内容 并确定是否显示
+    if(u_ctrlToolPosCalib->InitialModel(_id,_deep))
+        u_ctrlToolPosCalib->exec();
+    //显示
+    delete u_ctrlToolPosCalib;
+}
 void H_CtrlMach::SlotActionKeyBoard(QKeyEvent event)
 {
     d_ctrlMach.EventActionKey(event);
@@ -66,13 +75,13 @@ void H_CtrlMach::SlotActionOprt()
     QObject *act = qobject_cast<QObject*>(sender());
     id = act->property("id").toInt();
     qDebug()<<id;
-    d_ctrlMach.EventActionButton(id);
+    d_ctrlMach.EventOprtSubEnter(id);
     if(id == 2)
     {
         u_ctrlRngRst = new U_CtrlRngRst;
         u_ctrlRngRst->SetCtrlMachObj(&this->d_ctrlMach);
         connect(u_ctrlRngRst,  SIGNAL(keyPressed(QKeyEvent)),  this, SLOT(SlotActionKeyBoard(QKeyEvent)));
-        connect(u_ctrlRngRst,  SIGNAL(keyReleased(QKeyEvent)), this, SLOT(SlotActionKeyBoard(QKeyEvent)));//----Machine Init
+        connect(u_ctrlRngRst,  SIGNAL(keyReleased(QKeyEvent)), this, SLOT(SlotActionKeyBoard(QKeyEvent)));
 
         u_ctrlRngRst->setModal(true);
         u_ctrlRngRst->exec();

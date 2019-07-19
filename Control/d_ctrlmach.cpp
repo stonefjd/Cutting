@@ -140,9 +140,10 @@ void D_CtrlMach::StateMachScheduleSubOprt()
 {
     short crd=1,fifo=0;
     TCrdPrm crdPrm = m_tCrdPrm;
-    TJogPrm jogPrm = m_tJogPrm;
+//    TJogPrm jogPrm = m_tJogPrm;
     double spd = idleMoveSpd * posToPulseScaleXY;
     double acc = idleMoveAcc * posToPulseScaleXY/1000;
+    double smooth = 0.5;
     long posOrgX = static_cast<long>(posOrg.x()*posToPulseScaleXY);
     long posOrgY = static_cast<long>(posOrg.y()*posToPulseScaleXY);
     long posLmtX = static_cast<long>(posLmt.x()*posToPulseScaleXY);
@@ -171,8 +172,8 @@ void D_CtrlMach::StateMachScheduleSubOprt()
             m_cdOprtStepBndrRsz = stStep1;
             //动作：
             ADP_ClrSts(AXIS_FIRST,AXIS_MAX);
-            ADP_SetJogMode(AXIS_X,-spd,acc,jogPrm);
-            ADP_SetJogMode(AXIS_Y,-spd,acc,jogPrm);
+            ADP_SetJogMode(AXIS_X,-spd,acc,smooth);
+            ADP_SetJogMode(AXIS_Y,-spd,acc,smooth);
         }
         else if(m_cdOprtStepBndrRsz == stStep1)
         {
@@ -185,8 +186,8 @@ void D_CtrlMach::StateMachScheduleSubOprt()
                 ADP_ZeroPos(AXIS_X);
                 ADP_ZeroPos(AXIS_Y);
                 ADP_ClrSts(AXIS_FIRST,AXIS_MAX);
-                ADP_SetJogMode(AXIS_X,spd,acc,jogPrm);
-                ADP_SetJogMode(AXIS_Y,spd,acc,jogPrm);
+                ADP_SetJogMode(AXIS_X,spd,acc,smooth);
+                ADP_SetJogMode(AXIS_Y,spd,acc,smooth);
             }
         }
         else if(m_cdOprtStepBndrRsz == stStep2)
@@ -233,14 +234,49 @@ void D_CtrlMach::StateMachScheduleSubOprt()
         {
 
         }
+        m_stSubOprt = stOprt_Fnsh;
     }
     else if(m_stSubOprt == stOprt_ToolDeepCalib)
     {
-
+        m_stSubOprt = stOprt_Fnsh;
     }
     else if(m_stSubOprt == stOprt_ToolPosCalib)
     {
-
+        if(m_cdOprtStepToolPosCalib == stStepNotIn)
+        {
+            //迁移
+            m_cdOprtStepToolPosCalib = stStep1;
+            //动作
+            ADP_ClrSts(AXIS_FIRST,AXIS_MAX);
+            ADP_SetCrdPrm(crd, &crdPrm);
+            ADP_CrdClear(crd, fifo);
+            //校准机头停在距离x切割边界1/2处，停在Y边界1/8处
+//            long edgeX = (posLmtX-posOrgX)/8+posOrgX;
+//            long edgeY = (posLmtY-posOrgY)/2+posOrgY;
+//            ADP_LnXY(crd,edgeX,edgeY,spd,acc,0,fifo);
+            long posMaxZ = static_cast<long>(m_nKnifeMaxDeep * posToPulseScaleXY);
+            ADP_BufMove(crd,m_nCtrlAxisZ,posMaxZ,5,0.1,1,0);
+            ADP_CrdStart(crd, 0);
+        }
+        else if(m_cdOprtStepToolPosCalib == stStep1)
+        {
+            //循环：查询run到位
+            short run;  // 坐标系运动完成段查询变量
+            long segment;  // 坐标系的缓存区剩余空间查询变量
+            ADP_GetRunStateAndSegment(crd,&run,&segment,fifo);
+            //条件：
+            if(run == 0)
+            {
+                //迁移：子状态：未进入；主状态：等待状态
+                m_cdOprtStepToolPosCalib = stStep2;
+                //动作：-
+            }
+        }
+        else if(m_cdOprtStepToolPosCalib == stStep2)
+        {
+            JoggingForAxis(AXIS_X,0.2);
+            JoggingForAxis(AXIS_Y,0.2);
+        }
     }
     else if(m_stSubOprt == stOprt_Fnsh)
     {
@@ -259,11 +295,11 @@ void D_CtrlMach::StateMachScheduleSubOprt()
         }
     }
 }
-void D_CtrlMach::JoggingForAxis(short _axis)
+void D_CtrlMach::JoggingForAxis(short _axis,double _lowSpdScale)
 {
     double spd = 0;
     double acc = idleMoveAcc;
-    TJogPrm jog = m_tJogPrm;
+    double smooth = 0.5;
     bool cmdNeg = (m_cdDirCmd & (1<<m_dirBitMove[_axis-1].neg))&&!(m_cdDirCmd & (1<<m_dirBitMove[_axis-1].pos));
     bool cmdPos = !(m_cdDirCmd & (1<<m_dirBitMove[_axis-1].neg))&&(m_cdDirCmd & (1<<m_dirBitMove[_axis-1].pos));
     bool lmtNeg = false;
@@ -287,17 +323,17 @@ void D_CtrlMach::JoggingForAxis(short _axis)
             ADP_ClrSts(_axis);
             if(cmdNeg&&!lmtNeg)
             {
-                spd = -idleMoveSpd * posToPulseScaleXY;
+                spd = -idleMoveSpd * posToPulseScaleXY * _lowSpdScale;
             }
             else if(cmdPos&&!lmtPos)
             {
-                spd = idleMoveSpd * posToPulseScaleXY;
+                spd =  idleMoveSpd * posToPulseScaleXY * _lowSpdScale;
             }
             else
             {
                 spd = 0;
             }
-            ADP_SetJogMode(_axis,spd,acc,jog);
+            ADP_SetJogMode(_axis,spd,acc,smooth);
         }
     }
 }
@@ -305,7 +341,25 @@ void D_CtrlMach::JoggingForAxis(short _axis)
 //条件：
 //迁移：
 //动作：
-void D_CtrlMach::EventActionButton(int _id)
+void D_CtrlMach::EventOprtSubEnterToolPosCalib()
+{
+    qDebug()<<"enter,calib";
+    if(m_stMainThis == stMain_Wait)
+    {
+        m_stMainThis = stMain_Oprt;
+        m_stSubOprt  = stOprt_ToolPosCalib;
+    }
+}
+void D_CtrlMach::EventOprtSubExitToolPosCalib()
+{
+    qDebug()<<"exit,calib";
+    if(m_stMainThis == stMain_Oprt)
+    {
+        m_stSubOprt  = stOprt_BtnO;
+        m_cdOprtStepToolPosCalib = stStepNotIn;
+    }
+}
+void D_CtrlMach::EventOprtSubEnter(int _id)
 {
     if(m_stMainThis == stMain_Wait)
     {
@@ -393,6 +447,8 @@ void D_CtrlMach::GetRunningData()
 //--获取机头轴状态
     m_stAxisRunState[AXIS_X-1] = ADP_GetAxisRunState(AXIS_X);
     m_stAxisRunState[AXIS_Y-1] = ADP_GetAxisRunState(AXIS_Y);
+    m_stAxisRunState[AXIS_Z1-1] = ADP_GetAxisRunState(AXIS_Z1);
+    m_stAxisRunState[AXIS_A1-1] = ADP_GetAxisRunState(AXIS_A1);
 //--可注释
     long xSts,ySts;
     ADP_GetSts(AXIS_X,&xSts);
@@ -443,7 +499,13 @@ MainState D_CtrlMach::GetMainState()
 {
     return this->m_stMainThis;
 }
-bool    D_CtrlMach::GetAxisRunState(int _axis)
+void    D_CtrlMach::SetCtrlAxisGroup(short _axisZ, short _axisA, double _deep)
+{
+    this->m_nCtrlAxisZ = _axisZ;
+    this->m_nCtrlAxisA = _axisA;
+    this->m_nKnifeMaxDeep = _deep;
+}
+bool    D_CtrlMach::GetAxisRunState(short _axis)
 {
     return  this->m_stAxisRunState[_axis-1];
 }

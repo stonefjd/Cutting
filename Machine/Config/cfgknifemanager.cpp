@@ -147,7 +147,9 @@ void CfgKnifeManager::SlotBtnCalibClicked()
 {
     QPushButton *btnCalib = qobject_cast<QPushButton*>(sender());
     int id = btnCalib->property("id").toInt();
+    double deep = cApron->at(id)->GetKnife()->GetMaxPDDepth();
     qDebug()<<id;
+    emit EnterOprtToolPosCalibRequest(id,deep);
 }
 
 void CfgKnifeManager::on_btnOK_clicked()

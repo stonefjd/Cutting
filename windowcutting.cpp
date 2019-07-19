@@ -37,9 +37,12 @@ WindowCutting::WindowCutting(QWidget *parent) :
     connect(cfgMachHandle,  SIGNAL(UpdateDataApron(QList<CfgApron_T>)), cutFileHandle,  SLOT(SlotUpdateDataApron(QList<CfgApron_T>)));
     connect(cutFileHandle,  SIGNAL(UpdateDataApronRequest()),           cfgMachHandle,  SLOT(SlotUpdateDataApronRequest()));
     connect(handleCtrlMach, SIGNAL(UpdateDataHeadPosRt(QPointF)),       cutFileHandle,  SLOT(SlotUpdateDataHeadPosRt(QPointF)));
+    connect(handleCtrlMach, SIGNAL(UpdateDataHeadPosRt(QPointF)),       cfgMachHandle,  SLOT(SlotUpdateDataHeadPosRt(QPointF)));
     connect(this,           SIGNAL(keyPressed(QKeyEvent)),              handleCtrlMach, SLOT(SlotActionKeyBoard(QKeyEvent)));
     connect(this,           SIGNAL(keyReleased(QKeyEvent)),             handleCtrlMach, SLOT(SlotActionKeyBoard(QKeyEvent)));
     connect(handleCtrlMach, SIGNAL(UpdateDataHeadPosMax(QPointF)),      cfgMachHandle,  SLOT(SlotUpdateDataHeadPosMax(QPointF)));
+    connect(cfgMachHandle,  SIGNAL(EnterOprtToolPosCalib(int,double)),  handleCtrlMach, SLOT(SlotEnterOprtToolPosCalib(int,double)));
+
     connect(ui->actionBoundaryResize,   SIGNAL(triggered()),            handleCtrlMach, SLOT(SlotActionOprt()));
     connect(ui->actionRangeScan,        SIGNAL(triggered()),            handleCtrlMach, SLOT(SlotActionOprt()));
     connect(ui->actionRangeReset,       SIGNAL(triggered()),            handleCtrlMach, SLOT(SlotActionOprt()));
