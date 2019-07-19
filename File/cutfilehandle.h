@@ -8,7 +8,6 @@
 #include "Base/cutfile.h"
 #include "cutfile_ui.h"
 #include "cutfile_data.h"
-#include "Machine/Config/cfgmachhandle.h"
 class CutFileHandle : public QObject
 {
     Q_OBJECT
@@ -20,13 +19,15 @@ public:
     CutFileHandle(QDockWidget *_dockwgt, QFrame *_frame);
 
     CutFile_Data* GetFileData();
+    void InitEventFilter();
+
 signals:
-    void UpdateDataApronRequest();
+//    void UpdateDataApronRequest();
 public slots:
-    void SlotUpdateDataHeadPosRt(QPointF posRT);
-    void SlotUpdateDataHead(CfgHead_T _data);
-    void SlotUpdateDataApron(QList<CfgApron_T> _aConfig);
-    void SlotUpdateFileAdded();
+//    void SlotUpdateDataHeadPosRt(QPointF *posRT);
+//    void SlotUpdateDataHead(CfgHead_T _data);
+//    void SlotUpdateDataApron(QList<CfgApron_T> _aConfig);
+//    void SlotUpdateFileAdded();
 };
 
 #endif // CUTFILEHANDLE_H

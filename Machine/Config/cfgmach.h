@@ -2,44 +2,9 @@
 #define CFGMACH_H
 
 #include "cfgbasedefine.h"
-struct CfgMach_T
-{
-    QString cfgPath;
-    QString versionHw;
-    QString versionSw;
-    double  machType;
-    double  machTypeSub;
-    double  sizeX;
-    double  sizeY;
-    double  feltThick;
-    bool effctLvLimit;
-    bool effctLvSwage;
-    bool effctLvPuase;
-    bool effctLvPump;
-    bool enFanZone;
-    bool enInhal;
-    bool enBlow;
-    int freqInhale;
-    int freqBlow;
-    int timeSwage;			//压料时间(s)
-    int timeBlow;            //吹气时间(s)
-    int timeLoadBefore;		//放料开始提前时间(s)
-    int timeLoadAfter;		//放料结束提前时间(s)
-    int timeInhaleDelay;		//吸气延迟时间(ms)
-    bool   alignEn;
-    double alignMaxZ;
-    double alignStartZ;
-    double alignAbsX;
-    double alignAbsY;
-    int headCount;
-};
-class CfgMach
-{
-    private:
-    CfgMach_T cfgMachData;
-
-//    QString machCfgPath;
-
+//struct CfgMach_T
+//{
+//    QString cfgPath;
 //    QString versionHw;
 //    QString versionSw;
 //    double  machType;
@@ -47,31 +12,66 @@ class CfgMach
 //    double  sizeX;
 //    double  sizeY;
 //    double  feltThick;
-
 //    bool effctLvLimit;
 //    bool effctLvSwage;
 //    bool effctLvPuase;
 //    bool effctLvPump;
-
 //    bool enFanZone;
 //    bool enInhal;
 //    bool enBlow;
 //    int freqInhale;
 //    int freqBlow;
-
 //    int timeSwage;			//压料时间(s)
 //    int timeBlow;            //吹气时间(s)
 //    int timeLoadBefore;		//放料开始提前时间(s)
 //    int timeLoadAfter;		//放料结束提前时间(s)
 //    int timeInhaleDelay;		//吸气延迟时间(ms)
-
 //    bool   alignEn;
 //    double alignMaxZ;
 //    double alignStartZ;
 //    double alignAbsX;
 //    double alignAbsY;
-
 //    int headCount;
+//};
+class CfgMach
+{
+    private:
+//    CfgMach_T cfgMachData;
+
+    QString cfgPath;
+
+    QString versionHw;
+    QString versionSw;
+    double  machType;
+    double  machTypeSub;
+    double  sizeX;
+    double  sizeY;
+    double  feltThick;
+
+    bool effctLvLimit;
+    bool effctLvSwage;
+    bool effctLvPuase;
+    bool effctLvPump;
+
+    bool enFanZone;
+    bool enInhal;
+    bool enBlow;
+    int freqInhale;
+    int freqBlow;
+
+    int timeSwage;			//压料时间(s)
+    int timeBlow;            //吹气时间(s)
+    int timeLoadBefore;		//放料开始提前时间(s)
+    int timeLoadAfter;		//放料结束提前时间(s)
+    int timeInhaleDelay;		//吸气延迟时间(ms)
+
+    bool   alignEn;
+    double alignMaxZ;
+    double alignStartZ;
+    double alignAbsX;
+    double alignAbsY;
+
+    int headCount;
 public:
 
 

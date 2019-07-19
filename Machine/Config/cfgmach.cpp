@@ -3,153 +3,153 @@
 
 CfgMach::CfgMach()
 {
-    cfgMachData.cfgPath = SETTING_PATH;
+    cfgPath = SETTING_PATH;
 
-    cfgMachData.versionHw   = "1";
-    cfgMachData.versionSw   = "1";
-    cfgMachData.machType    = 0;
+    versionHw   = "1";
+    versionSw   = "1";
+    machType    = 0;
 //    double  machTypeSub;
 
-    cfgMachData.sizeX       = 2500;
-    cfgMachData.sizeY       = 1600;
-    cfgMachData.feltThick   = 3;
+    sizeX       = 2500;
+    sizeY       = 1600;
+    feltThick   = 3;
 
-    cfgMachData.effctLvLimit = 0;
-    cfgMachData.effctLvSwage = 0;
-    cfgMachData.effctLvPuase = 0;
-    cfgMachData.effctLvPump  = 0;
+    effctLvLimit = 0;
+    effctLvSwage = 0;
+    effctLvPuase = 0;
+    effctLvPump  = 0;
 
-    cfgMachData.enFanZone   = 0;
-    cfgMachData.enInhal     = 0;
-    cfgMachData.enBlow      = 0;
-    cfgMachData.freqInhale  = 5000;
-    cfgMachData.freqBlow    = 5000;
+    enFanZone   = 0;
+    enInhal     = 0;
+    enBlow      = 0;
+    freqInhale  = 5000;
+    freqBlow    = 5000;
 
-    cfgMachData.timeSwage   = 200;			//压料时间(s)
-    cfgMachData.timeBlow    = 200;          //吹气时间(s)
-    cfgMachData.timeLoadBefore  = 200;		//放料开始提前时间(s)
-    cfgMachData.timeLoadAfter   = 200;		//放料结束提前时间(s)
-    cfgMachData.timeInhaleDelay = 200;		//吸气延迟时间(ms)
+    timeSwage   = 200;			//压料时间(s)
+    timeBlow    = 200;          //吹气时间(s)
+    timeLoadBefore  = 200;		//放料开始提前时间(s)
+    timeLoadAfter   = 200;		//放料结束提前时间(s)
+    timeInhaleDelay = 200;		//吸气延迟时间(ms)
 
-    cfgMachData.alignEn     = 0;
-    cfgMachData.alignMaxZ   = 10;
-    cfgMachData.alignStartZ = 10;
-    cfgMachData.alignAbsX   = 100;
-    cfgMachData.alignAbsY   = 100;
+    alignEn     = 0;
+    alignMaxZ   = 10;
+    alignStartZ = 10;
+    alignAbsX   = 100;
+    alignAbsY   = 100;
 
-    cfgMachData.headCount   = 100;
+    headCount   = 100;
 }
 QString CfgMach::GetMachCfgPath()
 {
-    return cfgMachData.cfgPath;
+    return cfgPath;
 }
 int CfgMach::GetHeadCount()
 {
-    return cfgMachData.headCount;
+    return headCount;
 }
 QString CfgMach::GetVersionHw()
 {
-    return cfgMachData.versionHw;
+    return versionHw;
 }
 QString CfgMach::GetVersionSw()
 {
-    return cfgMachData.versionSw;
+    return versionSw;
 }
 double  CfgMach::GetType()
 {
-    return cfgMachData.machType;
+    return machType;
 }
 double  CfgMach::GetSizeX()
 {
-    return cfgMachData.sizeX;
+    return sizeX;
 }
 double  CfgMach::GetSizeY()
 {
-    return cfgMachData.sizeY;
+    return sizeY;
 }
 double  CfgMach::GetFeltThick()
 {
-    return cfgMachData.feltThick;
+    return feltThick;
 }
 bool CfgMach::GetEffctLvLimit()
 {
-    return cfgMachData.effctLvLimit;
+    return effctLvLimit;
 }
 bool CfgMach::GetEffctLvSwage()
 {
-    return cfgMachData.effctLvSwage;
+    return effctLvSwage;
 }
 bool CfgMach::GetEffctLvPuase()
 {
-    return cfgMachData.effctLvPuase;
+    return effctLvPuase;
 }
 bool CfgMach::GetEffctLvPump()
 {
-    return cfgMachData.effctLvPump;
+    return effctLvPump;
 }
 bool CfgMach::GetEnFanZone()
 {
-    return cfgMachData.enFanZone;
+    return enFanZone;
 }
 bool CfgMach::GetEnInhal()
 {
-    return cfgMachData.enInhal;
+    return enInhal;
 }
 bool CfgMach::GetEnBlow()
 {
-    return cfgMachData.enBlow;
+    return enBlow;
 }
 int CfgMach::GetFreqInhale()
 {
-    return cfgMachData.freqInhale;
+    return freqInhale;
 }
 int CfgMach::GetFreqBlow()
 {
-    return cfgMachData.freqBlow;
+    return freqBlow;
 }
 int CfgMach::GetTimeSwage()
 {
-    return cfgMachData.timeSwage;
+    return timeSwage;
 }
 int CfgMach::GetTimeBlow()
 {
-    return cfgMachData.timeBlow;
+    return timeBlow;
 }
 int CfgMach::GetTimeLoadBefore()
 {
-    return cfgMachData.timeLoadBefore;
+    return timeLoadBefore;
 }
 int CfgMach::GetTimeLoadAfter()
 {
-    return cfgMachData.timeLoadAfter;
+    return timeLoadAfter;
 }
 int CfgMach::GetTimeInhaleDelay()
 {
-    return cfgMachData.timeInhaleDelay;
+    return timeInhaleDelay;
 }
 bool CfgMach::GetAlignEn()
 {
-    return cfgMachData.alignEn;
+    return alignEn;
 }
 double CfgMach::GetAlignMaxZ()
 {
-    return cfgMachData.alignMaxZ;
+    return alignMaxZ;
 }
 double CfgMach::GetAlignStartZ()
 {
-    return cfgMachData.alignStartZ;
+    return alignStartZ;
 }
 double CfgMach::GetAlignAbsX()
 {
-    return cfgMachData.alignAbsX;
+    return alignAbsX;
 }
 double CfgMach::GetAlignAbsY()
 {
-    return cfgMachData.alignAbsY;
+    return alignAbsY;
 }
 void CfgMach::GetMachineBaseInfo()
 {
-    QString strConfigPath = cfgMachData.cfgPath;
+    QString strConfigPath = cfgPath;
 
     QString strSect = ("");
     QString strKey = ("");
@@ -164,36 +164,36 @@ void CfgMach::GetMachineBaseInfo()
     strKey = ("HwVersion");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        cfgMachData.versionHw = *szBuf;
+        versionHw = *szBuf;
     }
     //软版本号
     strKey = ("SwVersion");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        cfgMachData.versionSw = *szBuf;
+        versionSw = *szBuf;
     }
     //机器类型
     strKey = ("Type");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        cfgMachData.machType = (*szBuf).toInt();
+        machType = (*szBuf).toInt();
     }
     //机器长宽度
     strKey = ("SizeX");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        cfgMachData.sizeX = (*szBuf).toDouble();
+        sizeX = (*szBuf).toDouble();
     }
     strKey = ("SizeY");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        cfgMachData.sizeY = (*szBuf).toDouble();
+        sizeY = (*szBuf).toDouble();
     }
     //毛毡厚度
     strKey = ("FeltThick");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        cfgMachData.feltThick = (*szBuf).toDouble();
+        feltThick = (*szBuf).toDouble();
     }
 //--------------------------机械配置
     //机头个数
@@ -201,108 +201,108 @@ void CfgMach::GetMachineBaseInfo()
     strKey = ("HeadCount");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        cfgMachData.headCount = (*szBuf).toInt();
+        headCount = (*szBuf).toInt();
     }
     strKey = ("EffctLvLimit");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        cfgMachData.effctLvLimit = (*szBuf).toInt();
+        effctLvLimit = (*szBuf).toInt();
     }
     strKey = ("EffctLvSwage");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        cfgMachData.effctLvSwage = (*szBuf).toInt();
+        effctLvSwage = (*szBuf).toInt();
     }
     strKey = ("EffctLvPuase");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        cfgMachData.effctLvPuase = (*szBuf).toInt();
+        effctLvPuase = (*szBuf).toInt();
     }
     strKey = ("EffctLvPump");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        cfgMachData.effctLvPump = (*szBuf).toInt();
+        effctLvPump = (*szBuf).toInt();
     }
     strKey = ("EnFanZone");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        cfgMachData.enFanZone = (*szBuf).toInt();
+        enFanZone = (*szBuf).toInt();
     }
     strKey = ("EnInhale");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        cfgMachData.enInhal = (*szBuf).toInt();
+        enInhal = (*szBuf).toInt();
     }
     strKey = ("EnBlow");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        cfgMachData.enBlow = (*szBuf).toInt();
+        enBlow = (*szBuf).toInt();
     }
     strKey = ("FreqInhale");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        cfgMachData.freqInhale = (*szBuf).toInt();
+        freqInhale = (*szBuf).toInt();
     }
     strKey = ("FreqBlow");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        cfgMachData.freqBlow = (*szBuf).toInt();
+        freqBlow = (*szBuf).toInt();
     }
   //----------------------风机
     //压料时间
     strKey = ("TimeSwage");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        cfgMachData.timeSwage = (*szBuf).toInt();
+        timeSwage = (*szBuf).toInt();
     }
     //吹气时间(s)
     strKey = ("TimeBlow");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        cfgMachData.timeBlow = (*szBuf).toInt();
+        timeBlow = (*szBuf).toInt();
     }
     //放料开始提前时间(s)
     strKey = ("TimeLoadBefore");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        cfgMachData.timeLoadBefore = (*szBuf).toInt();
+        timeLoadBefore = (*szBuf).toInt();
     }
     //放料结束提前时间(s)
     strKey = ("TimeLoadAfter");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        cfgMachData.timeLoadAfter = (*szBuf).toInt();
+        timeLoadAfter = (*szBuf).toInt();
     }
     //吸气延迟时间(ms)
     strKey = ("TimeInhaleDelay");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        cfgMachData.timeInhaleDelay = (*szBuf).toInt();
+        timeInhaleDelay = (*szBuf).toInt();
     }
   //----------------------对刀
     strKey = ("AlignEn");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        cfgMachData.alignEn = (*szBuf).toInt();
+        alignEn = (*szBuf).toInt();
     }
     strKey = ("AlignMaxZ");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        cfgMachData.alignMaxZ = (*szBuf).toDouble();
+        alignMaxZ = (*szBuf).toDouble();
     }
     strKey = ("AlignStartZ");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        cfgMachData.alignStartZ = (*szBuf).toDouble();
+        alignStartZ = (*szBuf).toDouble();
     }
     strKey = ("AlignAbsX");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        cfgMachData.alignAbsX = (*szBuf).toDouble();
+        alignAbsX = (*szBuf).toDouble();
     }
     strKey = ("AlignAbsY");
     if (GetPrivateProfileString(strSect, strKey, szBuf, strConfigPath))
     {
-        cfgMachData.alignAbsY = (*szBuf).toDouble();
+        alignAbsY = (*szBuf).toDouble();
     }
 }

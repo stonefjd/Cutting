@@ -2,8 +2,8 @@
 
 CfgMachHandle::CfgMachHandle(QObject *parent) : QObject(parent)
 {
-    mConfig->GetMachineBaseInfo();
-    hConfig->GetHeadInfo();
+    cfgMach.GetMachineBaseInfo();
+    cfgHead.GetHeadInfo();
     lConfig.ReadCutToolLib();
     for(int i=0;i<MAX_TOOLAPRON;i++)
     {
@@ -12,7 +12,7 @@ CfgMachHandle::CfgMachHandle(QObject *parent) : QObject(parent)
 
         CfgKnife *tmpKnife = lConfig.GetKnifeByGuid(tempApron->GetKnifeGuid());
         tempApron->SetKnife(tmpKnife);
-        aConfigList.append(tempApron);
+        cfgApronList.append(tempApron);
     }
     //add knife paramater in lib by GUID
 }
@@ -23,8 +23,8 @@ void CfgMachHandle::ShowMachSettings(UserHandle *_userHandle)
     UI_cfgMachSettings = new CfgMachSettings;
 
     UI_cfgMachSettings->SetCfgUser(_userHandle);
-    UI_cfgMachSettings->SetCfgMach(mConfig);
-    UI_cfgMachSettings->SetCfgHead(hConfig);
+    UI_cfgMachSettings->SetCfgMach(&cfgMach);
+    UI_cfgMachSettings->SetCfgHead(&cfgHead);
     //connect signal for the data out
     connect(UI_cfgMachSettings,SIGNAL(UpdateDataHeadRequest()),this,SLOT(SlotUpdateDataHeadRequest()));
     //load data from param
@@ -40,9 +40,9 @@ void CfgMachHandle::ShowMachSettings(UserHandle *_userHandle)
 void CfgMachHandle::ShowKnifeManager(UserHandle *_userHandle)
 {
     UI_cfgKnifeManager = new CfgKnifeManager;
-    UI_cfgKnifeManager->SetCfgHead(hConfig);
+    UI_cfgKnifeManager->SetCfgHead(&cfgHead);
     UI_cfgKnifeManager->SetCfgLib(&lConfig);
-    UI_cfgKnifeManager->SetCfgApron(&aConfigList);
+    UI_cfgKnifeManager->SetCfgApron(&cfgApronList);
     UI_cfgKnifeManager->SetCfgUser(_userHandle);
 
     //connect signal for the data out
@@ -68,53 +68,49 @@ CfgKnifeManager* CfgMachHandle::GetCfgKnifeManager()
     return this->UI_cfgKnifeManager;
 }
 
-CfgHead* CfgMachHandle::GetHConfig()
+CfgHead* CfgMachHandle::GetCfgHead()
 {
-    return this->hConfig;
+    return &this->cfgHead;
 }
-void CfgMachHandle::InitCommunicate()
+QList<CfgApron*>*   CfgMachHandle::GetCfgArponList()
 {
-    //机头参数发出
-    emit UpdateDataHead(hConfig->GetCfgHeadData());
-    //机座参数发出
-    QList<CfgApron_T> aCfgDataList;
-    for(int i=0;i<aConfigList.count();i++)
-    {
-        aCfgDataList.append(aConfigList.at(i)->GetCfgAprondData());
-    }
-    emit UpdateDataApron(aCfgDataList);
+    return &this->cfgApronList;
 }
-//void CfgMachHandle::UpdateConfigMaxPluse(double _xPos, double _yPos)
+//void CfgMachHandle::InitCommunicate()
 //{
-//    //从机器数据中更新到配置数据中
-//    hConfig->UpdateHeadMaxPluse(static_cast<int>(_xPos),static_cast<int>(_yPos),0);
-
-//    //从配置数据中更新到显示数据中
-//    emit UpdateDataHead(hConfig->GetCfgHeadData());
+//    //机头参数发出
+////    emit UpdateDataHead(cfgHead->GetCfgHeadData());
+//    //机座参数发出
+//    QList<CfgApron_T> aCfgDataList;
+//    for(int i=0;i<cfgApronList.count();i++)
+//    {
+//        aCfgDataList.append(cfgApronList.at(i)->GetCfgAprondData());
+//    }
+//    emit UpdateDataApron(aCfgDataList);
 //}
 void CfgMachHandle::SlotUpdateDataHeadPosMax(QPointF _point)
 {
     qDebug()<<"update";
-    hConfig->UpdateDataPosMax(_point,0);
-    emit UpdateDataHead(hConfig->GetCfgHeadData());
+    cfgHead.UpdateDataPosMax(_point,0);
+//    emit UpdateDataHead(cfgHead->GetCfgHeadData());
 }
 void CfgMachHandle::SlotUpdateDataHeadRequest()
 {
-    emit UpdateDataHead(hConfig->GetCfgHeadData());
+//    emit UpdateDataHead(cfgHead->GetCfgHeadData());
 }
 void CfgMachHandle::SlotUpdateDataApronRequest()
 {
     //机座参数发出
-    QList<CfgApron_T> aCfgDataList;
-    for(int i=0;i<aConfigList.count();i++)
-    {
-        aCfgDataList.append(aConfigList.at(i)->GetCfgAprondData());
-    }
-    emit UpdateDataApron(aCfgDataList);
+//    QList<CfgApron_T> aCfgDataList;
+//    for(int i=0;i<cfgApronList.count();i++)
+//    {
+//        aCfgDataList.append(cfgApronList.at(i)->GetCfgAprondData());
+//    }
+//    emit UpdateDataApron(aCfgDataList);
 }
 void CfgMachHandle::SlotUpdateDataHeadPosRt(QPointF posRT)
 {
-    hConfig->SetPosRt(posRT);
+//    cfgHead->SetPosRt(posRT);
 }
 void CfgMachHandle::SlotEnterOprtToolPosCalibRequest(int id, double deep)
 {

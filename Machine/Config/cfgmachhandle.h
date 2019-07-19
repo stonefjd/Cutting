@@ -13,9 +13,9 @@ class CfgMachHandle : public QObject
 public:
     explicit CfgMachHandle(QObject *parent = nullptr);
 private:
-    CfgMach *mConfig = new CfgMach;
-    CfgHead *hConfig = new CfgHead;
-    QList<CfgApron*> aConfigList;
+    CfgMach cfgMach;// = new CfgMach;
+    CfgHead cfgHead;// = new CfgHead;
+    QList<CfgApron*> cfgApronList;
     CfgLib  lConfig;
 
     CfgMachSettings *UI_cfgMachSettings;
@@ -25,15 +25,16 @@ public:
     void ShowMachSettings(UserHandle *_userHandle);
     void ShowKnifeManager(UserHandle *_userHandle);
 
-    CfgMachSettings* GetCfgMachSettings();
-    CfgKnifeManager* GetCfgKnifeManager();
-    CfgHead *GetHConfig();
+    CfgMachSettings*    GetCfgMachSettings();
+    CfgKnifeManager*    GetCfgKnifeManager();
 
-    void InitCommunicate();
+    CfgHead*            GetCfgHead();
+    QList<CfgApron*>*   GetCfgArponList();
+//    void InitCommunicate();
 signals:
     //逻辑原点，逻辑最大切割点，全局最大范围，每毫米脉冲数，实际切割&显示缩放比
-    void UpdateDataHead(CfgHead_T _headData);
-    void UpdateDataApron(QList<CfgApron_T> _aConfig);
+//    void UpdateDataHead(CfgHead_T _headData);
+//    void UpdateDataApron(QList<CfgApron_T> _aConfig);
     void EnterOprtToolPosCalib(int id,double deep);
 public slots:
 //    void UpdateConfigMaxPluse(double _xPos, double _yPos);

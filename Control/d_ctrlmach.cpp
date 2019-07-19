@@ -101,10 +101,10 @@ void D_CtrlMach::StateMachScheduleSubInit()
             long posX,posY;
             double spd,acc;
             TCrdPrm crdPrm = m_tCrdPrm;
-            posX = static_cast<long>(posOrg.x()*posToPulseScaleXY);
-            posY = static_cast<long>(posOrg.y()*posToPulseScaleXY);
-            spd  = idleMoveSpd * posToPulseScaleXY;//
-            acc  = idleMoveAcc * posToPulseScaleXY/1000;//
+            posX = static_cast<long>(posOrg->x()*(*posToPulseScaleXY));
+            posY = static_cast<long>(posOrg->y()*(*posToPulseScaleXY));
+            spd  = *idleMoveSpd * (*posToPulseScaleXY);//
+            acc  = *idleMoveAcc * (*posToPulseScaleXY)/1000;//
             ADP_StartMovePoint(crd,fifo,posX,posY,spd,acc,crdPrm);
         }
     }
@@ -141,13 +141,13 @@ void D_CtrlMach::StateMachScheduleSubOprt()
     short crd=1,fifo=0;
     TCrdPrm crdPrm = m_tCrdPrm;
 //    TJogPrm jogPrm = m_tJogPrm;
-    double spd = idleMoveSpd * posToPulseScaleXY;
-    double acc = idleMoveAcc * posToPulseScaleXY/1000;
+    double spd = *idleMoveSpd * *posToPulseScaleXY;
+    double acc = *idleMoveAcc * *posToPulseScaleXY/1000;
     double smooth = 0.5;
-    long posOrgX = static_cast<long>(posOrg.x()*posToPulseScaleXY);
-    long posOrgY = static_cast<long>(posOrg.y()*posToPulseScaleXY);
-    long posLmtX = static_cast<long>(posLmt.x()*posToPulseScaleXY);
-    long posLmtY = static_cast<long>(posLmt.y()*posToPulseScaleXY);
+    long posOrgX = static_cast<long>(posOrg->x()* *posToPulseScaleXY);
+    long posOrgY = static_cast<long>(posOrg->y()* *posToPulseScaleXY);
+    long posLmtX = static_cast<long>(posLmt->x()* *posToPulseScaleXY);
+    long posLmtY = static_cast<long>(posLmt->y()* *posToPulseScaleXY);
 
     if(m_stSubOprt == stOprt_BtnO)
     {
@@ -202,8 +202,8 @@ void D_CtrlMach::StateMachScheduleSubOprt()
                 double pluseX,pluseY;
                 ADP_GetAxisPrfPos(AXIS_X,&pluseX);
                 ADP_GetAxisPrfPos(AXIS_Y,&pluseY);
-                posMax.setX(pluseX/posToPulseScaleXY);
-                posMax.setY(pluseY/posToPulseScaleXY);
+                posMax->setX(pluseX/ *posToPulseScaleXY);
+                posMax->setY(pluseY/ *posToPulseScaleXY);
                 emit UpdateDataHeadPosMaxRequest();
             }
         }
@@ -254,7 +254,7 @@ void D_CtrlMach::StateMachScheduleSubOprt()
 //            long edgeX = (posLmtX-posOrgX)/8+posOrgX;
 //            long edgeY = (posLmtY-posOrgY)/2+posOrgY;
 //            ADP_LnXY(crd,edgeX,edgeY,spd,acc,0,fifo);
-            long posMaxZ = static_cast<long>(m_nKnifeMaxDeep * posToPulseScaleXY);
+            long posMaxZ = static_cast<long>(m_nKnifeMaxDeep * *posToPulseScaleXY);
             ADP_BufMove(crd,m_nCtrlAxisZ,posMaxZ,5,0.1,1,0);
             ADP_CrdStart(crd, 0);
         }
@@ -298,7 +298,7 @@ void D_CtrlMach::StateMachScheduleSubOprt()
 void D_CtrlMach::JoggingForAxis(short _axis,double _lowSpdScale)
 {
     double spd = 0;
-    double acc = idleMoveAcc;
+    double acc = *idleMoveAcc;
     double smooth = 0.5;
     bool cmdNeg = (m_cdDirCmd & (1<<m_dirBitMove[_axis-1].neg))&&!(m_cdDirCmd & (1<<m_dirBitMove[_axis-1].pos));
     bool cmdPos = !(m_cdDirCmd & (1<<m_dirBitMove[_axis-1].neg))&&(m_cdDirCmd & (1<<m_dirBitMove[_axis-1].pos));
@@ -323,11 +323,11 @@ void D_CtrlMach::JoggingForAxis(short _axis,double _lowSpdScale)
             ADP_ClrSts(_axis);
             if(cmdNeg&&!lmtNeg)
             {
-                spd = -idleMoveSpd * posToPulseScaleXY * _lowSpdScale;
+                spd = -*idleMoveSpd * *posToPulseScaleXY * _lowSpdScale;
             }
             else if(cmdPos&&!lmtPos)
             {
-                spd =  idleMoveSpd * posToPulseScaleXY * _lowSpdScale;
+                spd =  *idleMoveSpd * *posToPulseScaleXY * _lowSpdScale;
             }
             else
             {
@@ -434,16 +434,16 @@ void D_CtrlMach::GetRunningData()
 {
 //--获取机头实时位置
     //获取读取位置
-    ADP_GetHeadPosRt(&posRT,this->posToPulseScaleXY);//x与y一致,目前默认用y
+    ADP_GetHeadPosRt(&posRT,*posToPulseScaleXY);//x与y一致,目前默认用y
     //限幅
     if(posRT.x()<0.0)
         posRT.setX(0.0);
-    else if(posRT.x()>posMax.x())
-        posRT.setX(posMax.x());
+    else if(posRT.x()>posMax->x())
+        posRT.setX(posMax->x());
     if(posRT.y()<0.0)
         posRT.setY(0.0);
-    else if(posRT.y()>posMax.y())
-        posRT.setY(posMax.y());
+    else if(posRT.y()>posMax->y())
+        posRT.setY(posMax->y());
 //--获取机头轴状态
     m_stAxisRunState[AXIS_X-1] = ADP_GetAxisRunState(AXIS_X);
     m_stAxisRunState[AXIS_Y-1] = ADP_GetAxisRunState(AXIS_Y);
@@ -509,62 +509,62 @@ bool    D_CtrlMach::GetAxisRunState(short _axis)
 {
     return  this->m_stAxisRunState[_axis-1];
 }
-void    D_CtrlMach::SetPosOrg(QPointF _pointF)
+void    D_CtrlMach::SetPosOrg(QPointF *_pointF)
 {
     this->posOrg = _pointF;
 }
-QPointF D_CtrlMach::GetPosOrg()
+QPointF* D_CtrlMach::GetPosOrg()
 {
     return this->posOrg;
 }
 
-void    D_CtrlMach::SetPosToPulseScaleXY(double _val)
+void    D_CtrlMach::SetPosToPulseScaleXY(double *_val)
 {
     this->posToPulseScaleXY = _val;
 }
 
-double D_CtrlMach::GetPosToPulseScaleXY()
+double* D_CtrlMach::GetPosToPulseScaleXY()
 {
     return this->posToPulseScaleXY;
 }
 
-void    D_CtrlMach::SetPosLmt(QPointF _pointF)
+void    D_CtrlMach::SetPosLmt(QPointF *_pointF)
 {
     this->posLmt = _pointF;
 }
 
-QPointF D_CtrlMach::GetPosLmt()
+QPointF* D_CtrlMach::GetPosLmt()
 {
     return this->posLmt;
 }
 
-void    D_CtrlMach::SetPosMax(QPointF _pointF)
+void    D_CtrlMach::SetPosMax(QPointF* _pointF)
 {
     this->posMax = _pointF;
 }
 
-QPointF D_CtrlMach::GetPosMax()
+QPointF* D_CtrlMach::GetPosMax()
 {
     return this->posMax;
 }
-void    D_CtrlMach::SetIdleMoveSpd(double _val)
+void    D_CtrlMach::SetIdleMoveSpd(double* _val)
 {
     idleMoveSpd = _val;
 }
-double  D_CtrlMach::GetIdleMoveSpd()
+double*  D_CtrlMach::GetIdleMoveSpd()
 {
     return idleMoveSpd;
 }
-void    D_CtrlMach::SetIdleMoveAcc(double _val)
+void    D_CtrlMach::SetIdleMoveAcc(double *_val)
 {
     idleMoveAcc = _val;
 }
-double  D_CtrlMach::GetIdleMoveAcc()
+double*  D_CtrlMach::GetIdleMoveAcc()
 {
     return idleMoveAcc;
 }
 //--传出参数读
-QPointF D_CtrlMach::GetPosRT()
+QPointF *D_CtrlMach::GetPosRT()
 {
-    return this->posRT;
+    return &this->posRT;
 }

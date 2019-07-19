@@ -5,8 +5,11 @@
 #include <QDebug>
 
 #include "cfgknife.h"
-struct CfgApron_T
+class CfgApron
 {
+public:
+    CfgApron();
+private:
     QString     cfgPath;
     int 		apronIndex; 		//刀座序号
     int         apronUsed;
@@ -15,16 +18,10 @@ struct CfgApron_T
     double      apronOffsetX;		//刀座偏移量X。增加此变量的目的是为了更换刀具后保留刀座的偏移量，
     double      apronOffsetY;		//刀座偏移量Y。
     CfgKnife    *knifeInApron;
-};
-
-class CfgApron
-{
-public:
-    CfgApron();
 public:
     void GetApronInfo(int index);
 
-    CfgApron_T GetCfgAprondData();
+//    CfgApron_T GetCfgAprondData();
 
     //    刀座序号
     void  SetApronIndex(int nApronIndex);
@@ -57,8 +54,6 @@ public:
     void   SetYOffset(double dbValue);
     double GetYOffset();
 
-private:
-    CfgApron_T cfgApronData;
 };
 
 #endif // CFGAPRON_H

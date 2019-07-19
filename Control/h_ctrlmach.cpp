@@ -13,6 +13,10 @@ H_CtrlMach::H_CtrlMach(QDockWidget* _ctrlDockWgt)
     connect(ctrlTimer,SIGNAL(timeout()),this,SLOT(SlotCtrlTask_10ms()));
     connect(&d_ctrlMach,SIGNAL(UpdateDataHeadPosMaxRequest()),this,SLOT(SlotUpdateDataHeadPosMaxRequest()));
 }
+D_CtrlMach* H_CtrlMach::GetCtrlMach()
+{
+    return &this->d_ctrlMach;
+}
 void H_CtrlMach::StartCtrlTimer()
 {
     //默认10ms
@@ -36,18 +40,18 @@ void H_CtrlMach::SlotCtrlTask_10ms()
 //    qDebug()<<"10ms";
     d_ctrlMach.StateMachScheduleMain();
     d_ctrlMach.GetRunningData();
-    emit UpdateDataHeadPosRt(d_ctrlMach.GetPosRT());
+//    emit UpdateDataHeadPosRt(*d_ctrlMach.GetPosRT());
 }
-void H_CtrlMach::SlotUpdateDataHead(CfgHead_T _data)
-{
-//    qDebug()<<"ctrl upadte data head In";
-    d_ctrlMach.SetPosOrg(_data.posOrg);
-    d_ctrlMach.SetPosLmt(_data.posLmt);
-    d_ctrlMach.SetPosMax(_data.posMax);
-    d_ctrlMach.SetPosToPulseScaleXY(_data.posToPulseScaleXY);
-    d_ctrlMach.SetIdleMoveSpd(_data.idleMoveSpd);
-    d_ctrlMach.SetIdleMoveAcc(_data.idleMoveAcc);
-}
+//void H_CtrlMach::SlotUpdateDataHead(CfgHead_T _data)
+//{
+////    qDebug()<<"ctrl upadte data head In";
+//    d_ctrlMach.SetPosOrg(_data.posOrg);
+//    d_ctrlMach.SetPosLmt(_data.posLmt);
+//    d_ctrlMach.SetPosMax(_data.posMax);
+//    d_ctrlMach.SetPosToPulseScaleXY(_data.posToPulseScaleXY);
+//    d_ctrlMach.SetIdleMoveSpd(_data.idleMoveSpd);
+//    d_ctrlMach.SetIdleMoveAcc(_data.idleMoveAcc);
+//}
 void H_CtrlMach::SlotEnterOprtToolPosCalib(int _id, double _deep)
 {
     //创建提示对象
@@ -89,5 +93,5 @@ void H_CtrlMach::SlotActionOprt()
 }
 void H_CtrlMach::SlotUpdateDataHeadPosMaxRequest()
 {
-    emit UpdateDataHeadPosMax(d_ctrlMach.GetPosMax());
+    emit UpdateDataHeadPosMax(*d_ctrlMach.GetPosMax());
 }

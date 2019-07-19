@@ -2,19 +2,19 @@
 
 CfgApron::CfgApron()
 {
-    cfgApronData.apronIndex = -1; 		//刀座序号
-    cfgApronData.apronUsed  = 0;         //是否使用
-    cfgApronData.apronCtrlMode = -1;     //控制模式
-    cfgApronData.apronKnifeGuid = -1;		//刀具Guid
-    cfgApronData.apronOffsetX = 0;		//刀座偏移量X
-    cfgApronData.apronOffsetY = 0;		//刀座偏移量Y
-    cfgApronData.knifeInApron = nullptr;
+    apronIndex = -1; 		//刀座序号
+    apronUsed  = 0;         //是否使用
+    apronCtrlMode = -1;     //控制模式
+    apronKnifeGuid = -1;		//刀具Guid
+    apronOffsetX = 0;		//刀座偏移量X
+    apronOffsetY = 0;		//刀座偏移量Y
+    knifeInApron = nullptr;
 
-    cfgApronData.cfgPath = SETTING_PATH;
+    cfgPath = SETTING_PATH;
 }
 void CfgApron::GetApronInfo(int index)
 {
-    cfgApronData.apronIndex = index;
+    apronIndex = index;
 
     QString strSect = ("");
     QString strKey = ("");
@@ -28,37 +28,34 @@ void CfgApron::GetApronInfo(int index)
     strSect = ("MachHead0");
     strKey = ("Apron"+QString::number(index));
     QStringList _apronInfo;
-    if (GetPrivateProfileString(strSect, strKey, szBuf, cfgApronData.cfgPath))
+    if (GetPrivateProfileString(strSect, strKey, szBuf, cfgPath))
     {
         _apronInfo = (*szBuf).split(',');
     }
-    cfgApronData.apronUsed       = _apronInfo.at(0).toInt();
-    cfgApronData.apronCtrlMode   = _apronInfo.at(1).toInt();
-    cfgApronData.apronKnifeGuid  = _apronInfo.at(2).toInt();
-    cfgApronData.apronOffsetX    = _apronInfo.at(3).toDouble();
-    cfgApronData.apronOffsetY    = _apronInfo.at(4).toDouble();
+    apronUsed       = _apronInfo.at(0).toInt();
+    apronCtrlMode   = _apronInfo.at(1).toInt();
+    apronKnifeGuid  = _apronInfo.at(2).toInt();
+    apronOffsetX    = _apronInfo.at(3).toDouble();
+    apronOffsetY    = _apronInfo.at(4).toDouble();
 }
-CfgApron_T CfgApron::GetCfgAprondData()
-{
-    return this->cfgApronData;
-}
+
 void CfgApron::SetApronIndex(int nApronIndex)
 {
-    cfgApronData.apronIndex = nApronIndex;
+    apronIndex = nApronIndex;
 }
 
 int CfgApron::GetApronIndex()
 {
-    return cfgApronData.apronIndex;
+    return apronIndex;
 }
 void  CfgApron::SetApronUse(int _use)
 {
-    cfgApronData.apronUsed = _use;
+    apronUsed = _use;
 }
 
 int   CfgApron::GetApronUse(void)
 {
-    return cfgApronData.apronUsed;
+    return apronUsed;
 }
 
 //void CfgApron::SetApronHeadIndex(short nMachinexIndex)
@@ -76,33 +73,33 @@ int   CfgApron::GetApronUse(void)
 
 void CfgApron::SetKnifeGuid(int nGuid)
 {
-    cfgApronData.apronKnifeGuid = nGuid;
+    apronKnifeGuid = nGuid;
 }
 int CfgApron::GetKnifeGuid()
 {
-    return cfgApronData.apronKnifeGuid;
+    return apronKnifeGuid;
 }
 void CfgApron::SetKnife(CfgKnife *_knife)
 {
-    cfgApronData.knifeInApron = _knife;
+    knifeInApron = _knife;
 }
 CfgKnife *CfgApron::GetKnife()
 {
-    return cfgApronData.knifeInApron;
+    return knifeInApron;
 }
 void CfgApron::SetXOffset(double dbValue)
 {
-    cfgApronData.apronOffsetX = dbValue;
+    apronOffsetX = dbValue;
 }
 double CfgApron::GetXOffset()
 {
-    return cfgApronData.apronOffsetX;
+    return apronOffsetX;
 }
 void CfgApron::SetYOffset(double dbValue)
 {
-    cfgApronData.apronOffsetY = dbValue;
+    apronOffsetY = dbValue;
 }
 double CfgApron::GetYOffset()
 {
-    return cfgApronData.apronOffsetY;
+    return apronOffsetY;
 }

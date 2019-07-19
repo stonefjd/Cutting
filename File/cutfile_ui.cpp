@@ -8,17 +8,15 @@ void CutFile_UI::SetFileData(CutFile_Data *_fileData)
 {
     this->cFileData = _fileData;
 }
-
+void CutFile_UI::InitEventFilter()
+{
+    qwFrame->installEventFilter(this);
+}
 void CutFile_UI::InitialModel(QDockWidget *_dockwgt, QFrame *_frame)
 {
 //----set the parameter
     this->qwDockWidget = _dockwgt;
     this->qwFrame = _frame;
-//    this->cFileData->SetPosOrg(_machHandle->GetHConfig()->GetPosOrg());
-//    this->cFileData->SetPosLmt(_machHandle->GetHConfig()->GetPosLmt());
-//    this->cFileData->SetPosMax(_machHandle->GetHConfig()->GetPosMax());
-//    this->cFileData->SetPosToPulseScale (_machHandle->GetHConfig()->GetPosToPulseScale());
-//    this->cFileData->SetRealToCutScale  (_machHandle->GetHConfig()->GetRealToCutScale());
 
 //----table widget UI
 
@@ -76,7 +74,6 @@ void CutFile_UI::InitialModel(QDockWidget *_dockwgt, QFrame *_frame)
 //----frame UI
     qwFrame->setStyleSheet("background-color:rgb(50,50,50);");
     qwFrame->show();
-    qwFrame->installEventFilter(this);
     qwFrame->setMouseTracking(false);
 //    qwFrame->setFocusPolicy(Qt::StrongFocus);
 
@@ -129,8 +126,8 @@ bool CutFile_UI::eventFilter(QObject *watched, QEvent *e)
         }
         if(e->type() == QEvent::MouseButtonDblClick)
         {
-            double factorWidth  = static_cast<double>(qwFrame->width() )/static_cast<double>(this->cFileData->GetPosMax().x());
-            double factorHeight = static_cast<double>(qwFrame->height())/static_cast<double>(this->cFileData->GetPosMax().y());
+            double factorWidth  = static_cast<double>(qwFrame->width() )/static_cast<double>(this->cFileData->GetPosMax()->x());
+            double factorHeight = static_cast<double>(qwFrame->height())/static_cast<double>(this->cFileData->GetPosMax()->y());
             this->paintFactor = factorWidth<factorHeight?factorWidth:factorHeight;
             this->transPosToLogic.setMatrix(1/this->paintFactor,0,0,0,1/this->paintFactor,0,0,0,1/this->paintFactor);
 
@@ -161,24 +158,23 @@ void CutFile_UI::DrawFile(int _fileIndex)
     painter.save();
     //----绘制机床最大尺寸和允许裁剪尺寸
     painter.setPen(penPaintMax);
-    painter.drawRect(QRectF(0.0,0.0,cFileData->GetPosMax().x(), cFileData->GetPosMax().y()));
+    painter.drawRect(QRectF(0.0,0.0,cFileData->GetPosMax()->x(), cFileData->GetPosMax()->y()));
 //    painter.setFont(QFont("华文行楷", 30));
 //    painter.drawText(QPointF(200,200), "你好123");
     painter.setPen(penPaintLimit);
-    painter.drawRect(QRectF(cFileData->GetPosOrg().x(),cFileData->GetPosOrg().y(),
-                            cFileData->GetPosLmt().x()-cFileData->GetPosOrg().x(),cFileData->GetPosLmt().y()-cFileData->GetPosOrg().y()));
+    painter.drawRect(QRectF(cFileData->GetPosOrg()->x(),cFileData->GetPosOrg()->y(),
+                            cFileData->GetPosLmt()->x()-cFileData->GetPosOrg()->x(),cFileData->GetPosLmt()->y()-cFileData->GetPosOrg()->y()));
     //----绘制下刀+实际偏移补偿
     painter.setBrush(QColor(0,255,0,100));
     painter.setPen(penCutLable);
-    QPointF offset(cFileData->GetPosRt().x(),
-                   cFileData->GetPosRt().y());
+    QPointF offset(cFileData->GetPosRt()->x(),
+                   cFileData->GetPosRt()->y());
     QPointF paintCutLable[6]={QPointF( 0, 0)+offset,
                               QPointF( 5, 5)+offset,
                               QPointF(20, 5)+offset,
                               QPointF(20,-5)+offset,
                               QPointF( 5,-5)+offset,
                               QPointF( 0, 0)+offset};
-
     painter.drawPolygon(paintCutLable,5);
     painter.restore();
 
@@ -329,12 +325,12 @@ void CutFile_UI::LoadFileData(CutFile *_file)
                     QPointF _tempPoint1 = _line->GetPointList()->at(l).toPoint()/HEX_PER_MM;
                     //step 02:set to scale step
                     QPointF _tempPoint2;
-                    _tempPoint2.setX(_tempPoint1.x()*cFileData->GetRealToCutScale().x());
-                    _tempPoint2.setY(_tempPoint1.y()*cFileData->GetRealToCutScale().y());
+                    _tempPoint2.setX(_tempPoint1.x()*cFileData->GetRealToCutScale()->x());
+                    _tempPoint2.setY(_tempPoint1.y()*cFileData->GetRealToCutScale()->y());
                     //step 03:add org offset
                     QPointF _tempPoint3;
-                    _tempPoint3.setX(_tempPoint2.x() + cFileData->GetPosOrg().x());
-                    _tempPoint3.setY(_tempPoint2.y() + cFileData->GetPosOrg().y());
+                    _tempPoint3.setX(_tempPoint2.x() + cFileData->GetPosOrg()->x());
+                    _tempPoint3.setY(_tempPoint2.y() + cFileData->GetPosOrg()->y());
                     _line->GetPointList()->replace(l, _tempPoint3);
                 }
             }
@@ -571,7 +567,7 @@ void CutFile_UI::SlotBtnAddtClicked()
         }
     }
     this->DisplayFileList(this->qwTableWait,this->cFileData->GetFileList());
-    emit UpdateFileAdded();
+//    emit UpdateFileAdded();
     this->qwFrame->repaint();
 }
 void CutFile_UI::SlotBtnRemvClicked()
@@ -621,7 +617,7 @@ void CutFile_UI::SlotBtnImptClicked()
 {
     this->ImportFiles(this->cFileData->GetFileList());
     this->DisplayFileList(this->qwTableWait,this->cFileData->GetFileList());
-    emit UpdateFileAdded();
+//    emit UpdateFileAdded();
     this->qwFrame->repaint();
 }
 void CutFile_UI::SlotBtnExptClicked()

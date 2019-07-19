@@ -90,19 +90,19 @@ class D_CtrlMach : public QObject
 private:
 
 //--系统状态变量与子状态变量
-    MainState m_stMainThis = stMain_Init;
-    MainState m_stMainLast = stMain_Stop;
+    MainState       m_stMainThis = stMain_Init;
+    MainState       m_stMainLast = stMain_Stop;
 
-    SubStateInit m_stSubInit = stInit_NotIn;
-    SubStateOprt m_stSubOprt = stOprt_NotIn;
+    SubStateInit    m_stSubInit = stInit_NotIn;
+    SubStateOprt    m_stSubOprt = stOprt_NotIn;
 
 //--机头传入参数
-    QPointF posOrg;             //逻辑切割原点
-    double posToPulseScaleXY;    //每毫米脉冲数
-    QPointF posLmt;             //逻辑切割范围
-    QPointF posMax;             //全局最大运动边界
-    double idleMoveSpd;         //空走速度 (m/s)
-    double idleMoveAcc;         //空走加速度(G)
+    QPointF*    posOrg;             //逻辑切割原点
+    QPointF*    posLmt;             //逻辑切割范围
+    QPointF*    posMax;             //全局最大运动边界
+    double*     posToPulseScaleXY;    //每毫米脉冲数
+    double*     idleMoveSpd;         //空走速度 (m/s)
+    double*     idleMoveAcc;         //空走加速度(G)
 //--传出参数
     QPointF posRT;
 //--跳转辅助变量
@@ -147,20 +147,21 @@ public:
 //--轴状态读
     bool    GetAxisRunState(short _axis);
 //--传入参数读写
-    void    SetPosOrg(QPointF _pointF);
-    QPointF GetPosOrg();
-    void    SetPosToPulseScaleXY(double _val);
-    double  GetPosToPulseScaleXY();
-    void    SetPosLmt(QPointF _pointF);
-    QPointF GetPosLmt();
-    void    SetPosMax(QPointF _pointF);
-    QPointF GetPosMax();
-    void    SetIdleMoveSpd(double _val);
-    double  GetIdleMoveSpd();
-    void    SetIdleMoveAcc(double _val);
-    double  GetIdleMoveAcc();
+    void    SetPosOrg(QPointF* _pointF);
+    void    SetPosLmt(QPointF* _pointF);
+    void    SetPosMax(QPointF* _pointF);
+    void    SetPosToPulseScaleXY(double* _val);
+    void    SetIdleMoveSpd(double* _val);
+    void    SetIdleMoveAcc(double* _val);
+
+    QPointF* GetPosOrg();
+    QPointF* GetPosLmt();
+    QPointF* GetPosMax();
+    double*  GetPosToPulseScaleXY();
+    double*  GetIdleMoveSpd();
+    double*  GetIdleMoveAcc();
 //--传出参数读
-    QPointF GetPosRT();
+    QPointF* GetPosRT();
 signals:
     void UpdateDataHeadPosMaxRequest();
 public slots:

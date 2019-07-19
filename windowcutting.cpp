@@ -28,33 +28,54 @@ WindowCutting::WindowCutting(QWidget *parent) :
 //----status bar
     ui->statusBar->showMessage("ready");
 //----new Handle, 不能改变顺序
-    cutFileHandle   = new CutFileHandle(ui->dockWgtList,ui->mainPaint);
     cfgMachHandle   = new CfgMachHandle;
+    cutFileHandle   = new CutFileHandle(ui->dockWgtList,ui->mainPaint);
     handleCtrlMach  = new H_CtrlMach(ui->dockWgtCtrl);
 
-    connect(cfgMachHandle,  SIGNAL(UpdateDataHead(CfgHead_T)),          cutFileHandle,  SLOT(SlotUpdateDataHead(CfgHead_T)));
-    connect(cfgMachHandle,  SIGNAL(UpdateDataHead(CfgHead_T)),          handleCtrlMach, SLOT(SlotUpdateDataHead(CfgHead_T)));
-    connect(cfgMachHandle,  SIGNAL(UpdateDataApron(QList<CfgApron_T>)), cutFileHandle,  SLOT(SlotUpdateDataApron(QList<CfgApron_T>)));
-    connect(cutFileHandle,  SIGNAL(UpdateDataApronRequest()),           cfgMachHandle,  SLOT(SlotUpdateDataApronRequest()));
-    connect(handleCtrlMach, SIGNAL(UpdateDataHeadPosRt(QPointF)),       cutFileHandle,  SLOT(SlotUpdateDataHeadPosRt(QPointF)));
-    connect(handleCtrlMach, SIGNAL(UpdateDataHeadPosRt(QPointF)),       cfgMachHandle,  SLOT(SlotUpdateDataHeadPosRt(QPointF)));
+    //关联类间数据
+    cutFileHandle->GetFileData()->SetPosOrg(cfgMachHandle->GetCfgHead()->GetPosOrg());
+    cutFileHandle->GetFileData()->SetPosLmt(cfgMachHandle->GetCfgHead()->GetPosLmt());
+    cutFileHandle->GetFileData()->SetPosMax(cfgMachHandle->GetCfgHead()->GetPosMax());
+    cutFileHandle->GetFileData()->SetPosToPulseScaleXY(cfgMachHandle->GetCfgHead()->GetPosToPulseScaleXY());
+    cutFileHandle->GetFileData()->SetRealToCutScale(cfgMachHandle->GetCfgHead()->GetRealToCutScale());
+
+    cutFileHandle->GetFileData()->SetPosRt(handleCtrlMach->GetCtrlMach()->GetPosRT());
+
+    handleCtrlMach->GetCtrlMach()->SetPosOrg(cfgMachHandle->GetCfgHead()->GetPosOrg());
+    handleCtrlMach->GetCtrlMach()->SetPosLmt(cfgMachHandle->GetCfgHead()->GetPosLmt());
+    handleCtrlMach->GetCtrlMach()->SetPosMax(cfgMachHandle->GetCfgHead()->GetPosMax());
+    handleCtrlMach->GetCtrlMach()->SetPosToPulseScaleXY(cfgMachHandle->GetCfgHead()->GetPosToPulseScaleXY());
+    handleCtrlMach->GetCtrlMach()->SetIdleMoveSpd(cfgMachHandle->GetCfgHead()->GetIdleMoveSpd());
+    handleCtrlMach->GetCtrlMach()->SetIdleMoveAcc(cfgMachHandle->GetCfgHead()->GetIdleMoveAcc());
+
+//    handleCtrlMach->GetCtrlMach()->SetRealToCutScale(cfgMachHandle->GetCfgHead()->GetRealToCutScale());
+    //继续初始化带传递初始值的内容
+    cutFileHandle->InitEventFilter();
+
     connect(this,           SIGNAL(keyPressed(QKeyEvent)),              handleCtrlMach, SLOT(SlotActionKeyBoard(QKeyEvent)));
     connect(this,           SIGNAL(keyReleased(QKeyEvent)),             handleCtrlMach, SLOT(SlotActionKeyBoard(QKeyEvent)));
-    connect(handleCtrlMach, SIGNAL(UpdateDataHeadPosMax(QPointF)),      cfgMachHandle,  SLOT(SlotUpdateDataHeadPosMax(QPointF)));
-    connect(cfgMachHandle,  SIGNAL(EnterOprtToolPosCalib(int,double)),  handleCtrlMach, SLOT(SlotEnterOprtToolPosCalib(int,double)));
-
     connect(ui->actionBoundaryResize,   SIGNAL(triggered()),            handleCtrlMach, SLOT(SlotActionOprt()));
     connect(ui->actionRangeScan,        SIGNAL(triggered()),            handleCtrlMach, SLOT(SlotActionOprt()));
     connect(ui->actionRangeReset,       SIGNAL(triggered()),            handleCtrlMach, SLOT(SlotActionOprt()));
     connect(ui->actionToolDeepCalib,    SIGNAL(triggered()),            handleCtrlMach, SLOT(SlotActionOprt()));
     connect(ui->actionToolPosCalib,     SIGNAL(triggered()),            handleCtrlMach, SLOT(SlotActionOprt()));
+    connect(handleCtrlMach, SIGNAL(UpdateDataHeadPosMax(QPointF)),      cfgMachHandle,  SLOT(SlotUpdateDataHeadPosMax(QPointF)));
+
+//    connect(cfgMachHandle,  SIGNAL(UpdateDataHead(CfgHead_T)),          cutFileHandle,  SLOT(SlotUpdateDataHead(CfgHead_T)));
+//    connect(cfgMachHandle,  SIGNAL(UpdateDataHead(CfgHead_T)),          handleCtrlMach, SLOT(SlotUpdateDataHead(CfgHead_T)));
+//    connect(cfgMachHandle,  SIGNAL(UpdateDataApron(QList<CfgApron_T>)), cutFileHandle,  SLOT(SlotUpdateDataApron(QList<CfgApron_T>)));
+//    connect(cutFileHandle,  SIGNAL(UpdateDataApronRequest()),           cfgMachHandle,  SLOT(SlotUpdateDataApronRequest()));
+//    connect(handleCtrlMach, SIGNAL(UpdateDataHeadPosRt(QPointF)),       cutFileHandle,  SLOT(SlotUpdateDataHeadPosRt(QPointF)));
+//    connect(handleCtrlMach, SIGNAL(UpdateDataHeadPosRt(QPointF)),       cfgMachHandle,  SLOT(SlotUpdateDataHeadPosRt(QPointF)));
+//    connect(cfgMachHandle,  SIGNAL(EnterOprtToolPosCalib(int,double)),  handleCtrlMach, SLOT(SlotEnterOprtToolPosCalib(int,double)));
+
 //    connect()
 /*    //mMachine.mFan_1.StateMachineInit(ui->actionWindIn,ui->actionWindOut);
-    mMachine->Mach_SetHead0Org(&cfgMachHandle->hConfig->posOrg);
-    mMachine->Mach_SetHead0PulsePerMillimeter(&cfgMachHandle->hConfig->posToPulseScale);
-    mMachine->Mach_SetHead0Limit(&cfgMachHandle->hConfig->posLimit);
-    mMachine->Mach_SetHead0IdleMoveSpd(cfgMachHandle->hConfig->idleMoveSpd);
-    mMachine->Mach_SetHead0IdleMoveAcc(cfgMachHandle->hConfig->idleMoveAcc);
+    mMachine->Mach_SetHead0Org(&cfgMachHandle->cfgHead->posOrg);
+    mMachine->Mach_SetHead0PulsePerMillimeter(&cfgMachHandle->cfgHead->posToPulseScale);
+    mMachine->Mach_SetHead0Limit(&cfgMachHandle->cfgHead->posLimit);
+    mMachine->Mach_SetHead0IdleMoveSpd(cfgMachHandle->cfgHead->idleMoveSpd);
+    mMachine->Mach_SetHead0IdleMoveAcc(cfgMachHandle->cfgHead->idleMoveAcc);
     mMachine->fileData = cutFileHandle->GetFileData();
 
 
@@ -73,7 +94,7 @@ WindowCutting::WindowCutting(QWidget *parent) :
     //disable all the operate item
     this->userLog_PermissionConfirm();
 //----配置参数初始化，向其他模块传递配置参数
-    cfgMachHandle->InitCommunicate();
+//    cfgMachHandle->InitCommunicate();
 //----启动控制模块定时器
     handleCtrlMach->StartCtrlTimer();
 //----启动调试定时器
@@ -256,15 +277,13 @@ void WindowCutting::debugTask_100ms()
 {
     long x=0,y=0;
     double xPos=0,yPos=0;
-//    ADP_GetSts(1,&x);
-//    ADP_GetSts(2,&y);
+
     ADP_GetAxisPrfPos(AXIS_X,&xPos);
     ADP_GetAxisPrfPos(AXIS_Y,&yPos);
     ui->lb_x->setText(QString::number(x));
     ui->lb_y->setText(QString::number(y));
-//    ui->lb_st->setText(QString::number(mMachine->machine_ctSubState_Operate_Key));
-    ui->lb_xPos->setText("x "+QString::number(xPos/cfgMachHandle->GetHConfig()->GetPosToPulseScaleXY()));
-    ui->lb_yPos->setText("y "+QString::number(yPos/cfgMachHandle->GetHConfig()->GetPosToPulseScaleXY()));
+    ui->lb_xPos->setText("x "+QString::number(xPos/ *cfgMachHandle->GetCfgHead()->GetPosToPulseScaleXY()));
+    ui->lb_yPos->setText("y "+QString::number(yPos/ *cfgMachHandle->GetCfgHead()->GetPosToPulseScaleXY()));
 
     //    if(ctrlMachHandle->GetMachState() != stMain_Wait || ctrlMachHandle->GetAxisRunStateX()||ctrlMachHandle->GetAxisRunStateY())
 //    if(ctrlMachHandle->GetAxisRunState(AXIS_X)||ctrlMachHandle->GetAxisRunState(AXIS_Y))

@@ -22,6 +22,7 @@ public:
 //    explicit H_CtrlMach(QObject *parent = nullptr);
     H_CtrlMach(QDockWidget* _ctrlDockWgt);
 
+    D_CtrlMach* GetCtrlMach();
     void StartCtrlTimer();
     void StopCtrlTimer();
 
@@ -30,12 +31,12 @@ public:
     bool GetAxisRunState(short _axis);
 signals:
     //更新实时机头坐标
-    void UpdateDataHeadPosRt(QPointF posRT);
+//    void UpdateDataHeadPosRt(QPointF posRT);
     void UpdateDataHeadPosMax(QPointF posRT);
 private slots:
     void SlotCtrlTask_10ms();
 public slots:
-    void SlotUpdateDataHead(CfgHead_T _data);
+//    void SlotUpdateDataHead(CfgHead_T _data);
     void SlotEnterOprtToolPosCalib(int _id,double _deep);
     void SlotActionKeyBoard(QKeyEvent event);
     void SlotActionOprt();

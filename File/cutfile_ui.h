@@ -64,8 +64,9 @@ public:
     explicit CutFile_UI(QObject *parent = nullptr);
     void SetFileData(CutFile_Data *_fileData);
     void InitialModel(QDockWidget *_dockwgt, QFrame *_frame);
+    void InitEventFilter();
 signals:
-    void UpdateFileAdded();
+//    void UpdateFileAdded();
 public slots:
     void SlotBtnAddtClicked();
     void SlotBtnRemvClicked();
