@@ -65,7 +65,8 @@ void CfgKnifeManager::LoadData()
         QPushButton *btnCalib = new QPushButton(grpBoxKnife);
         btnCalib->setText(tr("校正"));
         btnCalib->setProperty("id",i);
-        //[END]添加XY参数组件
+        connect(btnCalib,SIGNAL(clicked()),this,SLOT(SlotBtnCalibClicked()));
+        //[END]添加XY参数及校正按钮组件
 
         //[BEGIN]添加Combo Box组件
         QComboBox *cbBox = new QComboBox(grpBoxKnife);
@@ -124,6 +125,7 @@ void CfgKnifeManager::LoadData()
 }
 
 //slots
+//刀座使能
 void CfgKnifeManager::SlotBtnGrpClicked(bool _chk)
 {
     QGroupBox *grpBox = qobject_cast<QGroupBox*>(sender());
@@ -139,6 +141,13 @@ void CfgKnifeManager::SlotBtnGrpClicked(bool _chk)
         cbBoxList.at(id)->setDisabled(true);
         cbBoxList.at(id)->setCurrentIndex(tempKnifeName.indexOf("NULT"));
     }
+}
+//校准按键
+void CfgKnifeManager::SlotBtnCalibClicked()
+{
+    QPushButton *btnCalib = qobject_cast<QPushButton*>(sender());
+    int id = btnCalib->property("id").toInt();
+    qDebug()<<id;
 }
 
 void CfgKnifeManager::on_btnOK_clicked()

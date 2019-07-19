@@ -1,19 +1,18 @@
-#include "ctrlmach_ui.h"
+#include "u_ctrlbtndir.h"
 
-CtrlMach_UI::CtrlMach_UI(QObject *parent) : QObject(parent)
+U_CtrlBtnDir::U_CtrlBtnDir(QObject *parent) : QObject(parent)
 {
 
 }
-
-void CtrlMach_UI::SetCtrlMachObj(CtrlMach* _ctrlMach)
+void U_CtrlBtnDir::SetCtrlMachObj(D_CtrlMach* _ctrlMach)
 {
-    this->ctrlMach = _ctrlMach;
+    this->d_ctrlMach = _ctrlMach;
 }
-CtrlMach* CtrlMach_UI::GetCtrlMachObj(void)
+D_CtrlMach* U_CtrlBtnDir::GetCtrlMachObj(void)
 {
-    return this->ctrlMach;
+    return this->d_ctrlMach;
 }
-void CtrlMach_UI::InitialModel(QDockWidget* _ctrlDockWgt)
+void U_CtrlBtnDir::InitialModel(QDockWidget* _ctrlDockWgt)
 {
     ctrlDockWgt = _ctrlDockWgt;
     QStringList strlist = {"UL","U","UR","L","ORG","R","DL","D","DR"};
@@ -34,7 +33,7 @@ void CtrlMach_UI::InitialModel(QDockWidget* _ctrlDockWgt)
         this->btnDirGroup->addButton(pBtn);
         this->btnDirGroup->setId(pBtn,i);
     }
-    connect(this->btnDirGroup,SIGNAL(buttonPressed(int)), ctrlMach,SLOT(SlotBtnPressed(int)));
-    connect(this->btnDirGroup,SIGNAL(buttonReleased(int)),ctrlMach,SLOT(SlotBtnReleased(int)));
+    connect(this->btnDirGroup,SIGNAL(buttonPressed(int)), d_ctrlMach,SLOT(SlotBtnPressed(int)));
+    connect(this->btnDirGroup,SIGNAL(buttonReleased(int)),d_ctrlMach,SLOT(SlotBtnReleased(int)));
     ctrlDockWgt->widget()->setLayout(vLayout);
 }

@@ -51,9 +51,11 @@ SOURCES += \
     File/cutfilehandle.cpp \
     File/cutfile_ui.cpp \
     File/cutfile_data.cpp \
-    Control/ctrlmach.cpp \
-    Control/ctrlmach_ui.cpp \
-    Control/ctrlmachhandle.cpp
+    Control/u_ctrltoolposcalib.cpp \
+    Control/u_ctrlbtndir.cpp \
+    Control/u_ctrlrngrst.cpp \
+    Control/h_ctrlmach.cpp \
+    Control/d_ctrlmach.cpp
 
 HEADERS += \
     windowcutting.h \
@@ -82,10 +84,11 @@ HEADERS += \
     File/cutfilehandle.h \
     File/cutfile_ui.h \
     File/cutfile_data.h \
-    Control/ctrlmach.h \
-    Control/ctrlbasedefine.h \
-    Control/ctrlmach_ui.h \
-    Control/ctrlmachhandle.h
+    Control/u_ctrltoolposcalib.h \
+    Control/u_ctrlbtndir.h \
+    Control/u_ctrlrngrst.h \
+    Control/h_ctrlmach.h \
+    Control/d_ctrlmach.h
 
 FORMS += \
         windowcutting.ui \
@@ -93,7 +96,9 @@ FORMS += \
     User/userlog.ui \
     User/usermanager.ui \
     Machine/Config/cfgmachsettings.ui \
-    Machine/Config/cfgknifemanager.ui
+    Machine/Config/cfgknifemanager.ui \
+    Control/u_ctrltoolposcalib.ui \
+    Control/u_ctrlrngrst.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

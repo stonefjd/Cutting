@@ -177,6 +177,10 @@ QPointF CfgHead::GetPosToPulseScale()
 {
     return cfgHeadData.posToPulseScale;
 }
+double  CfgHead::GetPosToPulseScaleXY()
+{
+    return cfgHeadData.posToPulseScaleXY;
+}
 QPointF CfgHead::GetPulseMax()
 {
     return cfgHeadData.pulseMax;
@@ -218,27 +222,35 @@ QString CfgHead::GetHeadCfgPath()
 {
     return cfgHeadData.cfgPath;
 }
-void CfgHead::UpdateHeadMaxPluse(int _xPluse,int _yPluse,int _hIndex)
+void CfgHead::UpdateDataPosMax(QPointF _pos,int _hIndex)
 {
-    cfgHeadData.pulseMax.setX(_xPluse);
-    cfgHeadData.pulseMax.setY(_yPluse);
-    cfgHeadData.posMax.setX(_xPluse/cfgHeadData.posToPulseScale.x());
-    cfgHeadData.posMax.setY(_yPluse/cfgHeadData.posToPulseScale.y());
-    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PulseMaxX",QString::number(_xPluse),cfgHeadData.cfgPath);
-    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PulseMaxY",QString::number(_yPluse),cfgHeadData.cfgPath);
-    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PosMaxX",QString::number(_xPluse/cfgHeadData.posToPulseScale.x()),cfgHeadData.cfgPath);
-    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PosMaxY",QString::number(_yPluse/cfgHeadData.posToPulseScale.y()),cfgHeadData.cfgPath);
-    if(_xPluse <= cfgHeadData.posLmt.x())
+    cfgHeadData.posMax.setX(_pos.x());
+    cfgHeadData.posMax.setY(_pos.y());
+    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PosMaxX",QString::number(_pos.x()),cfgHeadData.cfgPath);
+    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PosMaxY",QString::number(_pos.y()),cfgHeadData.cfgPath);
+    if(_pos.x() <= cfgHeadData.posLmt.x())
     {
-        cfgHeadData.posLmt.setX(_xPluse);
-        WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadCutLimitX",QString::number(_xPluse),cfgHeadData.cfgPath);
+        cfgHeadData.posLmt.setX(_pos.x());
+        WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PosLimitX",QString::number(_pos.x()),cfgHeadData.cfgPath);
     }
-    if(_yPluse <= cfgHeadData.posLmt.y())
+    if(_pos.y() <= cfgHeadData.posLmt.y())
     {
-        cfgHeadData.posLmt.setX(_xPluse);
-        WritePrivateProfileString("MachHead"+QString::number(_hIndex),"HeadCutLimitY",QString::number(_yPluse),cfgHeadData.cfgPath);
+        cfgHeadData.posLmt.setY(_pos.y());
+        WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PosLimitY",QString::number(_pos.y()),cfgHeadData.cfgPath);
     }
 }
+//void CfgHead::UpdateHeadMaxPluse(int _xPluse,int _yPluse,int _hIndex)
+//{
+//    cfgHeadData.pulseMax.setX(_xPluse);
+//    cfgHeadData.pulseMax.setY(_yPluse);
+//    cfgHeadData.posMax.setX(_xPluse/cfgHeadData.posToPulseScale.x());
+//    cfgHeadData.posMax.setY(_yPluse/cfgHeadData.posToPulseScale.y());
+//    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PulseMaxX",QString::number(_xPluse),cfgHeadData.cfgPath);
+//    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PulseMaxY",QString::number(_yPluse),cfgHeadData.cfgPath);
+//    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PosMaxX",QString::number(_xPluse/cfgHeadData.posToPulseScale.x()),cfgHeadData.cfgPath);
+//    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PosMaxY",QString::number(_yPluse/cfgHeadData.posToPulseScale.y()),cfgHeadData.cfgPath);
+
+//}
 //void CfgHead::UpdateHeadCutLimit(int _xPluse,int _yPluse,int _hIndex)
 //{
 //    if(_xPluse <= pulseMax.x())

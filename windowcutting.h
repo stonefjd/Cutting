@@ -13,18 +13,14 @@
 #include <QFrame>
 #include <QPainter>
 #include <QCloseEvent>
+#include <QActionGroup>
 
 #include "File/cutfilehandle.h"
 #include "PhysicalLayer/gts.h"
 #include "User/userhandle.h"
 //#include "Machine/machine.h"
 #include "Machine/Config/cfgmachhandle.h"
-#include "Control/ctrlmachhandle.h"
-#define BTN_ID_L 0
-#define BTN_ID_R 1
-#define BTN_ID_U 2
-#define BTN_ID_D 3
-#define BTN_ID_O 4
+#include "Control/h_ctrlmach.h"
 
 namespace Ui {
 class WindowCutting;
@@ -77,7 +73,7 @@ private:
 private:
     Ui::WindowCutting   *ui;
 //    Machine             *mMachine = new Machine;
-    CtrlMachHandle      *ctrlMachHandle;
+    H_CtrlMach          *handleCtrlMach;
     CfgMachHandle       *cfgMachHandle;
     UserHandle          *userHandle;
     QTimer              *debugTimer;

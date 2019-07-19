@@ -9,6 +9,8 @@
 #include <QComboBox>
 #include <QLabel>
 #include <QLineEdit>
+#include <QGroupBox>
+
 #include "cfghead.h"
 #include "cfgmach.h"
 #include "cfglib.h"
@@ -43,8 +45,10 @@ private:
     int tab1Valid = 2;//0:正常 1:未选择刀具 2:无选中
 signals:
     void UpdateDataApronRequest();
+    void UpdateDataToolCalib(int id);
 private slots:
     void SlotBtnGrpClicked(bool _chk);
+    void SlotBtnCalibClicked();
     void on_btnOK_clicked();
     void on_btnApply_clicked();
     void on_btnCancle_clicked();

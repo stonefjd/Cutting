@@ -127,7 +127,7 @@ public:
     void GetRunningData();
 signals:
     void UpdateMachineMaxPluse(double _xPos, double _yPos);
-    void UpdateHeadPosRt(int _xPos, int _yPos);//更新脉冲x,y坐标（脉冲信号）
+    void UpdateDataHeadPosRt(int _xPos, int _yPos);//更新脉冲x,y坐标（脉冲信号）
 public slots:
     void Task_10ms();
     void SubStateOpBtnPress(int id);

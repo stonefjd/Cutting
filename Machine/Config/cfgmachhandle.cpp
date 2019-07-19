@@ -61,6 +61,10 @@ CfgMachSettings* CfgMachHandle::GetCfgMachSettings()
 {
     return this->UI_cfgMachSettings;
 }
+CfgKnifeManager* CfgMachHandle::GetCfgKnifeManager()
+{
+    return this->UI_cfgKnifeManager;
+}
 
 CfgHead* CfgMachHandle::GetHConfig()
 {
@@ -78,11 +82,18 @@ void CfgMachHandle::InitCommunicate()
     }
     emit UpdateDataApron(aCfgDataList);
 }
-void CfgMachHandle::UpdateConfigMaxPluse(double _xPos, double _yPos)
+//void CfgMachHandle::UpdateConfigMaxPluse(double _xPos, double _yPos)
+//{
+//    //从机器数据中更新到配置数据中
+//    hConfig->UpdateHeadMaxPluse(static_cast<int>(_xPos),static_cast<int>(_yPos),0);
+
+//    //从配置数据中更新到显示数据中
+//    emit UpdateDataHead(hConfig->GetCfgHeadData());
+//}
+void CfgMachHandle::SlotUpdateDataHeadPosMax(QPointF _point)
 {
-    //从机器数据中更新到配置数据中
-    hConfig->UpdateHeadMaxPluse(static_cast<int>(_xPos),static_cast<int>(_yPos),0);
-    //从配置数据中更新到显示数据中
+    qDebug()<<"update";
+    hConfig->UpdateDataPosMax(_point,0);
     emit UpdateDataHead(hConfig->GetCfgHeadData());
 }
 void CfgMachHandle::SlotUpdateDataHeadRequest()

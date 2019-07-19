@@ -88,11 +88,13 @@ void ADP_GetGpi(long *_diValue);
 void ADP_SetGpo(long _doValue);
 void ADP_StartHome();
 void ADP_StopHome();
-void ADP_StartMovePoint(short _crd,short _fifo,long _xPos,long _yPos,double spd,double acc);
+void ADP_StartHomeAxis(short _axis);
+void ADP_StopHomeAxis(short _axis);
+void ADP_StartMovePoint(short _crd, short _fifo, long _xPos, long _yPos, double spd, double acc, TCrdPrm crdPrm);
 void ADP_GetRunStateAndSegment(short _crd,short *_pRun,long *_pSegment,short _fifo=0);
 void ADP_GetHeadPosRt(QPointF *_posRt,double _ppm);
 bool ADP_GetAxisRunState(short _axis);
-void ADP_SetJogMode(short _axis,double _spd,double _acc);
+void ADP_SetJogMode(short _axis,double _spd,double _acc,TJogPrm _jog);
 
 
 void ADP_SetFanStop();

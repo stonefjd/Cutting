@@ -636,7 +636,7 @@ void Machine::GetRunningData()
     double xPos,yPos;
     ADP_GetAxisPrfPos(AXIS_X,&xPos);
     ADP_GetAxisPrfPos(AXIS_Y,&yPos);
-    emit UpdateHeadPosRt(static_cast<int>(xPos),static_cast<int>(yPos));
+    emit UpdateDataHeadPosRt(static_cast<int>(xPos),static_cast<int>(yPos));
     //获取当前角度和上个周期的角度
     {
         head0_PosLast.setX(head0_Pos.x());

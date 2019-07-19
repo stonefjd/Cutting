@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>880</width>
-    <height>664</height>
+    <height>587</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -48,11 +48,10 @@
    <addaction name="actionStop"/>
    <addaction name="actionWindIn"/>
    <addaction name="actionWindOut"/>
-   <addaction name="actionResetRange"/>
-   <addaction name="actionToolDeepCalibration"/>
-   <addaction name="actionToolPositionCalibration"/>
-   <addaction name="actionEdgeScan"/>
-   <addaction name="actionResize"/>
+   <addaction name="actionToolDeepCalib"/>
+   <addaction name="actionToolPosCalib"/>
+   <addaction name="actionRangeScan"/>
+   <addaction name="actionBoundaryResize"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="dockWgtCtrl">
@@ -285,17 +284,20 @@
     <string>机械回零</string>
    </property>
   </action>
-  <action name="actionEdgeScan">
+  <action name="actionRangeScan">
    <property name="text">
-    <string>边缘扫描</string>
+    <string>裁剪扫描</string>
+   </property>
+   <property name="toolTip">
+    <string>裁剪扫描</string>
    </property>
   </action>
-  <action name="actionToolDeepCalibration">
+  <action name="actionToolDeepCalib">
    <property name="text">
     <string>刀深校准</string>
    </property>
   </action>
-  <action name="actionToolPositionCalibration">
+  <action name="actionToolPosCalib">
    <property name="text">
     <string>刀位校准</string>
    </property>
@@ -340,7 +342,7 @@
     <string>导出</string>
    </property>
   </action>
-  <action name="actionResetRange">
+  <action name="actionRangeReset">
    <property name="text">
     <string>重设范围</string>
    </property>
@@ -396,7 +398,7 @@
     <string>切割列表操作栏</string>
    </property>
   </action>
-  <action name="actionResize">
+  <action name="actionBoundaryResize">
    <property name="text">
     <string>边缘校准</string>
    </property>
@@ -421,11 +423,4 @@
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
  <connections/>
- <buttongroups>
-  <buttongroup name="btnDirGroup">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
- </buttongroups>
 </ui>

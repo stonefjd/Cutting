@@ -13,27 +13,39 @@ WindowCutting::WindowCutting(QWidget *parent) :
     //ui->menuSettings->setDisabled(true);
     //ui->menuViewItem->setDisabled(true);
     //ui->menuHelpItem->setDisabled(true);
-
-//----set btn id for ui
-    ui->btnDirGroup->setId(ui->btnOpLeft,BTN_ID_L);
-    ui->btnDirGroup->setId(ui->btnOpRight,BTN_ID_R);
-    ui->btnDirGroup->setId(ui->btnOpUp,BTN_ID_U);
-    ui->btnDirGroup->setId(ui->btnOpDown,BTN_ID_D);
-    ui->btnDirGroup->setId(ui->btnOpOrg,BTN_ID_O);
+//----设置菜单栏按钮的属性
+//    QActionGroup *groupOprt = new QActionGroup(this);
+    ui->actionBoundaryResize->setProperty("id","0");    //边界自校准
+    ui->actionRangeScan->setProperty("id","1");         //裁剪边缘扫描
+    ui->actionRangeReset->setProperty("id","2");        //裁剪边缘重设
+    ui->actionToolDeepCalib->setProperty("id","3");     //校准刀深
+    ui->actionToolPosCalib->setProperty("id","4");      //校准刀位
+//    groupOprt->addAction(ui->actionBoundaryResize);
+//    groupOprt->addAction(ui->actionRangeScan);
+//    groupOprt->addAction(ui->actionRangeReset);
+//    groupOprt->addAction(ui->actionToolDeepCalib);
+//    groupOprt->addAction(ui->actionToolPosCalib);
 //----status bar
     ui->statusBar->showMessage("ready");
 //----new Handle, 不能改变顺序
     cutFileHandle   = new CutFileHandle(ui->dockWgtList,ui->mainPaint);
     cfgMachHandle   = new CfgMachHandle;
-    ctrlMachHandle  = new CtrlMachHandle(ui->dockWgtCtrl);
+    handleCtrlMach  = new H_CtrlMach(ui->dockWgtCtrl);
 
     connect(cfgMachHandle,  SIGNAL(UpdateDataHead(CfgHead_T)),          cutFileHandle,  SLOT(SlotUpdateDataHead(CfgHead_T)));
-    connect(cfgMachHandle,  SIGNAL(UpdateDataHead(CfgHead_T)),          ctrlMachHandle, SLOT(SlotUpdateDataHead(CfgHead_T)));
+    connect(cfgMachHandle,  SIGNAL(UpdateDataHead(CfgHead_T)),          handleCtrlMach, SLOT(SlotUpdateDataHead(CfgHead_T)));
     connect(cfgMachHandle,  SIGNAL(UpdateDataApron(QList<CfgApron_T>)), cutFileHandle,  SLOT(SlotUpdateDataApron(QList<CfgApron_T>)));
     connect(cutFileHandle,  SIGNAL(UpdateDataApronRequest()),           cfgMachHandle,  SLOT(SlotUpdateDataApronRequest()));
-    connect(ctrlMachHandle, SIGNAL(UpdateHeadPosRt(QPointF)),           cutFileHandle,  SLOT(SlotUpdateHeadPosRt(QPointF)));
-    connect(this,           SIGNAL(keyPressed(QKeyEvent)),              ctrlMachHandle, SLOT(SlotKeyAction(QKeyEvent)));
-    connect(this,           SIGNAL(keyReleased(QKeyEvent)),             ctrlMachHandle, SLOT(SlotKeyAction(QKeyEvent)));//----Machine Init
+    connect(handleCtrlMach, SIGNAL(UpdateDataHeadPosRt(QPointF)),       cutFileHandle,  SLOT(SlotUpdateDataHeadPosRt(QPointF)));
+    connect(this,           SIGNAL(keyPressed(QKeyEvent)),              handleCtrlMach, SLOT(SlotActionKeyBoard(QKeyEvent)));
+    connect(this,           SIGNAL(keyReleased(QKeyEvent)),             handleCtrlMach, SLOT(SlotActionKeyBoard(QKeyEvent)));
+    connect(handleCtrlMach, SIGNAL(UpdateDataHeadPosMax(QPointF)),      cfgMachHandle,  SLOT(SlotUpdateDataHeadPosMax(QPointF)));
+    connect(ui->actionBoundaryResize,   SIGNAL(triggered()),            handleCtrlMach, SLOT(SlotActionOprt()));
+    connect(ui->actionRangeScan,        SIGNAL(triggered()),            handleCtrlMach, SLOT(SlotActionOprt()));
+    connect(ui->actionRangeReset,       SIGNAL(triggered()),            handleCtrlMach, SLOT(SlotActionOprt()));
+    connect(ui->actionToolDeepCalib,    SIGNAL(triggered()),            handleCtrlMach, SLOT(SlotActionOprt()));
+    connect(ui->actionToolPosCalib,     SIGNAL(triggered()),            handleCtrlMach, SLOT(SlotActionOprt()));
+//    connect()
 /*    //mMachine.mFan_1.StateMachineInit(ui->actionWindIn,ui->actionWindOut);
     mMachine->Mach_SetHead0Org(&cfgMachHandle->hConfig->posOrg);
     mMachine->Mach_SetHead0PulsePerMillimeter(&cfgMachHandle->hConfig->posToPulseScale);
@@ -50,8 +62,7 @@ WindowCutting::WindowCutting(QWidget *parent) :
     connect(ui->actionResize,   SIGNAL(triggered()),        mMachine,SLOT(SubStateOpBtnReSize()));
     connect(ui->actionEdgeScan, SIGNAL(triggered()),        mMachine,SLOT(SubStateOpBtnEdgeScan()));
 
-    connect(mMachine,           SIGNAL(UpdateMachineMaxPluse(double,double)),
-            cfgMachHandle,      SLOT(UpdateConfigMaxPluse(double,double)));
+
 
 */
 //----UserLog
@@ -61,7 +72,7 @@ WindowCutting::WindowCutting(QWidget *parent) :
 //----配置参数初始化，向其他模块传递配置参数
     cfgMachHandle->InitCommunicate();
 //----启动控制模块定时器
-    ctrlMachHandle->StartCtrlTimer();
+    handleCtrlMach->StartCtrlTimer();
 //----启动调试定时器
     debugTimer=new QTimer(this);
     connect(debugTimer,SIGNAL(timeout()),this,SLOT(debugTask_100ms()));//20ms
@@ -244,16 +255,16 @@ void WindowCutting::debugTask_100ms()
     double xPos=0,yPos=0;
 //    ADP_GetSts(1,&x);
 //    ADP_GetSts(2,&y);
-//    ADP_GetAxisPrfPos(AXIS_X,&xPos);
-//    ADP_GetAxisPrfPos(AXIS_Y,&yPos);
+    ADP_GetAxisPrfPos(AXIS_X,&xPos);
+    ADP_GetAxisPrfPos(AXIS_Y,&yPos);
     ui->lb_x->setText(QString::number(x));
     ui->lb_y->setText(QString::number(y));
 //    ui->lb_st->setText(QString::number(mMachine->machine_ctSubState_Operate_Key));
-    ui->lb_xPos->setText("x "+QString::number(static_cast<int>(xPos)));
-    ui->lb_yPos->setText("y "+QString::number(static_cast<int>(yPos)));
+    ui->lb_xPos->setText("x "+QString::number(xPos/cfgMachHandle->GetHConfig()->GetPosToPulseScaleXY()));
+    ui->lb_yPos->setText("y "+QString::number(yPos/cfgMachHandle->GetHConfig()->GetPosToPulseScaleXY()));
 
     //    if(ctrlMachHandle->GetMachState() != stMain_Wait || ctrlMachHandle->GetAxisRunStateX()||ctrlMachHandle->GetAxisRunStateY())
-    if(ctrlMachHandle->GetAxisRunState(AXIS_X)||ctrlMachHandle->GetAxisRunState(AXIS_Y))
+//    if(ctrlMachHandle->GetAxisRunState(AXIS_X)||ctrlMachHandle->GetAxisRunState(AXIS_Y))
     {
         ui->mainPaint->update();
     }

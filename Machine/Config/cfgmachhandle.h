@@ -12,12 +12,12 @@ class CfgMachHandle : public QObject
     Q_OBJECT
 public:
     explicit CfgMachHandle(QObject *parent = nullptr);
-
+private:
     CfgMach *mConfig = new CfgMach;
     CfgHead *hConfig = new CfgHead;
     QList<CfgApron*> aConfigList;
     CfgLib  lConfig;
-private:
+
     CfgMachSettings *UI_cfgMachSettings;
     CfgKnifeManager *UI_cfgKnifeManager;
 
@@ -26,6 +26,7 @@ public:
     void ShowKnifeManager(UserHandle *_userHandle);
 
     CfgMachSettings* GetCfgMachSettings();
+    CfgKnifeManager* GetCfgKnifeManager();
     CfgHead *GetHConfig();
 
     void InitCommunicate();
@@ -34,7 +35,8 @@ signals:
     void UpdateDataHead(CfgHead_T _headData);
     void UpdateDataApron(QList<CfgApron_T> _aConfig);
 public slots:
-    void UpdateConfigMaxPluse(double _xPos, double _yPos);
+//    void UpdateConfigMaxPluse(double _xPos, double _yPos);
+    void SlotUpdateDataHeadPosMax(QPointF _point);
     void SlotUpdateDataHeadRequest();
     void SlotUpdateDataApronRequest();
 

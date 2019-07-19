@@ -15,7 +15,7 @@ CutFile_Data* CutFileHandle::GetFileData()
     return this->cutFile_Data;
 }
 //设置实时的机头值
-void CutFileHandle::SlotUpdateHeadPosRt(QPointF posRT)
+void CutFileHandle::SlotUpdateDataHeadPosRt(QPointF posRT)
 {
     cutFile_Data->SetPosRt(posRT);
 }
