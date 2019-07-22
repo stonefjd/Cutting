@@ -53,8 +53,8 @@ bool U_CtrlToolPosCalib::InitialModel(int _idApron)
         idApron = _idApron;
         posOrgCalib.setX(d_ctrlMach->GetPosRT()->x());
         posOrgCalib.setY(d_ctrlMach->GetPosRT()->y());
-        lEdtPosX->setText(QString::number(d_ctrlMach->GetPosRT()->x()-posOrgCalib.x()));
-        lEdtPosY->setText(QString::number(d_ctrlMach->GetPosRT()->y()-posOrgCalib.y()));
+        lEdtPosX->setText(QString::number(d_ctrlMach->GetCfgApronList()->at(idApron)->GetXOffset()));
+        lEdtPosY->setText(QString::number(d_ctrlMach->GetCfgApronList()->at(idApron)->GetYOffset()));
 
         connect(btnSure,SIGNAL(clicked()),this,SLOT(SlotBtnSureClicked()));
         connect(btnCancel,SIGNAL(clicked()),this,SLOT(SlotBtnCancleClicked()));
