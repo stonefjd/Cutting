@@ -49,7 +49,6 @@
    <addaction name="actionWindIn"/>
    <addaction name="actionWindOut"/>
    <addaction name="actionToolDeepCalib"/>
-   <addaction name="actionToolPosCalib"/>
    <addaction name="actionRangeScan"/>
    <addaction name="actionBoundaryResize"/>
   </widget>

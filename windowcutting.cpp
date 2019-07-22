@@ -47,8 +47,8 @@ WindowCutting::WindowCutting(QWidget *parent) :
     handleCtrlMach->GetCtrlMach()->SetPosToPulseScaleXY(cfgMachHandle->GetCfgHead()->GetPosToPulseScaleXY());
     handleCtrlMach->GetCtrlMach()->SetIdleMoveSpd(cfgMachHandle->GetCfgHead()->GetIdleMoveSpd());
     handleCtrlMach->GetCtrlMach()->SetIdleMoveAcc(cfgMachHandle->GetCfgHead()->GetIdleMoveAcc());
+    handleCtrlMach->GetCtrlMach()->SetCfgApronList(cfgMachHandle->GetCfgArponList());
 
-//    handleCtrlMach->GetCtrlMach()->SetRealToCutScale(cfgMachHandle->GetCfgHead()->GetRealToCutScale());
     //继续初始化带传递初始值的内容
     cutFileHandle->InitEventFilter();
 
@@ -59,7 +59,9 @@ WindowCutting::WindowCutting(QWidget *parent) :
     connect(ui->actionRangeReset,       SIGNAL(triggered()),            handleCtrlMach, SLOT(SlotActionOprt()));
     connect(ui->actionToolDeepCalib,    SIGNAL(triggered()),            handleCtrlMach, SLOT(SlotActionOprt()));
     connect(ui->actionToolPosCalib,     SIGNAL(triggered()),            handleCtrlMach, SLOT(SlotActionOprt()));
-    connect(handleCtrlMach, SIGNAL(UpdateDataHeadPosMax(QPointF)),      cfgMachHandle,  SLOT(SlotUpdateDataHeadPosMax(QPointF)));
+    connect(handleCtrlMach->GetCtrlMach(), SIGNAL(UpdateDataHeadPosMax()),      cfgMachHandle,  SLOT(SlotUpdateDataHeadPosMax()));
+    connect(cfgMachHandle,SIGNAL(EnterOprtToolPosCalib(int)),handleCtrlMach,SLOT(SlotEnterOprtToolPosCalib(int)));
+
 
 //    connect(cfgMachHandle,  SIGNAL(UpdateDataHead(CfgHead_T)),          cutFileHandle,  SLOT(SlotUpdateDataHead(CfgHead_T)));
 //    connect(cfgMachHandle,  SIGNAL(UpdateDataHead(CfgHead_T)),          handleCtrlMach, SLOT(SlotUpdateDataHead(CfgHead_T)));

@@ -20,7 +20,6 @@ private:
 
     CfgMachSettings *UI_cfgMachSettings;
     CfgKnifeManager *UI_cfgKnifeManager;
-
 public:
     void ShowMachSettings(UserHandle *_userHandle);
     void ShowKnifeManager(UserHandle *_userHandle);
@@ -30,19 +29,12 @@ public:
 
     CfgHead*            GetCfgHead();
     QList<CfgApron*>*   GetCfgArponList();
-//    void InitCommunicate();
 signals:
     //逻辑原点，逻辑最大切割点，全局最大范围，每毫米脉冲数，实际切割&显示缩放比
-//    void UpdateDataHead(CfgHead_T _headData);
-//    void UpdateDataApron(QList<CfgApron_T> _aConfig);
-    void EnterOprtToolPosCalib(int id,double deep);
+    void EnterOprtToolPosCalib(int id);
 public slots:
-//    void UpdateConfigMaxPluse(double _xPos, double _yPos);
-    void SlotUpdateDataHeadPosMax(QPointF _point);
-    void SlotUpdateDataHeadRequest();
-    void SlotUpdateDataApronRequest();
-    void SlotUpdateDataHeadPosRt(QPointF posRT);
-    void SlotEnterOprtToolPosCalibRequest(int id,double deep);
+    void SlotUpdateDataHeadPosMax();
+    void SlotEnterOprtToolPosCalibRequest(int id);
 
 };
 

@@ -3,7 +3,6 @@
 
 #include <QObject>
 
-#include "Machine/Config/cfgmachhandle.h"
 #include "u_ctrlbtndir.h"
 #include "u_ctrlrngrst.h"
 #include "u_ctrltoolposcalib.h"
@@ -32,15 +31,14 @@ public:
 signals:
     //更新实时机头坐标
 //    void UpdateDataHeadPosRt(QPointF posRT);
-    void UpdateDataHeadPosMax(QPointF posRT);
+//    void UpdateDataHeadPosMax(QPointF posRT);
 private slots:
     void SlotCtrlTask_10ms();
 public slots:
-//    void SlotUpdateDataHead(CfgHead_T _data);
-    void SlotEnterOprtToolPosCalib(int _id,double _deep);
+    void SlotEnterOprtToolPosCalib(int _id);
     void SlotActionKeyBoard(QKeyEvent event);
     void SlotActionOprt();
-    void SlotUpdateDataHeadPosMaxRequest();
+//    void SlotUpdateDataHeadPosMaxRequest();
 };
 
 #endif // H_CTRLMACH_H

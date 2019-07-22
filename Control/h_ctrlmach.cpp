@@ -11,7 +11,7 @@ H_CtrlMach::H_CtrlMach(QDockWidget* _ctrlDockWgt)
 
     ctrlTimer=new QTimer(this);
     connect(ctrlTimer,SIGNAL(timeout()),this,SLOT(SlotCtrlTask_10ms()));
-    connect(&d_ctrlMach,SIGNAL(UpdateDataHeadPosMaxRequest()),this,SLOT(SlotUpdateDataHeadPosMaxRequest()));
+//    connect(&d_ctrlMach,SIGNAL(UpdateDataHeadPosMaxRequest()),this,SLOT(SlotUpdateDataHeadPosMaxRequest()));
 }
 D_CtrlMach* H_CtrlMach::GetCtrlMach()
 {
@@ -52,21 +52,15 @@ void H_CtrlMach::SlotCtrlTask_10ms()
 //    d_ctrlMach.SetIdleMoveSpd(_data.idleMoveSpd);
 //    d_ctrlMach.SetIdleMoveAcc(_data.idleMoveAcc);
 //}
-void H_CtrlMach::SlotEnterOprtToolPosCalib(int _id, double _deep)
+void H_CtrlMach::SlotEnterOprtToolPosCalib(int _id)
 {
-    //创建提示对象
-    u_ctrlToolPosCalib = new U_CtrlToolPosCalib;
-    //设置数据对象
-    u_ctrlToolPosCalib->SetCtrlMachObj(&d_ctrlMach);
-    //连接界面发出信号
-    connect(u_ctrlToolPosCalib,  SIGNAL(keyPressed(QKeyEvent)),  this, SLOT(SlotActionKeyBoard(QKeyEvent)));
+    u_ctrlToolPosCalib = new U_CtrlToolPosCalib;                                                                //创建提示对象
+    u_ctrlToolPosCalib->SetCtrlMachObj(&d_ctrlMach);                                                            //设置数据对象
+    connect(u_ctrlToolPosCalib,  SIGNAL(keyPressed(QKeyEvent)),  this, SLOT(SlotActionKeyBoard(QKeyEvent)));    //连接界面发出信号
     connect(u_ctrlToolPosCalib,  SIGNAL(keyReleased(QKeyEvent)), this, SLOT(SlotActionKeyBoard(QKeyEvent)));
-    //设置显示属性
-    u_ctrlToolPosCalib->setModal(true);
-    //初始化界面内容 并确定是否显示
-    if(u_ctrlToolPosCalib->InitialModel(_id,_deep))
-        u_ctrlToolPosCalib->exec();
-    //显示
+    u_ctrlToolPosCalib->setModal(true);                                                                         //设置显示属性
+    if(u_ctrlToolPosCalib->InitialModel(_id))                                                                   //初始化界面内容 并确定是否显示
+        u_ctrlToolPosCalib->exec();                                                                             //满足条件，显示
     delete u_ctrlToolPosCalib;
 }
 void H_CtrlMach::SlotActionKeyBoard(QKeyEvent event)
@@ -91,7 +85,7 @@ void H_CtrlMach::SlotActionOprt()
         u_ctrlRngRst->exec();
     }
 }
-void H_CtrlMach::SlotUpdateDataHeadPosMaxRequest()
-{
-    emit UpdateDataHeadPosMax(*d_ctrlMach.GetPosMax());
-}
+//void H_CtrlMach::SlotUpdateDataHeadPosMaxRequest()
+//{
+//    emit UpdateDataHeadPosMax(*d_ctrlMach.GetPosMax());
+//}

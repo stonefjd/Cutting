@@ -147,9 +147,9 @@ void CfgKnifeManager::SlotBtnCalibClicked()
 {
     QPushButton *btnCalib = qobject_cast<QPushButton*>(sender());
     int id = btnCalib->property("id").toInt();
-    double deep = cApron->at(id)->GetKnife()->GetMaxPDDepth();
     qDebug()<<id;
-    emit EnterOprtToolPosCalibRequest(id,deep);
+    this->close();
+    emit EnterOprtToolPosCalibRequest(id);
 }
 
 void CfgKnifeManager::on_btnOK_clicked()
@@ -211,7 +211,6 @@ void CfgKnifeManager::on_btnApply_clicked()
             tempApron->SetKnife(tmpKnife);
             cApron->append(tempApron);
         }
-        emit UpdateDataApronRequest();
         break;
     case 1://1:未选择刀具
     {

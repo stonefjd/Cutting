@@ -15,7 +15,7 @@ public:
     QString GetHeadCfgPath();
 
 //    void UpdateHeadMaxPluse(int _xPluse,int _yPluse,int _hIndex);
-    void UpdateDataPosMax(QPointF _pos,int _hIndex);
+    void UpdateDataPosMax(int _hIndex);
 //    void UpdateHeadCutLimit(int _xPluse,int _yPluse,int _hIndex);
 
 private:

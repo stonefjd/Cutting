@@ -9,6 +9,8 @@
 
 
 #include "PhysicalLayer/hardwareadaptor.h"
+#include "Machine/Config/cfgmachhandle.h"
+
 struct DirBit
 {
     int  pos;
@@ -103,6 +105,7 @@ private:
     double*     posToPulseScaleXY;    //每毫米脉冲数
     double*     idleMoveSpd;         //空走速度 (m/s)
     double*     idleMoveAcc;         //空走加速度(G)
+    QList<CfgApron*> *cfgApronList;
 //--传出参数
     QPointF posRT;
 //--跳转辅助变量
@@ -121,6 +124,8 @@ private:
     TCrdPrm m_tCrdPrm;
 //--轴运行状态
     bool m_stAxisRunState[AXIS_MAX];
+//--相关常量参数
+    const double mc_crossLen = 15.0;
 private:
     void StateMachScheduleSubInit();
     void StateMachScheduleSubWait();
@@ -142,8 +147,10 @@ public:
     void EventActionKey(QKeyEvent event);
 //--系统状态读
     MainState GetMainState();
+//--跳转状态读
+    StepCnt GetCdtOprtStepToolPosCalib();
 //--轴控制量写
-    void    SetCtrlAxisGroup(short _axisZ, short _axisA, double _deep);
+    void    SetCtrlAxisGroup(int _idApron);
 //--轴状态读
     bool    GetAxisRunState(short _axis);
 //--传入参数读写
@@ -153,6 +160,7 @@ public:
     void    SetPosToPulseScaleXY(double* _val);
     void    SetIdleMoveSpd(double* _val);
     void    SetIdleMoveAcc(double* _val);
+    void    SetCfgApronList(QList<CfgApron*> *_list);
 
     QPointF* GetPosOrg();
     QPointF* GetPosLmt();
@@ -160,10 +168,11 @@ public:
     double*  GetPosToPulseScaleXY();
     double*  GetIdleMoveSpd();
     double*  GetIdleMoveAcc();
+    QList<CfgApron*>* GetCfgApronList();
 //--传出参数读
     QPointF* GetPosRT();
 signals:
-    void UpdateDataHeadPosMaxRequest();
+    void UpdateDataHeadPosMax();
 public slots:
     void SlotBtnPressed(int _id);
     void SlotBtnReleased(int _id);

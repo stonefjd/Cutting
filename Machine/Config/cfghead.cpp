@@ -185,21 +185,21 @@ QString CfgHead::GetHeadCfgPath()
 {
     return cfgPath;
 }
-void CfgHead::UpdateDataPosMax(QPointF _pos,int _hIndex)
+void CfgHead::UpdateDataPosMax(int _hIndex)
 {
-    posMax.setX(_pos.x());
-    posMax.setY(_pos.y());
-    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PosMaxX",QString::number(_pos.x()),cfgPath);
-    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PosMaxY",QString::number(_pos.y()),cfgPath);
-    if(_pos.x() <= posLmt.x())
+//    posMax.setX(_pos.x());
+//    posMax.setY(_pos.y());
+    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PosMaxX",QString::number(posMax.x()),cfgPath);
+    WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PosMaxY",QString::number(posMax.y()),cfgPath);
+    if(posMax.x() <= posLmt.x())
     {
-        posLmt.setX(_pos.x());
-        WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PosLimitX",QString::number(_pos.x()),cfgPath);
+        posLmt.setX(posMax.x());
+        WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PosLimitX",QString::number(posMax.x()),cfgPath);
     }
-    if(_pos.y() <= posLmt.y())
+    if(posMax.y() <= posLmt.y())
     {
-        posLmt.setY(_pos.y());
-        WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PosLimitY",QString::number(_pos.y()),cfgPath);
+        posLmt.setY(posMax.y());
+        WritePrivateProfileString("MachHead"+QString::number(_hIndex),"PosLimitY",QString::number(posMax.y()),cfgPath);
     }
 }
 

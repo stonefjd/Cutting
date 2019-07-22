@@ -52,7 +52,6 @@ private slots:
     void SlotBtnApplyClicked();
     void SlotBtnCancleClicked();
 signals:
-    void UpdateDataHeadRequest();
 
 };
 

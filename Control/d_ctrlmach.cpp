@@ -204,7 +204,7 @@ void D_CtrlMach::StateMachScheduleSubOprt()
                 ADP_GetAxisPrfPos(AXIS_Y,&pluseY);
                 posMax->setX(pluseX/ *posToPulseScaleXY);
                 posMax->setY(pluseY/ *posToPulseScaleXY);
-                emit UpdateDataHeadPosMaxRequest();
+                emit UpdateDataHeadPosMax();
             }
         }
     }
@@ -246,16 +246,14 @@ void D_CtrlMach::StateMachScheduleSubOprt()
         {
             //迁移
             m_cdOprtStepToolPosCalib = stStep1;
-            //动作
+            //动作：下刀
             ADP_ClrSts(AXIS_FIRST,AXIS_MAX);
             ADP_SetCrdPrm(crd, &crdPrm);
             ADP_CrdClear(crd, fifo);
-            //校准机头停在距离x切割边界1/2处，停在Y边界1/8处
-//            long edgeX = (posLmtX-posOrgX)/8+posOrgX;
-//            long edgeY = (posLmtY-posOrgY)/2+posOrgY;
+            //校准机头停在距离毛毡3mm处
 //            ADP_LnXY(crd,edgeX,edgeY,spd,acc,0,fifo);
-            long posMaxZ = static_cast<long>(m_nKnifeMaxDeep * *posToPulseScaleXY);
-            ADP_BufMove(crd,m_nCtrlAxisZ,posMaxZ,5,0.1,1,0);
+            long posGapZ = static_cast<long>((m_nKnifeMaxDeep-3) * 2000);
+            ADP_BufMove(crd,m_nCtrlAxisZ,posGapZ,10,0.1,1,0);
             ADP_CrdStart(crd, 0);
         }
         else if(m_cdOprtStepToolPosCalib == stStep1)
@@ -265,14 +263,55 @@ void D_CtrlMach::StateMachScheduleSubOprt()
             long segment;  // 坐标系的缓存区剩余空间查询变量
             ADP_GetRunStateAndSegment(crd,&run,&segment,fifo);
             //条件：
-            if(run == 0)
+            if(run == 0 && m_stAxisRunState[m_nCtrlAxisZ-1]==0 &&m_stAxisRunState[m_nCtrlAxisA-1]==0)
             {
+                //动作：提示放白纸，并且裁切十字
+                QMessageBox msgBox;
+                msgBox.setText(tr("请在下刀处放一张白纸"));
+                msgBox.exec();
+
+                ADP_ClrSts(AXIS_FIRST,AXIS_MAX);
+                ADP_SetCrdPrm(crd, &crdPrm);
+                ADP_CrdClear(crd, fifo);
+                double posRTX = posRT.x();
+                double posRTY = posRT.y();
+                long posCenterX = static_cast<long>((posRTX)* *posToPulseScaleXY);
+                long posCenterY = static_cast<long>((posRTY)* *posToPulseScaleXY);
+                long posStartX  = static_cast<long>((posRTX-mc_crossLen)* *posToPulseScaleXY);
+                long posStartY  = static_cast<long>((posRTY-mc_crossLen)* *posToPulseScaleXY);
+                long posStopX   = static_cast<long>((posRTX+mc_crossLen)* *posToPulseScaleXY);
+                long posStopY   = static_cast<long>((posRTY+mc_crossLen)* *posToPulseScaleXY);
+                long posMaxZ = static_cast<long>((m_nKnifeMaxDeep) * 2000);
+                long posGapZ = static_cast<long>((m_nKnifeMaxDeep-3) * 2000);
+                ADP_LnXY(crd,posStartX,posCenterY,spd,acc,0,fifo);//移动
+                ADP_BufMove(crd,m_nCtrlAxisA,0,100,0.1,1,0);//刀向
+                ADP_BufMove(crd,m_nCtrlAxisZ,posMaxZ,10,0.1,1,0);//下刀
+                ADP_LnXY(crd,posStopX, posCenterY,spd,acc,0,fifo);//切割
+                ADP_BufMove(crd,m_nCtrlAxisZ,posGapZ,10,0.1,1,0);//抬刀
+                ADP_LnXY(crd,posCenterX,posStartY,spd,acc,0,fifo);//移动
+                ADP_BufMove(crd,m_nCtrlAxisA,2500,100,0.1,1,0);//刀向
+                ADP_BufMove(crd,m_nCtrlAxisZ,posMaxZ,10,0.1,1,0);//下刀
+                ADP_LnXY(crd,posCenterX, posStopY,spd,acc,0,fifo);//切割
+                ADP_BufMove(crd,m_nCtrlAxisZ,posGapZ,10,0.1,1,0);//抬刀
+                ADP_LnXY(crd,posCenterX,posCenterY,spd,acc,0,fifo);//移动
+                ADP_BufMove(crd,m_nCtrlAxisA,0,100,0.1,1,0);//刀向
+                ADP_CrdStart(crd, 0);
                 //迁移：子状态：未进入；主状态：等待状态
                 m_cdOprtStepToolPosCalib = stStep2;
-                //动作：-
             }
         }
         else if(m_cdOprtStepToolPosCalib == stStep2)
+        {
+            short run;  // 坐标系运动完成段查询变量
+            long segment;  // 坐标系的缓存区剩余空间查询变量
+            ADP_GetRunStateAndSegment(crd,&run,&segment,fifo);
+            //条件：十字裁切结束
+            if(run == 0 && m_stAxisRunState[m_nCtrlAxisZ-1]==0 &&m_stAxisRunState[m_nCtrlAxisA-1]==0)
+            {
+                m_cdOprtStepToolPosCalib = stStep3;
+            }
+        }
+        else if(m_cdOprtStepToolPosCalib == stStep3)
         {
             JoggingForAxis(AXIS_X,0.2);
             JoggingForAxis(AXIS_Y,0.2);
@@ -355,7 +394,7 @@ void D_CtrlMach::EventOprtSubExitToolPosCalib()
     qDebug()<<"exit,calib";
     if(m_stMainThis == stMain_Oprt)
     {
-        m_stSubOprt  = stOprt_BtnO;
+        m_stSubOprt  = stOprt_Fnsh;
         m_cdOprtStepToolPosCalib = stStepNotIn;
     }
 }
@@ -445,10 +484,8 @@ void D_CtrlMach::GetRunningData()
     else if(posRT.y()>posMax->y())
         posRT.setY(posMax->y());
 //--获取机头轴状态
-    m_stAxisRunState[AXIS_X-1] = ADP_GetAxisRunState(AXIS_X);
-    m_stAxisRunState[AXIS_Y-1] = ADP_GetAxisRunState(AXIS_Y);
-    m_stAxisRunState[AXIS_Z1-1] = ADP_GetAxisRunState(AXIS_Z1);
-    m_stAxisRunState[AXIS_A1-1] = ADP_GetAxisRunState(AXIS_A1);
+    for(short i=0;i<AXIS_MAX;i++)
+        m_stAxisRunState[i] = ADP_GetAxisRunState(i+1);//数组从0开始，轴号从1开始。
 //--可注释
     long xSts,ySts;
     ADP_GetSts(AXIS_X,&xSts);
@@ -499,23 +536,62 @@ MainState D_CtrlMach::GetMainState()
 {
     return this->m_stMainThis;
 }
-void    D_CtrlMach::SetCtrlAxisGroup(short _axisZ, short _axisA, double _deep)
+//--跳转状态读
+StepCnt D_CtrlMach::GetCdtOprtStepToolPosCalib()
 {
-    this->m_nCtrlAxisZ = _axisZ;
-    this->m_nCtrlAxisA = _axisA;
-    this->m_nKnifeMaxDeep = _deep;
+    return this->m_cdOprtStepToolPosCalib;
 }
 bool    D_CtrlMach::GetAxisRunState(short _axis)
 {
     return  this->m_stAxisRunState[_axis-1];
 }
-void    D_CtrlMach::SetPosOrg(QPointF *_pointF)
-{
-    this->posOrg = _pointF;
-}
 QPointF* D_CtrlMach::GetPosOrg()
 {
     return this->posOrg;
+}
+double* D_CtrlMach::GetPosToPulseScaleXY()
+{
+    return this->posToPulseScaleXY;
+}
+QPointF* D_CtrlMach::GetPosLmt()
+{
+    return this->posLmt;
+}
+QPointF* D_CtrlMach::GetPosMax()
+{
+    return this->posMax;
+}
+double*  D_CtrlMach::GetIdleMoveSpd()
+{
+    return idleMoveSpd;
+}
+double*  D_CtrlMach::GetIdleMoveAcc()
+{
+    return idleMoveAcc;
+}
+QList<CfgApron*>* D_CtrlMach::GetCfgApronList()
+{
+    return cfgApronList;
+}
+void    D_CtrlMach::SetCtrlAxisGroup(int _idApron)
+{
+    switch (_idApron)
+    {
+    case 0:
+        this->m_nCtrlAxisZ = AXIS_Z1;
+        this->m_nCtrlAxisA = AXIS_A1;
+        this->m_nKnifeMaxDeep = cfgApronList->at(_idApron)->GetKnife()->GetMaxPDDepth();
+        break;
+    default:
+        this->m_nCtrlAxisZ = AXIS_NULL;
+        this->m_nCtrlAxisA = AXIS_NULL;
+        this->m_nKnifeMaxDeep = 0;
+    }
+
+}
+void    D_CtrlMach::SetPosOrg(QPointF *_pointF)
+{
+    this->posOrg = _pointF;
 }
 
 void    D_CtrlMach::SetPosToPulseScaleXY(double *_val)
@@ -523,45 +599,29 @@ void    D_CtrlMach::SetPosToPulseScaleXY(double *_val)
     this->posToPulseScaleXY = _val;
 }
 
-double* D_CtrlMach::GetPosToPulseScaleXY()
-{
-    return this->posToPulseScaleXY;
-}
 
 void    D_CtrlMach::SetPosLmt(QPointF *_pointF)
 {
     this->posLmt = _pointF;
 }
 
-QPointF* D_CtrlMach::GetPosLmt()
-{
-    return this->posLmt;
-}
 
 void    D_CtrlMach::SetPosMax(QPointF* _pointF)
 {
     this->posMax = _pointF;
 }
 
-QPointF* D_CtrlMach::GetPosMax()
-{
-    return this->posMax;
-}
 void    D_CtrlMach::SetIdleMoveSpd(double* _val)
 {
     idleMoveSpd = _val;
-}
-double*  D_CtrlMach::GetIdleMoveSpd()
-{
-    return idleMoveSpd;
 }
 void    D_CtrlMach::SetIdleMoveAcc(double *_val)
 {
     idleMoveAcc = _val;
 }
-double*  D_CtrlMach::GetIdleMoveAcc()
+void    D_CtrlMach::SetCfgApronList(QList<CfgApron*> *_list)
 {
-    return idleMoveAcc;
+    this->cfgApronList = _list;
 }
 //--传出参数读
 QPointF *D_CtrlMach::GetPosRT()

@@ -43,7 +43,6 @@ void CutFileHandle::InitEventFilter()
 //    }
 //    cutFile_Data->SetKnifeOffset(tempGuidList,tempOffsetList);
 //}
-
 //void CutFileHandle::SlotUpdateFileAdded()
 //{
 //    //请求更新刀座参数
