@@ -34,6 +34,8 @@ signals:
     void EnterOprtToolPosCalib(int id);
 public slots:
     void SlotUpdateDataHeadPosMax();
+    void SlotUpdateDataApronOffset();
+
     void SlotEnterOprtToolPosCalibRequest(int id);
 
 };

@@ -14,17 +14,11 @@ WindowCutting::WindowCutting(QWidget *parent) :
     //ui->menuViewItem->setDisabled(true);
     //ui->menuHelpItem->setDisabled(true);
 //----设置菜单栏按钮的属性
-//    QActionGroup *groupOprt = new QActionGroup(this);
     ui->actionBoundaryResize->setProperty("id","0");    //边界自校准
     ui->actionRangeScan->setProperty("id","1");         //裁剪边缘扫描
     ui->actionRangeReset->setProperty("id","2");        //裁剪边缘重设
     ui->actionToolDeepCalib->setProperty("id","3");     //校准刀深
     ui->actionToolPosCalib->setProperty("id","4");      //校准刀位
-//    groupOprt->addAction(ui->actionBoundaryResize);
-//    groupOprt->addAction(ui->actionRangeScan);
-//    groupOprt->addAction(ui->actionRangeReset);
-//    groupOprt->addAction(ui->actionToolDeepCalib);
-//    groupOprt->addAction(ui->actionToolPosCalib);
 //----status bar
     ui->statusBar->showMessage("ready");
 //----new Handle, 不能改变顺序
@@ -48,20 +42,23 @@ WindowCutting::WindowCutting(QWidget *parent) :
     handleCtrlMach->GetCtrlMach()->SetIdleMoveSpd(cfgMachHandle->GetCfgHead()->GetIdleMoveSpd());
     handleCtrlMach->GetCtrlMach()->SetIdleMoveAcc(cfgMachHandle->GetCfgHead()->GetIdleMoveAcc());
     handleCtrlMach->GetCtrlMach()->SetCfgApronList(cfgMachHandle->GetCfgArponList());
-
+    handleCtrlMach->GetCtrlMach()->SetCutFileData(cutFileHandle->GetFileData());
     //继续初始化带传递初始值的内容
     cutFileHandle->InitEventFilter();
 
     connect(this,           SIGNAL(keyPressed(QKeyEvent)),              handleCtrlMach, SLOT(SlotActionKeyBoard(QKeyEvent)));
     connect(this,           SIGNAL(keyReleased(QKeyEvent)),             handleCtrlMach, SLOT(SlotActionKeyBoard(QKeyEvent)));
+
     connect(ui->actionBoundaryResize,   SIGNAL(triggered()),            handleCtrlMach, SLOT(SlotActionOprt()));
     connect(ui->actionRangeScan,        SIGNAL(triggered()),            handleCtrlMach, SLOT(SlotActionOprt()));
     connect(ui->actionRangeReset,       SIGNAL(triggered()),            handleCtrlMach, SLOT(SlotActionOprt()));
     connect(ui->actionToolDeepCalib,    SIGNAL(triggered()),            handleCtrlMach, SLOT(SlotActionOprt()));
     connect(ui->actionToolPosCalib,     SIGNAL(triggered()),            handleCtrlMach, SLOT(SlotActionOprt()));
-    connect(handleCtrlMach->GetCtrlMach(), SIGNAL(UpdateDataHeadPosMax()),      cfgMachHandle,  SLOT(SlotUpdateDataHeadPosMax()));
-    connect(cfgMachHandle,SIGNAL(EnterOprtToolPosCalib(int)),handleCtrlMach,SLOT(SlotEnterOprtToolPosCalib(int)));
+    connect(ui->actionRunPuase,         SIGNAL(triggered(bool)),        handleCtrlMach, SLOT(SlotActionRunPause(bool)));
+    connect(ui->actionStop,             SIGNAL(triggered()),            handleCtrlMach, SLOT(SlotActionStop()));
 
+    connect(cfgMachHandle,SIGNAL(EnterOprtToolPosCalib(int)),handleCtrlMach,SLOT(SlotEnterOprtToolPosCalib(int)));
+    connect(handleCtrlMach->GetCtrlMach(), SIGNAL(UpdateDataHeadPosMax()),      cfgMachHandle,  SLOT(SlotUpdateDataHeadPosMax()));
 
 //    connect(cfgMachHandle,  SIGNAL(UpdateDataHead(CfgHead_T)),          cutFileHandle,  SLOT(SlotUpdateDataHead(CfgHead_T)));
 //    connect(cfgMachHandle,  SIGNAL(UpdateDataHead(CfgHead_T)),          handleCtrlMach, SLOT(SlotUpdateDataHead(CfgHead_T)));

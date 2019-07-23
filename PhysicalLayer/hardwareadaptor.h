@@ -5,6 +5,8 @@
 #include <QDebug>
 #include <QTimer>
 #include <QPointF>
+
+
 #define GOOGOL_PLUSE_4AXIS
 #ifdef GOOGOL_PLUSE_4AXIS
     #include <PhysicalLayer/gts.h>
@@ -92,7 +94,9 @@ void ADP_StopHomeAxis(short _axis);
 void ADP_StartMovePoint(short _crd, short _fifo, long _xPos, long _yPos, double spd, double acc, TCrdPrm crdPrm);
 void ADP_GetRunStateAndSegment(short _crd,short *_pRun,long *_pSegment,short _fifo=0);
 void ADP_GetHeadPosRt(QPointF *_posRt,double _ppm);
+void ADP_GetCrdPos(short crd, double *pPos);
 bool ADP_GetAxisRunState(short _axis);
+bool ADP_GetAxisRunStateAllStop();
 void ADP_SetJogMode(short _axis,double _spd,double _acc,double _smooth);
 
 

@@ -38,6 +38,8 @@ public slots:
     void SlotEnterOprtToolPosCalib(int _id);
     void SlotActionKeyBoard(QKeyEvent event);
     void SlotActionOprt();
+    void SlotActionRunPause(bool _clicked);
+    void SlotActionStop();
 //    void SlotUpdateDataHeadPosMaxRequest();
 };
 

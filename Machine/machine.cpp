@@ -314,7 +314,7 @@ void Machine::SubStateRunCut()
                                 QPointF tempPointF = tempCutFileDataList->at(0)->GetPage(0)->GetSample(machine_ctSubState_Cut_SampleFinished)->GetNormalLine(j)->GetPointList()->at(i);
                                 long x = static_cast<long>(tempPointF.x()*head0_PulsePerMillimeter->x());
                                 long y = static_cast<long>(tempPointF.y()*head0_PulsePerMillimeter->y());
-                                ADP_LnXY(    1,    // 该插补段的坐标系是坐标系1
+                                ADP_LnXY(   1,    // 该插补段的坐标系是坐标系1
                                             x,
                                             y,  // 该插补段的终点坐标(15000, 15000)
                                             30,    // 该插补段的目标速度：100pulse/ms

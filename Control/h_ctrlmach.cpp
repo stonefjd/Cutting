@@ -74,16 +74,24 @@ void H_CtrlMach::SlotActionOprt()
     id = act->property("id").toInt();
     qDebug()<<id;
     d_ctrlMach.EventOprtSubEnter(id);
-    if(id == 2)
-    {
-        u_ctrlRngRst = new U_CtrlRngRst;
-        u_ctrlRngRst->SetCtrlMachObj(&this->d_ctrlMach);
-        connect(u_ctrlRngRst,  SIGNAL(keyPressed(QKeyEvent)),  this, SLOT(SlotActionKeyBoard(QKeyEvent)));
-        connect(u_ctrlRngRst,  SIGNAL(keyReleased(QKeyEvent)), this, SLOT(SlotActionKeyBoard(QKeyEvent)));
+//    if(id == 2)
+//    {
+//        u_ctrlRngRst = new U_CtrlRngRst;
+//        u_ctrlRngRst->SetCtrlMachObj(&this->d_ctrlMach);
+//        connect(u_ctrlRngRst,  SIGNAL(keyPressed(QKeyEvent)),  this, SLOT(SlotActionKeyBoard(QKeyEvent)));
+//        connect(u_ctrlRngRst,  SIGNAL(keyReleased(QKeyEvent)), this, SLOT(SlotActionKeyBoard(QKeyEvent)));
 
-        u_ctrlRngRst->setModal(true);
-        u_ctrlRngRst->exec();
-    }
+//        u_ctrlRngRst->setModal(true);
+//        u_ctrlRngRst->exec();
+//    }
+}
+void H_CtrlMach::SlotActionRunPause(bool _clicked)
+{
+    d_ctrlMach.EventRunSubEnterRunPuase( _clicked);
+}
+void H_CtrlMach::SlotActionStop()
+{
+    d_ctrlMach.EventRunSubEnterStop();
 }
 //void H_CtrlMach::SlotUpdateDataHeadPosMaxRequest()
 //{

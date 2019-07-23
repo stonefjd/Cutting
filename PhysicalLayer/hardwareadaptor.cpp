@@ -9,8 +9,8 @@ HardwareAdaptor::HardwareAdaptor(QObject *parent) : QObject(parent)
 
 #ifdef GOOGOL_PLUSE_4AXIS
     //--转速模式结构体，插补模式结构体
-    TJogPrm Jog;
-    TCrdPrm crdPrm;
+//    TJogPrm Jog;
+//    TCrdPrm crdPrm;
 #endif
 short ADP_GetLimit(short _index,long *_pPos,long *_pNeg)
 {
@@ -287,12 +287,12 @@ void ADP_StopHomeAxis(short _axis)
 
 void ADP_StartMovePoint(short _crd,short _fifo,long _xPos,long _yPos,double spd,double acc,TCrdPrm crdPrm)
 {
-#ifdef GOOGOL_PLUSE_4AXIS
+#ifdef GOOGOL_PLUSE_4AXIS//只支持对坐标系0进行读写
     ADP_SetCrdPrm(_crd, &crdPrm);
     ADP_CrdClear(_crd, _fifo);
      // 该插补段的坐标系是坐标系1 //xy点// 该插补段的目标速度：3pulse/ms // 插补段的加速度：0.1pulse/ms^2// 终点速度为0 // 向坐标系1的FIFO0缓存区传递该直线插补数据
     ADP_LnXY(_crd,_xPos,_yPos,spd,acc,0,_fifo);
-    ADP_CrdStart(_crd, 0);
+    ADP_CrdStart(_crd, _fifo);
 #endif
 }
 void ADP_GetRunStateAndSegment(short _crd, short *_pRun, long *_pSegment, short _fifo)
@@ -320,6 +320,12 @@ void ADP_GetHeadPosRt(QPointF *_posRt,double _ppm)
     }
 #endif
 }
+void ADP_GetCrdPos(short crd,double *pPos)
+{
+#ifdef GOOGOL_PLUSE_4AXIS
+    GT_GetCrdPos(crd,pPos);
+#endif
+}
 bool ADP_GetAxisRunState(short _axis)
 {
 #ifdef GOOGOL_PLUSE_4AXIS
@@ -334,6 +340,19 @@ bool ADP_GetAxisRunState(short _axis)
 #elif
     return false;
 #endif
+}
+bool ADP_GetAxisRunStateAllStop()
+{
+    bool st = true;
+    for(short i=0;i<AXIS_MAX;i++)
+    {
+        if(ADP_GetAxisRunState(i) == true)//有一个轴在运行
+        {
+            st = false;
+            break;
+        }
+    }
+    return st;
 }
 void ADP_SetJogMode(short _axis, double _spd, double _acc, double _smooth)
 {

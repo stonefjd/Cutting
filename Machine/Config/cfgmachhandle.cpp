@@ -77,7 +77,10 @@ void CfgMachHandle::SlotUpdateDataHeadPosMax()
     qDebug()<<"update";
     cfgHead.UpdateDataPosMax(0);
 }
-
+void CfgMachHandle::SlotUpdateDataApronOffset()
+{
+    qDebug()<<"update arpon offset to file";
+}
 
 void CfgMachHandle::SlotEnterOprtToolPosCalibRequest(int id)
 {
