@@ -130,8 +130,7 @@ void D_CtrlMach::StateMachScheduleSubWait()
 {
     //[BEGIN]转速给定并运行
     //循环：运行jog
-    JoggingForAxis(AXIS_X);
-    JoggingForAxis(AXIS_Y);
+    JoggingForAxis();
     //条件：
     //迁移：本身不带有条件迁移,通过事件触发迁移
     //动作：
@@ -229,8 +228,7 @@ void D_CtrlMach::StateMachScheduleSubOprt()
     }
     else if(m_stSubOprt == stOprt_RngRst)
     {
-        JoggingForAxis(AXIS_X);
-        JoggingForAxis(AXIS_Y);
+        JoggingForAxis();
         if(m_cdOprtStepRngRst == stStepNotIn)
         {
 
@@ -314,8 +312,7 @@ void D_CtrlMach::StateMachScheduleSubOprt()
         }
         else if(m_cdOprtStepToolPosCalib == stStep3)
         {
-            JoggingForAxis(AXIS_X,0.2);
-            JoggingForAxis(AXIS_Y,0.2);
+            JoggingForAxis(0.2);
         }
     }
     else if(m_stSubOprt == stOprt_Fnsh)
@@ -429,7 +426,6 @@ void D_CtrlMach::StateMachScheduleSubCut()
     }
     else if(m_stSubCut == stCut_Continue)//外部进入
     {
-
         short fifo1=1;
         if(m_cdCutStepCountine == stStepNotIn)
         {
@@ -439,9 +435,10 @@ void D_CtrlMach::StateMachScheduleSubCut()
             ADP_CrdClear(crd, fifo1);
             long x = static_cast<long>(m_nPlusePause[0]);
             long y = static_cast<long>(m_nPlusePause[1]);
-            ADP_LnXY(crd,4000,40000,spd,acc,0,fifo1);
+//            ADP_LnXY(crd,4000,40000,spd,acc,0,fifo1);
             ADP_LnXY(crd,x,y,spd,acc,0,fifo1);
             ADP_CrdStart(crd, fifo1);
+            qDebug()<<"continue not in";
         }
         else if(m_cdCutStepCountine == stStep1)
         {
@@ -449,19 +446,23 @@ void D_CtrlMach::StateMachScheduleSubCut()
             if(run == 0)
             {
                 ADP_CrdStart(crd,fifo0);
-                m_cdCutStepCountine = stStep2;
-            }
-        }
-        else if(m_cdCutStepCountine == stStep2)
-        {
-            ADP_GetRunStateAndSegment(crd,&run,&segment,fifo0);
-            if(run == 0)
-            {
-                ADP_CrdStart(crd,fifo0);
                 m_cdCutStepCountine = stStepNotIn;
                 m_stSubCut = stCut_Run;
+                qDebug()<<"step finish";
             }
         }
+//        else if(m_cdCutStepCountine == stStep2)
+//        {
+//            ADP_GetRunStateAndSegment(crd,&run,&segment,fifo0);
+//            if(run == 0)
+//            {
+//                ADP_CrdStart(crd,fifo0);
+//                m_cdCutStepCountine = stStepNotIn;
+//                m_stSubCut = stCut_Run;
+//                qDebug()<<m_cdCutStepCountine;
+//                qDebug()<<m_cdCutStepCountine;
+//            }
+//        }
 
     }
     else if(m_stSubCut == stCut_Pause)//外部进入
@@ -472,16 +473,18 @@ void D_CtrlMach::StateMachScheduleSubCut()
         ADP_GetRunStateAndSegment(crd,&run,&segment,fifo0);
         if(run == 0)
         {
-            //动作：记录当前位置
-            ADP_GetCrdPos(1,m_nPlusePause);//必须现读
+            //动作：只有从run进入Pause中才读，从continue进入不读。记录当前位置
+            if(m_cdCutFlagRunInPause==true)
+            {
+                ADP_GetCrdPos(1,m_nPlusePause);//必须现读
+            }
             //跳转：进入wait状态，使能运行面板
             m_stSubCut = stCut_Wait;
         }
     }
     else if(m_stSubCut == stCut_Wait)
     {
-        JoggingForAxis(AXIS_X);
-        JoggingForAxis(AXIS_Y);
+        JoggingForAxis();
     }
     else if(m_stSubCut == stCut_Stop)//外部进入
     {
@@ -507,16 +510,67 @@ void D_CtrlMach::StateMachScheduleSubCut()
             m_stMainThis = stMain_Wait;
         }
     }
+//    qDebug()<<m_stSubCut;
+//    qDebug()<<"m_stSubCut";
 }
-void D_CtrlMach::JoggingForAxis(short _axis,double _lowSpdScale)
+void D_CtrlMach::JoggingForAxis(double _lowSpdScale)
 {
-    double spd = 0;
+    double spd = *idleMoveSpd * *posToPulseScaleXY * _lowSpdScale;
     double acc = *idleMoveAcc;
-    double smooth = 0.5;
-    bool cmdNeg = (m_cdDirCmd & (1<<m_dirBitMove[_axis-1].neg))&&!(m_cdDirCmd & (1<<m_dirBitMove[_axis-1].pos));
-    bool cmdPos = !(m_cdDirCmd & (1<<m_dirBitMove[_axis-1].neg))&&(m_cdDirCmd & (1<<m_dirBitMove[_axis-1].pos));
-    bool lmtNeg = false;
-    bool lmtPos = false;
+    short run = 0;  // 坐标系运动完成段查询变量
+    long segment = 0;  // 坐标系的缓存区剩余空间查询变量
+//    double smooth = 0.5;
+    long pluseMax = static_cast<long>(((posMax->x()>posMax->y())?posMax->x():posMax->y()) * *posToPulseScaleXY);
+
+    short crd=1,fifo1=1;
+    int crd1 = 8;//坐标系1比特位
+    long mask = static_cast<long>(1<<crd1);//具体停止位
+    long option = static_cast<long>(1<<crd1);//具体位动作
+
+    bool cmdNegX =  (m_cdDirCmd & (1<<m_dirBitMove[AXIS_X-1].neg))&&!(m_cdDirCmd & (1<<m_dirBitMove[AXIS_X-1].pos));
+    bool cmdPosX = !(m_cdDirCmd & (1<<m_dirBitMove[AXIS_X-1].neg))&& (m_cdDirCmd & (1<<m_dirBitMove[AXIS_X-1].pos));
+    bool cmdNegY =  (m_cdDirCmd & (1<<m_dirBitMove[AXIS_Y-1].neg))&&!(m_cdDirCmd & (1<<m_dirBitMove[AXIS_Y-1].pos));
+    bool cmdPosY = !(m_cdDirCmd & (1<<m_dirBitMove[AXIS_Y-1].neg))&& (m_cdDirCmd & (1<<m_dirBitMove[AXIS_Y-1].pos));
+
+    int cmdX = cmdPosX-cmdNegX;
+    int cmdY = cmdPosY-cmdNegY;
+
+    ADP_ClrSts(AXIS_FIRST,AXIS_MAX);
+
+    if(cmdX==0 && cmdY==0)
+    {
+        ADP_Stop(mask,option);
+        ADP_GetRunStateAndSegment(crd,&run,&segment,fifo1);
+        if(run == 0)
+        {
+            ADP_CrdClear(crd, fifo1);
+        }
+    }
+    else if(cmdX!=m_cdCmdLastX ||cmdY != m_cdCmdLastY)//暂态，只进入一次
+    {
+        ADP_Stop(mask,option);
+    }
+    else
+    {
+        ADP_GetRunStateAndSegment(crd,&run,&segment,fifo1);
+        if(run == 0)
+        {
+            double tempPluse[2];
+            ADP_GetCrdPos(1,tempPluse);//必须现读
+            ADP_CrdClear(crd, fifo1);
+            long deltaX = static_cast<long>(tempPluse[0]+pluseMax*cmdX);
+            long deltaY = static_cast<long>(tempPluse[1]+pluseMax*cmdY);
+
+            ADP_LnXY(crd,deltaX,deltaY,spd,acc,0,fifo1);
+            ADP_CrdStart(crd, fifo1);
+        }
+    }
+    m_cdCmdLastX = cmdX;
+    m_cdCmdLastY = cmdY;
+//    bool lmtNegX = false;
+//    bool lmtPosX = false;
+//    bool lmtNegY = false;
+//    bool lmtPosY = false;
 //暂时注释掉安全距离，应该用常量来设计
 //    if(_axis == AXIS_X)
 //    {
@@ -528,27 +582,28 @@ void D_CtrlMach::JoggingForAxis(short _axis,double _lowSpdScale)
 //        lmtNeg = GetPosRT().y()<GetPosOrg().y();
 //        lmtPos = GetPosRT().y()>GetPosLmt().y();
 //    }
-    if(_axis == AXIS_X ||_axis == AXIS_Y)//目前只有X和Y轴可以设定为速度模式运行
-    {
-        //条件(有指令||        (没指令            &&在运行))
-        if((cmdNeg||cmdPos)||(!(cmdNeg||cmdPos)&&m_stAxisRunState[_axis-1]))
-        {
-            ADP_ClrSts(_axis);
-            if(cmdNeg&&!lmtNeg)
-            {
-                spd = -*idleMoveSpd * *posToPulseScaleXY * _lowSpdScale;
-            }
-            else if(cmdPos&&!lmtPos)
-            {
-                spd =  *idleMoveSpd * *posToPulseScaleXY * _lowSpdScale;
-            }
-            else
-            {
-                spd = 0;
-            }
-            ADP_SetJogMode(_axis,spd,acc,smooth);
-        }
-    }
+
+//    if(_axis == AXIS_X ||_axis == AXIS_Y)//目前只有X和Y轴可以设定为速度模式运行
+//    {
+//        //条件(有指令||        (没指令            &&在运行))
+//        if((cmdNeg||cmdPos)||(!(cmdNeg||cmdPos)&&m_stAxisRunState[_axis-1]))
+//        {
+//            ADP_ClrSts(_axis);
+//            if(cmdNeg&&!lmtNeg)
+//            {
+//                spd = -*idleMoveSpd * *posToPulseScaleXY * _lowSpdScale;
+//            }
+//            else if(cmdPos&&!lmtPos)
+//            {
+//                spd =  *idleMoveSpd * *posToPulseScaleXY * _lowSpdScale;
+//            }
+//            else
+//            {
+//                spd = 0;
+//            }
+//            ADP_SetJogMode(_axis,spd,acc,smooth);
+//        }
+//    }
 }
 void D_CtrlMach::EventOprtSubEnterToolPosCalib()
 {
@@ -614,7 +669,14 @@ void D_CtrlMach::EventRunSubEnterRunPuase(bool _clicked)
     {
         if(m_stMainThis == stMain_Cut && (m_stSubCut == stCut_Run || m_stSubCut == stCut_Continue))
         {
+            if(m_stSubCut == stCut_Run)
+            {
+                m_cdCutFlagRunInPause = true;
+            }
+            else
+                m_cdCutFlagRunInPause = false;
             m_stSubCut = stCut_Pause;
+            m_cdCutStepCountine = stStepNotIn;//如果是从continue进入，必须重进
         }
     }
 }
