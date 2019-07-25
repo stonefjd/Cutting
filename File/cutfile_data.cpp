@@ -65,6 +65,23 @@ void    CutFile_Data::SetRtAgl(double *_agl)
 {
     this->rtAgl = _agl;
 }
+void    CutFile_Data::OneFileFinished()
+{
+    if(qlcFileList->isEmpty() !=true)
+    {
+        //文件完成确认先减少文件个数
+        if(qlcFileList->at(0)->ReduceCutTimes())
+        {
+            //确认个数不为零的情况下，重置文件的裁切状态
+            qlcFileList->at(0)->ResetFileState();
+        }
+        else
+        {
+            //个数为零的情况下，移除文件
+            qlcFileList->removeAt(0);
+        }
+    }
+}
 //void    CutFile_Data::SetListCfgApron(QList<CfgApron*>* _list)
 //{
 //    this->cfgApronList = _list;

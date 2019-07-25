@@ -57,6 +57,8 @@ private:
     void        ImportFiles     (                           QList<CutFile*>* _fileList);
     void        LoadFileData    (CutFile *_file);
     void        DrawFile        (int _fileIndex);
+
+    int     displayRow = 0;
 protected:
     bool eventFilter(QObject *watched, QEvent *e);
 
@@ -65,6 +67,7 @@ public:
     void SetFileData(CutFile_Data *_fileData);
     void InitialModel(QDockWidget *_dockwgt, QFrame *_frame);
     void InitEventFilter();
+
 signals:
 //    void UpdateFileAdded();
 public slots:
@@ -75,6 +78,7 @@ public slots:
     void SlotBtnImptClicked();
     void SlotBtnExptClicked();
     void SlotChkBxSpin(int _cnt);
+    void SlotCellClicked(int row, int column);
 };
 
 #endif // CUTFILE_UI_H

@@ -10,7 +10,7 @@ private:
     QList<CutPage*> *m_qlcFile = new QList<CutPage*>;
     QString         m_qstrFileName;
     QString         m_qstrFilePath;
-    int             m_qstrTimes;//切割次数
+    int             m_nTimes;//切割次数
 public:
     explicit CutFile(QObject *parent = nullptr);
     void    AddCutPage(CutPage *page,int _len);
@@ -27,6 +27,8 @@ public:
     CutPage* GetPage(int _index);
     QList<CutPage*> *GetPageList();
 
+    bool    ReduceCutTimes();//切割次数减少，减为0则返回false。
+    void    ResetFileState();//重置文档状态
 signals:
 
 public slots:

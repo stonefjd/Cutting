@@ -67,7 +67,7 @@ void CutFile_UI::InitialModel(QDockWidget *_dockwgt, QFrame *_frame)
     connect(qwBtnImpt,SIGNAL(clicked()),this,SLOT(SlotBtnImptClicked()));
     connect(qwBtnExpt,SIGNAL(clicked()),this,SLOT(SlotBtnExptClicked()));
 
-
+    connect(qwTableWait,SIGNAL(cellClicked(int,int)),this,SLOT(SlotCellClicked(int,int)));
 
     DisplayFileList(this->qwTableWait,this->cFileData->GetFileList());
 
@@ -85,6 +85,7 @@ void CutFile_UI::InitialModel(QDockWidget *_dockwgt, QFrame *_frame)
     posFMouseMoved.setX(0);
     posFMouseMoved.setY(0);
 }
+
 //----event
 bool CutFile_UI::eventFilter(QObject *watched, QEvent *e)
 {
@@ -92,7 +93,8 @@ bool CutFile_UI::eventFilter(QObject *watched, QEvent *e)
     {
         if(e->type() == QEvent::Paint)
         {
-            DrawFile(0);
+            DrawFile(displayRow);
+            DisplayFileList(this->qwTableWait,this->cFileData->GetFileList());
         }
         if(e->type() == QEvent::Wheel)
         {
@@ -585,6 +587,10 @@ void CutFile_UI::SlotBtnRemvClicked()
         {
             this->cFileData->GetFileList()->removeAt(rowNow);
         }
+        if(displayRow>0)
+        {
+            displayRow--;
+        }
     }
     this->DisplayFileList(this->qwTableWait,this->cFileData->GetFileList());
     this->qwFrame->repaint();
@@ -646,4 +652,9 @@ void CutFile_UI::SlotChkBxSpin(int _cnt)
     }
     int index = spinBox->property("index").toInt();
     this->cFileData->GetFileList()->at(index)->SetCutTimes(_cnt);
+}
+void CutFile_UI::SlotCellClicked(int row, int column)
+{
+    (void)column;
+    displayRow = row;
 }

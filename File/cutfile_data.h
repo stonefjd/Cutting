@@ -46,7 +46,8 @@ public:
     QPointF* GetPosRt();
     double*  GetRtAgl();
 
-    void    SetKnifeOffset();//新增内容时调用
+    void OneFileFinished();
+
 signals:
 
 public slots:

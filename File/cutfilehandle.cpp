@@ -18,34 +18,7 @@ void CutFileHandle::InitEventFilter()
 {
     cutFile_UI->InitEventFilter();
 }
-//设置实时的机头值
-//void CutFileHandle::SlotUpdateDataHeadPosRt(QPointF* posRT)
-//{
-//    cutFile_Data->SetPosRt(posRT);
-//}
-//void CutFileHandle::SlotUpdateDataHead(CfgHead_T _data)
-//{
-//    cutFile_Data->SetPosOrg(_data.posOrg);
-//    cutFile_Data->SetPosLmt(_data.posLmt);
-//    cutFile_Data->SetPosMax(_data.posMax);
-//    cutFile_Data->SetPosToPulseScaleXY(_data.posToPulseScaleXY);
-//    cutFile_Data->SetRealToCutScale(_data.realToCutScale);
-//}
-//void CutFileHandle::SlotUpdateDataApron(QList<CfgApron_T> _aConfig)
-//{
-//    //通过机座数据更新裁切列表中的相关偏移数据
-//    QList<int> tempGuidList;
-//    QList<QPointF> tempOffsetList;
-//    for(int i=0;i<_aConfig.count();i++)
-//    {
-//        tempGuidList.append(_aConfig.at(i).apronKnifeGuid);
-//        tempOffsetList.append(QPointF(_aConfig.at(i).apronOffsetX,_aConfig.at(i).apronOffsetY));
-//    }
-//    cutFile_Data->SetKnifeOffset(tempGuidList,tempOffsetList);
-//}
-//void CutFileHandle::SlotUpdateFileAdded()
-//{
-//    //请求更新刀座参数
-//    qDebug()<<"added";
-//    emit UpdateDataApronRequest();
-//}
+void CutFileHandle::SlotOneFileFinished()
+{
+    cutFile_Data->OneFileFinished();
+}

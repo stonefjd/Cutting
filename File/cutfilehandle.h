@@ -24,6 +24,7 @@ public:
 signals:
 //    void UpdateDataApronRequest();
 public slots:
+    void SlotOneFileFinished();
 //    void SlotUpdateDataHeadPosRt(QPointF *posRT);
 //    void SlotUpdateDataHead(CfgHead_T _data);
 //    void SlotUpdateDataApron(QList<CfgApron_T> _aConfig);

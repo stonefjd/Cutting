@@ -324,10 +324,10 @@ void D_CtrlMach::StateMachScheduleSubOprt()
         //条件：
         if(run == 0)
         {
-        //迁移：子状态：未进入；主状态：等待状态
+            //迁移：子状态：未进入；主状态：等待状态
             m_stSubOprt  = stOprt_NotIn;
             m_stMainThis = stMain_Wait;
-        //动作：结束操作，清除残留状态置位
+            //动作：结束操作，清除残留状态置位
             ADP_ClrSts(AXIS_FIRST,AXIS_MAX);
         }
     }
@@ -369,7 +369,6 @@ void D_CtrlMach::StateMachScheduleSubCut()
         {
             m_stSubCut = stCut_Stop;
         }
-
     }
     else if(m_stSubCut == stCut_Run)
     {
@@ -378,64 +377,71 @@ void D_CtrlMach::StateMachScheduleSubCut()
         ADP_GetRunStateAndSegment(crd,&run,&segment,fifo0);
         if(run == 0 )
         {
-
-            CutFile* tempFile = cutFile_Data->GetFileList()->at(0);
-            if(m_ctCutSampleNow<tempFile->GetPage(0)->GetSampleList()->count())
+            if(!cutFile_Data->GetFileList()->isEmpty())
             {
-                // 即将把数据存入坐标系1的FIFO0中，所以要首先清除此缓存区中的数据
-                TCrdData crdData[1000];
-                GT_InitLookAhead(1, 0, 5, 1, 1000, crdData);
-                ADP_CrdClear(crd, fifo0);
-                if(m_ctCutSampleNow>0)
+                CutFile* tempFile = cutFile_Data->GetFileList()->at(0);
+                if(m_ctCutSampleNow<tempFile->GetPage(0)->GetSampleList()->count())
                 {
-                    tempFile->GetPage(0)->GetSample(m_ctCutSampleNow-1)->SetCutFinished(true);
-                }
-                CutSample *tempSample = tempFile->GetPage(0)->GetSample(m_ctCutSampleNow);
-                for(int j=0;j<tempSample->GetNormalLineList()->count();j++)
-                {
-                    CutLine *tempLine = tempSample->GetNormalLine(j);
-                    for(int i=0;i<tempLine->GetPointList()->count();i++)
+                    // 即将把数据存入坐标系1的FIFO0中，所以要首先清除此缓存区中的数据
+                    TCrdData crdData[1000];
+                    GT_InitLookAhead(1, 0, 5, 1, 1000, crdData);
+                    ADP_CrdClear(crd, fifo0);
+                    if(m_ctCutSampleNow>0)
                     {
-                        QPointF tempPointF = tempLine->GetPointList()->at(i);
-                        long x = static_cast<long>(tempPointF.x()* *posToPulseScaleXY);
-                        long y = static_cast<long>(tempPointF.y()* *posToPulseScaleXY);
-//                        long xPos = x;
-//                        long yPos = y;
-                                                                //计算旋转绝对角度
-                        if(i!=tempLine->GetPointList()->count()-1)
-                        {
-                            //不是末点计算角度并添加切向跟随
-                            QLineF tLine(tempPointF,tempLine->GetPointList()->at(i+1));
-//                            long posA = static_cast<long>(tLine.angle()*10000/360);
-                            long posA = static_cast<long>((360-tLine.angle())*10000/360);
-                            qDebug()<<posA;
-                            ADP_BufMove(crd,AXIS_A1,posA,200,2,0,0);
-                        }
-                        ADP_LnXY(crd,x,y,spd,acc,0,fifo0); //插入插补运动Lp2
-                        if(i==0)
-                        {
-                            //运动到首点添加下刀
-                        }
-
+                        tempFile->GetPage(0)->GetSample(m_ctCutSampleNow-1)->SetCutFinished(true);
                     }
-                    //此处添加半抬刀
+                    CutSample *tempSample = tempFile->GetPage(0)->GetSample(m_ctCutSampleNow);
+                    for(int j=0;j<tempSample->GetNormalLineList()->count();j++)
+                    {
+                        CutLine *tempLine = tempSample->GetNormalLine(j);
+                        for(int i=0;i<tempLine->GetPointList()->count();i++)
+                        {
+                            QPointF tempPointF = tempLine->GetPointList()->at(i);
+                            long x = static_cast<long>(tempPointF.x()* *posToPulseScaleXY);
+                            long y = static_cast<long>(tempPointF.y()* *posToPulseScaleXY);
+    //                        long xPos = x;
+    //                        long yPos = y;
+                                                                    //计算旋转绝对角度
+                            if(i!=tempLine->GetPointList()->count()-1)
+                            {
+                                //不是末点计算角度并添加切向跟随
+                                QLineF tLine(tempPointF,tempLine->GetPointList()->at(i+1));
+    //                            long posA = static_cast<long>(tLine.angle()*10000/360);
+                                long posA = static_cast<long>((360-tLine.angle())*10000/360);
+                                qDebug()<<posA;
+                                ADP_BufMove(crd,AXIS_A1,posA,200,2,0,0);
+                            }
+                            ADP_LnXY(crd,x,y,spd,acc,0,fifo0); //插入插补运动Lp2
+                            if(i==0)
+                            {
+                                //运动到首点添加下刀
+                            }
+
+                        }
+                        //此处添加半抬刀
+                    }
+                    GT_CrdData(1, nullptr, 0);
+                    ADP_CrdStart(crd, fifo0);
+                    m_ctCutSampleNow++;
                 }
-                GT_CrdData(1, nullptr, 0);
-                ADP_CrdStart(crd, fifo0);
-                m_ctCutSampleNow++;
-//                qDebug()<<m_ctCutSampleNow;
-            }
-            else if(m_ctCutSampleNow == tempFile->GetPage(0)->GetSampleList()->count())
-            {
-                if(m_ctCutSampleNow>0)
+                else if(m_ctCutSampleNow == tempFile->GetPage(0)->GetSampleList()->count())
                 {
-                    tempFile->GetPage(0)->GetSample(m_ctCutSampleNow-1)->SetCutFinished(true);
-//                            qDebug()<<"run<<' '<<segment";
+                    if(m_ctCutSampleNow>0)
+                    {
+                        //切完需要将切完的面料置位
+                        tempFile->GetPage(0)->GetSample(m_ctCutSampleNow-1)->SetCutFinished(true);
+                    }
+                    m_ctCutSampleNow = 0;
+                    //不进入停止，而是将之前裁好的面料进行移动
+                    //m_stSubCut = stCut_Stop;
+                    cutFile_Data->OneFileFinished();
                 }
-                m_ctCutSampleNow = 0;
+            }//有待裁切内容
+            else
+            {
                 m_stSubCut = stCut_Stop;
             }
-        }
+        }//在运行
     }
     else if(m_stSubCut == stCut_Continue)//外部进入
     {
