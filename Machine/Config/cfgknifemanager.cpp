@@ -195,17 +195,19 @@ void CfgKnifeManager::on_btnApply_clicked()
             int use = apronChoseList.at(i);
             int guid = knifeGuidChoseList.at(i);
 
-            QString *_tempStr = new QString;
-            QStringList _tempLst;
-            GetPrivateProfileString  ("MachHead0", "Apron"+QString::number(i),_tempStr,SETTING_PATH);
-            _tempLst = (*_tempStr).split(',');
-            _tempLst.replace(0,QString::number(use));
-            _tempLst.replace(2,QString::number(guid));
-            WritePrivateProfileString("MachHead0", "Apron"+QString::number(i),_tempLst,SETTING_PATH);
+//            QString *_tempStr = new QString;
+//            QStringList _tempLst;
+//            GetPrivateProfileString  ("MachHead0", "Apron"+QString::number(i),_tempStr,SETTING_PATH);
+//            _tempLst = (*_tempStr).split(',');
+//            _tempLst.replace(0,QString::number(use));
+//            _tempLst.replace(2,QString::number(guid));
+            WritePrivateProfileString("Head0-Apron"+QString::number(i), "Used",     QString::number(use), SETTING_PATH);
+            WritePrivateProfileString("Head0-Apron"+QString::number(i), "KnifeGuid",QString::number(guid),SETTING_PATH);
 
             //重新装载刀座列表
             CfgApron *tempApron = new CfgApron;
             tempApron->GetApronInfo(i);
+
             //对刀座列表重新放入数据
             CfgKnife *tmpKnife = cLib->GetKnifeByGuid(tempApron->GetKnifeGuid());
             tempApron->SetKnife(tmpKnife);

@@ -101,13 +101,16 @@ void U_CtrlToolPosCalib::SlotBtnSureClicked()
     d_ctrlMach->GetCfgApronList()->at(idApron)->SetXOffset(offsetX);
     d_ctrlMach->GetCfgApronList()->at(idApron)->SetYOffset(offsetY);
     //将偏移量修改到文件
-    QString *_tempStr = new QString;
-    QStringList _tempLst;
-    GetPrivateProfileString  ("MachHead0", "Apron"+QString::number(idApron),_tempStr,SETTING_PATH);
-    _tempLst = (*_tempStr).split(',');
-    _tempLst.replace(3,QString::number(offsetX));
-    _tempLst.replace(4,QString::number(offsetY));
-    WritePrivateProfileString("MachHead0", "Apron"+QString::number(idApron),_tempLst,SETTING_PATH);
+    WritePrivateProfileString("Head0-Apron"+QString::number(idApron), "OffsetX",QString::number(offsetX), SETTING_PATH);
+    WritePrivateProfileString("Head0-Apron"+QString::number(idApron), "OffsetY",QString::number(offsetY),SETTING_PATH);
+
+//    QString *_tempStr = new QString;
+//    QStringList _tempLst;
+//    GetPrivateProfileString  ("MachHead0", "Apron"+QString::number(idApron),_tempStr,SETTING_PATH);
+//    _tempLst = (*_tempStr).split(',');
+//    _tempLst.replace(3,QString::number(offsetX));
+//    _tempLst.replace(4,QString::number(offsetY));
+//    WritePrivateProfileString("MachHead0", "Apron"+QString::number(idApron),_tempLst,SETTING_PATH);
     this->close();
 }
 void U_CtrlToolPosCalib::SlotBtnCancleClicked()

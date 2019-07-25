@@ -85,8 +85,6 @@ WindowCutting::WindowCutting(QWidget *parent) :
     connect(ui->actionResize,   SIGNAL(triggered()),        mMachine,SLOT(SubStateOpBtnReSize()));
     connect(ui->actionEdgeScan, SIGNAL(triggered()),        mMachine,SLOT(SubStateOpBtnEdgeScan()));
 
-
-
 */
 //----UserLog
     userHandle = nullptr;
@@ -168,6 +166,41 @@ void WindowCutting::on_actionReset_triggered()
 //--only for TEST
 void WindowCutting::on_pushButton_clicked()
 {
+    handleCtrlMach->StopCtrlTimer();
+    short crd=1,fifo0=0;
+    TCrdPrm m_tCrdPrm ;
+
+    memset(&m_tCrdPrm, 0, sizeof(m_tCrdPrm));
+    m_tCrdPrm.dimension=2;   // 坐标系为二维坐标系
+    m_tCrdPrm.synVelMax=500;  // 最大合成速度：500pulse/ms
+    m_tCrdPrm.synAccMax=1;   // 最大加速度：1pulse/ms^2，约为10m/s^2
+    m_tCrdPrm.evenTime = 50;   // 最小匀速时间：50ms
+    m_tCrdPrm.profile[0] = 1;   // 规划器1对应到X轴
+    m_tCrdPrm.profile[1] = 2;   // 规划器2对应到Y轴
+    m_tCrdPrm.setOriginFlag = 1;  // 表示需要指定坐标系的原点坐标的规划位置
+    m_tCrdPrm.originPos[0] = 00000;  // 坐标系的原点坐标的规划位置为（100, 100）
+    m_tCrdPrm.originPos[1] = 00000;
+
+    double spd = 50;
+    double acc = 0.1;
+    short run = 0;  // 坐标系运动完成段查询变量
+    long segment = 0;  // 坐标系的缓存区剩余空间查询变量
+    ADP_SetCrdPrm(crd, &m_tCrdPrm);
+    ADP_ClrSts(AXIS_FIRST,AXIS_MAX);
+    TCrdData crdData[2000];
+    GT_InitLookAhead(crd, fifo0, 5, 1, 2000, crdData);
+    ADP_CrdClear(crd, fifo0);
+    ADP_LnXY(crd,10000,10000,spd,acc,0,fifo0);
+    GT_BufGear(crd,AXIS_A1,10000,fifo0);
+    GT_ArcXYC(crd,10000,10000,15000,15000,0,spd,acc,0,fifo0);
+
+    GT_CrdData(1, nullptr, 0);
+    ADP_CrdStart(crd, fifo0);
+    while(run==0)
+    {
+        ADP_GetRunStateAndSegment(crd,&run,&segment,fifo0);
+    }
+    handleCtrlMach->StartCtrlTimer();
 }
 void WindowCutting::on_pushButton_2_clicked()
 {

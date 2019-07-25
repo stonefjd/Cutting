@@ -383,8 +383,8 @@ void D_CtrlMach::StateMachScheduleSubCut()
             if(m_ctCutSampleNow<tempFile->GetPage(0)->GetSampleList()->count())
             {
                 // 即将把数据存入坐标系1的FIFO0中，所以要首先清除此缓存区中的数据
-                TCrdData crdData[300];
-                GT_InitLookAhead(1, 0, 5, 1, 500, crdData);
+                TCrdData crdData[1000];
+                GT_InitLookAhead(1, 0, 5, 1, 1000, crdData);
                 ADP_CrdClear(crd, fifo0);
                 if(m_ctCutSampleNow>0)
                 {
@@ -393,7 +393,6 @@ void D_CtrlMach::StateMachScheduleSubCut()
                 CutSample *tempSample = tempFile->GetPage(0)->GetSample(m_ctCutSampleNow);
                 for(int j=0;j<tempSample->GetNormalLineList()->count();j++)
                 {
-                    //此处添加下刀
                     CutLine *tempLine = tempSample->GetNormalLine(j);
                     for(int i=0;i<tempLine->GetPointList()->count();i++)
                     {
@@ -403,7 +402,21 @@ void D_CtrlMach::StateMachScheduleSubCut()
 //                        long xPos = x;
 //                        long yPos = y;
                                                                 //计算旋转绝对角度
+                        if(i!=tempLine->GetPointList()->count()-1)
+                        {
+                            //不是末点计算角度并添加切向跟随
+                            QLineF tLine(tempPointF,tempLine->GetPointList()->at(i+1));
+//                            long posA = static_cast<long>(tLine.angle()*10000/360);
+                            long posA = static_cast<long>((360-tLine.angle())*10000/360);
+                            qDebug()<<posA;
+                            ADP_BufMove(crd,AXIS_A1,posA,200,2,0,0);
+                        }
                         ADP_LnXY(crd,x,y,spd,acc,0,fifo0); //插入插补运动Lp2
+                        if(i==0)
+                        {
+                            //运动到首点添加下刀
+                        }
+
                     }
                     //此处添加半抬刀
                 }

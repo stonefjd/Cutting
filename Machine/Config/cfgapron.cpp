@@ -25,18 +25,32 @@ void CfgApron::GetApronInfo(int index)
     QString *szBuf = new QString;
 
     //
-    strSect = ("MachHead0");
-    strKey = ("Apron"+QString::number(index));
-    QStringList _apronInfo;
+    strSect = ("Head0-Apron"+QString::number(index));
+    strKey = ("Used");
     if (GetPrivateProfileString(strSect, strKey, szBuf, cfgPath))
     {
-        _apronInfo = (*szBuf).split(',');
+        apronUsed = (*szBuf).toInt();
     }
-    apronUsed       = _apronInfo.at(0).toInt();
-    apronCtrlMode   = _apronInfo.at(1).toInt();
-    apronKnifeGuid  = _apronInfo.at(2).toInt();
-    apronOffsetX    = _apronInfo.at(3).toDouble();
-    apronOffsetY    = _apronInfo.at(4).toDouble();
+    strKey = ("CtrlMode");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, cfgPath))
+    {
+        apronCtrlMode = (*szBuf).toInt();
+    }
+    strKey = ("KnifeGuid");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, cfgPath))
+    {
+        apronKnifeGuid = (*szBuf).toInt();
+    }
+    strKey = ("OffsetX");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, cfgPath))
+    {
+        apronOffsetX = (*szBuf).toDouble();
+    }
+    strKey = ("OffsetY");
+    if (GetPrivateProfileString(strSect, strKey, szBuf, cfgPath))
+    {
+        apronOffsetY = (*szBuf).toDouble();
+    }
 }
 
 void CfgApron::SetApronIndex(int nApronIndex)
