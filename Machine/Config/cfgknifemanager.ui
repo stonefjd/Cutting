@@ -17,18 +17,12 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabKnifeLoad">
       <attribute name="title">
        <string>装载管理</string>
       </attribute>
-     </widget>
-     <widget class="QWidget" name="tabApronSet">
-      <attribute name="title">
-       <string>刀座设置</string>
-      </attribute>
-      <layout class="QHBoxLayout" name="horizontalLayout_2"/>
      </widget>
      <widget class="QWidget" name="tabKnifeLib">
       <attribute name="title">
